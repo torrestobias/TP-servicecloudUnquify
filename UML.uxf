@@ -1,0 +1,34 @@
+<diagram program="umletino" version="14.4.0-SNAPSHOT"><zoom_level>10</zoom_level><help_text>Space for diagram notes</help_text><element><id>UMLClass</id><coordinates><x>120</x><y>190</y><w>210</w><h>110</h></coordinates><panel_attributes>Artist
+--
+id: int
+name: String
+albums: List&lt;Album&gt;
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>400</x><y>190</y><w>210</w><h>150</h></coordinates><panel_attributes>Album
+--
+id: int
+name: String
+tracks: List&lt;Track&gt;
+authorName: String
+
+--
+
++getDurationAlbum(): int</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>360</x><y>0</y><w>370</w><h>120</h></coordinates><panel_attributes>UNQfy
+--
+artists : List&lt;Artist&gt;
+albums: List&lt;Album&gt;
+tracks: List&lt;Track&gt;
+--
++addArtist(String name): void
++addTrack(String title, REVISAR TIPO, int duration)
++addAlbum(preguntar tipos ver si es por string o int, String title, )
++addPlaylist( String name, int maxDuration, String gender)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>670</x><y>190</y><w>210</w><h>110</h></coordinates><panel_attributes>Track
+--
+id: int
+name: String
+gender: String
+duration: int
+
+--
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>320</x><y>190</y><w>100</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;80;10</additional_attributes></element><element><id>Relation</id><coordinates><x>600</x><y>190</y><w>90</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;70;10</additional_attributes></element></diagram>
