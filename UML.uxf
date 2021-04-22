@@ -1,34 +1,83 @@
-<diagram program="umletino" version="14.4.0-SNAPSHOT"><zoom_level>10</zoom_level><help_text>Space for diagram notes</help_text><element><id>UMLClass</id><coordinates><x>120</x><y>190</y><w>210</w><h>110</h></coordinates><panel_attributes>Artist
+<diagram program="umletino" version="14.4.0-SNAPSHOT"><zoom_level>10</zoom_level><help_text>Space for diagram notes</help_text><element><id>UMLClass</id><coordinates><x>140</x><y>490</y><w>160</w><h>180</h></coordinates><panel_attributes>Artist
 --
 id: int
 name: String
 albums: List&lt;Album&gt;
-
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>400</x><y>190</y><w>210</w><h>150</h></coordinates><panel_attributes>Album
 --
-id: int
-name: String
-tracks: List&lt;Track&gt;
-authorName: String
-
++addAlbum(Album): void
++getters...
++setters...</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>680</x><y>490</y><w>150</w><h>180</h></coordinates><panel_attributes>Track
 --
+-id: int
+-name: String
+-gender: List&lt;String&gt;
+-duration: int
+--
++getters...
++setters..
 
-+getDurationAlbum(): int</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>360</x><y>0</y><w>370</w><h>120</h></coordinates><panel_attributes>UNQfy
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>290</x><y>480</y><w>150</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;130;10</additional_attributes></element><element><id>Relation</id><coordinates><x>580</x><y>480</y><w>120</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;100;10</additional_attributes></element><element><id>UMLNote</id><coordinates><x>30</x><y>0</y><w>410</w><h>260</h></coordinates><panel_attributes>cuando damos de alta un Track le podriamos indicar el ID del Album como un string o es conveniente que sea otro tipo??
+
+cuando damos de alta un Album le podriamos indicar el ID del Artist como un string o es conveniente que sea otro tipo??
+
+esta bien la decision de que UNQfy se encargue de administrar todos los Tracks?? 
+
+en las clases Artist y Album las listas de albums y tracks deben ser de Objeto o seria mas eficiente un id referenciandolos???
+bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>460</x><y>0</y><w>370</w><h>360</h></coordinates><panel_attributes>UNQfy
 --
 artists : List&lt;Artist&gt;
 albums: List&lt;Album&gt;
 tracks: List&lt;Track&gt;
+playlists: List&lt;Track&gt;
+users: List&lt;User&gt;
 --
 +addArtist(String name): void
 +addTrack(String title, REVISAR TIPO, int duration)
-+addAlbum(preguntar tipos ver si es por string o int, String title, )
-+addPlaylist( String name, int maxDuration, String gender)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>670</x><y>190</y><w>210</w><h>110</h></coordinates><panel_attributes>Track
++addAlbum( REVISAR TIPO, String title, )
++addPlaylist( String name, int maxDuration, String gender)
++delArtist(Int id): void
++delTrack(Int id)
++delAlbum(Int id)
++delPlaylist(Int id)
++updateArtist(Int id, String name): void
++updateTrack(Int id, String title, REVISAR TIPO, int duration)
++updateAlbum(Int id, REVISAR TIPO, String title)
++updatePlaylist( String name, int maxDuration, String gender)
++searchTrack(String title): Track
++searchTracksOf(String nameArtist): List&lt;Track&gt;
++searchTracksBy(String nameGender): List&lt;Track&gt;
++threeMostListenedTracksOf(Artist): List&lt;Track&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>420</x><y>490</y><w>170</w><h>190</h></coordinates><panel_attributes>Album
+--
+-id: int
+-name: String
+-tracks: List&lt;Track&gt;
+-authorName: String
+
+--
++addTrack(Track): void
++getDurationAlbum(): int
++getters...
++setters...</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>30</x><y>290</y><w>210</w><h>150</h></coordinates><panel_attributes>User
 --
 id: int
-name: String
-gender: String
-duration: int
-
+nickname: String
+listenedTracks: List&lt;Track&gt;
 --
-
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>320</x><y>190</y><w>100</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;80;10</additional_attributes></element><element><id>Relation</id><coordinates><x>600</x><y>190</y><w>90</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;70;10</additional_attributes></element></diagram>
++listenTrack(String nameTrack): void
++getUniqueListenedTrack(): List&lt;Track&gt;
++getNumberListened(Track): int
++getters
++setters
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1010</x><y>130</y><w>160</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;140;10</additional_attributes></element><element><id>Relation</id><coordinates><x>230</x><y>280</y><w>250</w><h>60</h></coordinates><panel_attributes>lt=-
+m1=0..n
+m2=1..1
+register on &gt;</panel_attributes><additional_attributes>10;30;230;10</additional_attributes></element><element><id>Relation</id><coordinates><x>480</x><y>350</y><w>80</w><h>160</h></coordinates><panel_attributes>lt=-
+m1=0..n
+m2=1..1
+add on &gt;</panel_attributes><additional_attributes>10;140;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>250</x><y>323</y><w>230</w><h>190</h></coordinates><panel_attributes>lt=-
+m1=0..n
+m2=1..1
+add on &gt;</panel_attributes><additional_attributes>10;170;210;10</additional_attributes></element><element><id>Relation</id><coordinates><x>700</x><y>353</y><w>90</w><h>160</h></coordinates><panel_attributes>lt=-
+m1=0..n
+m2=1..1
+add on &gt;</panel_attributes><additional_attributes>30;140;10;10</additional_attributes></element></diagram>
