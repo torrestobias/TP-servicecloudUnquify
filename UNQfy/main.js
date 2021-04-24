@@ -1,6 +1,7 @@
 
 
 const fs = require('fs'); // necesitado para guardar/cargar unqfy
+const { stringify } = require('querystring');
 const unqmod = require('./unqfy'); // importamos el modulo unqfy
 
 // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
@@ -48,24 +49,28 @@ function saveUNQfy(unqfy, filename = 'data.json') {
 
 function main() {
   let unqfy = getUNQfy()
-  console.log('arguments: ');
+
 
   let entrada = process.argv
+ 
   let trash = entrada.shift();
+
   let trash2 = entrada.shift();
+
   let command = entrada.shift();
-  console.log("comandoFRULA: "+command);
+ 
 
-  entrada.forEach(argument =>
-    console.log(argument));
-
-      let ret;
+      
       switch (command) {
           case 'addArtist':
-              console.log(`{name: ${entrada.shift()}, country: ${entrada.shift()}}`);
+            let artist = JSON.stringify({name: entrada.shift(), country: entrada.shift()});
+            
+              unqfy.addArtist(artist);
+              saveUNQfy(unqfy);
               break;
-          case 'e':
-              retorno = true;
+          case 'getArtistById':
+            let artista = unqfy.getArtistById(entrada.shift());
+            console.log(artista);
               break;
           case 'i':
               retorno = true;
@@ -84,4 +89,4 @@ function main() {
 }
 
 
-main();
+console.log(main());
