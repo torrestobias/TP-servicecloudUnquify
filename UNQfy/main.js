@@ -48,45 +48,26 @@ function saveUNQfy(unqfy, filename = 'data.json') {
 */
 
 function main() {
-  let unqfy = getUNQfy()
-
-
-  let entrada = process.argv
  
-  let trash = entrada.shift();
-
-  let trash2 = entrada.shift();
-
-  let command = entrada.shift();
- 
-
-      
-      switch (command) {
+let entrada = process.argv;
+  
+      switch (entrada[2]) {
           case 'addArtist':
-            let artist = JSON.stringify({name: entrada.shift(), country: entrada.shift()});
-            
-              unqfy.addArtist(artist);
+              unqfy = getUNQfy();
+              let parseo = JSON.parse(`{"name": "${entrada[3]}", "country": "${entrada[4]}" }`);
+              unqfy.addArtist(parseo);
               saveUNQfy(unqfy);
               break;
           case 'getArtistById':
-            let artista = unqfy.getArtistById(entrada.shift());
-            console.log(artista);
-              break;
-          case 'i':
-              retorno = true;
-              break;
-          case 'o':
-              retorno = true;
-              break;
-          case 'u':
-              retorno = true;
+              unqfy = getUNQfy();
+              let artista = unqfy.getArtistById(entrada[3]);
               break;
           default:
               retorno = false;
       };
-/*       return console.log(retorno); */
+
 
 }
 
 
-console.log(main());
+main();

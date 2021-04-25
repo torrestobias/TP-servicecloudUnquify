@@ -7,7 +7,9 @@ class Artist {
         this.albums = [];
     }
 
- 
+    getName(){
+        return this.name;
+    }
 
     getAlbums(){
         return albums;

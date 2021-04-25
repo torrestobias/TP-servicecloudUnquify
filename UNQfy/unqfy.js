@@ -11,11 +11,9 @@ class UNQfy {
   idArtist = 0;
 
   addArtist(artistData) {
-    let obj = JSON.parse(artistData);
-    
-    let nuevoArtista = new Artist(obj.name,obj.country,this.idArtist);
-    console.log("Se crea el artista papu"+nuevoArtista);
-    this.idArtist = this.idArtist + 1;
+    let nuevoArtista = new Artist(artistData.name,artistData.country,this.idArtist);
+    console.log("Se crea el artista:"+nuevoArtista.getName());
+    this.idArtist +=1;
     this.artists.push(nuevoArtista);
     return nuevoArtista;
   }
@@ -48,9 +46,9 @@ class UNQfy {
   }
 
   getArtistById(id) {
-    console.log("estoy acaaaaa"+this.artists);
-    let artistaEncontrado = this.artists.find(artist => artist.id ===id);
-    console.log("estoy aqui"+artistaEncontrado.id);
+    console.log("Buscando artista numero:"+id);
+    let artistaEncontrado = this.artists.find(artist => artist.id ==id);
+    console.log("Artista "+artistaEncontrado.name+" encontrado.");
     return artistaEncontrado;
   }
 
