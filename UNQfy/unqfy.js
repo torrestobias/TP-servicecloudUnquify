@@ -1,13 +1,14 @@
 let Artist = require('./artist');
+
 const picklify = require('picklify'); // para cargar/guarfar unqfy
 const fs = require('fs'); // para cargar/guarfar unqfy
 
 
 class UNQfy {
 
-  constructor(artist = [], idArtist = 0) {
-    this.artists = artist;
-    this.idArtist = idArtist;
+  constructor() {
+    this.artists = [];
+    this.idArtist = 0;
   }
 
   addArtist(artistData) {
