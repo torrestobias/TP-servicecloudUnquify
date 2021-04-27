@@ -1,19 +1,19 @@
 let Artist = require('./artist');
-
-
 const picklify = require('picklify'); // para cargar/guarfar unqfy
 const fs = require('fs'); // para cargar/guarfar unqfy
 
 
 class UNQfy {
-  
-  artists = [];
-  idArtist = 0;
+
+  constructor(artist = [], idArtist = 0) {
+    this.artists = artist;
+    this.idArtist = idArtist;
+  }
 
   addArtist(artistData) {
-    let nuevoArtista = new Artist(artistData.name,artistData.country,this.idArtist);
-    console.log("Se crea el artista:"+nuevoArtista.getName());
-    this.idArtist +=1;
+    let nuevoArtista = new Artist(artistData.name, artistData.country, this.idArtist);
+    console.log("Se crea el artista:" + nuevoArtista.getName());
+    this.idArtist += 1;
     this.artists.push(nuevoArtista);
     return nuevoArtista;
   }
@@ -23,11 +23,11 @@ class UNQfy {
   //   albumData.year (number)
   // retorna: el nuevo album creado
   addAlbum(artistId, albumData) {
-  /* Crea un album y lo agrega al artista con id artistId.
-    El objeto album creado debe tener (al menos):
-     - una propiedad name (string)
-     - una propiedad year (number)
-  */
+    /* Crea un album y lo agrega al artista con id artistId.
+      El objeto album creado debe tener (al menos):
+       - una propiedad name (string)
+       - una propiedad year (number)
+    */
   }
 
 
@@ -37,18 +37,22 @@ class UNQfy {
   //   trackData.genres (lista de strings)
   // retorna: el nuevo track creado
   addTrack(albumId, trackData) {
-  /* Crea un track y lo agrega al album con id albumId.
-  El objeto track creado debe tener (al menos):
-      - una propiedad name (string),
-      - una propiedad duration (number),
-      - una propiedad genres (lista de strings)
-  */
+    /* Crea un track y lo agrega al album con id albumId.
+    El objeto track creado debe tener (al menos):
+        - una propiedad name (string),
+        - una propiedad duration (number),
+        - una propiedad genres (lista de strings)
+    */
   }
 
   getArtistById(id) {
-    console.log("Buscando artista numero:"+id);
-    let artistaEncontrado = this.artists.find(artist => artist.id ==id);
-    console.log("Artista "+artistaEncontrado.name+" encontrado.");
+    console.log("Buscando artista numero:" + id);
+    let artistaEncontrado = this.artists.find(artist => artist.id == id);
+    try {
+      console.log("Artista " + artistaEncontrado.name + " encontrado.");
+    } catch (e) {
+      console.log(e.name, "No existe un artista con el id ingresado:", id)
+    }
     return artistaEncontrado;
   }
 
@@ -82,12 +86,12 @@ class UNQfy {
   // maxDuration: duración en segundos
   // retorna: la nueva playlist creada
   createPlaylist(name, genresToInclude, maxDuration) {
-  /*** Crea una playlist y la agrega a unqfy. ***
-    El objeto playlist creado debe soportar (al menos):
-      * una propiedad name (string)
-      * un metodo duration() que retorne la duración de la playlist.
-      * un metodo hasTrack(aTrack) que retorna true si aTrack se encuentra en la playlist.
-  */
+    /*** Crea una playlist y la agrega a unqfy. ***
+      El objeto playlist creado debe soportar (al menos):
+        * una propiedad name (string)
+        * un metodo duration() que retorne la duración de la playlist.
+        * un metodo hasTrack(aTrack) que retorna true si aTrack se encuentra en la playlist.
+    */
 
   }
 
@@ -97,7 +101,7 @@ class UNQfy {
   }
 
   static load(filename) {
-    const serializedData = fs.readFileSync(filename, {encoding: 'utf-8'});
+    const serializedData = fs.readFileSync(filename, { encoding: 'utf-8' });
     //COMPLETAR POR EL ALUMNO: Agregar a la lista todas las clases que necesitan ser instanciadas
     const classes = [UNQfy, Artist];
     return picklify.unpicklify(JSON.parse(serializedData), classes);

@@ -1,7 +1,7 @@
 
 
 const fs = require('fs'); // necesitado para guardar/cargar unqfy
-const { stringify } = require('querystring');
+//const { stringify } = require('querystring');
 const unqmod = require('./unqfy'); // importamos el modulo unqfy
 
 // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
@@ -54,8 +54,7 @@ let entrada = process.argv;
       switch (entrada[2]) {
           case 'addArtist':
               unqfy = getUNQfy();
-              let parseo = JSON.parse(`{"name": "${entrada[3]}", "country": "${entrada[4]}" }`);
-              unqfy.addArtist(parseo);
+              unqfy.addArtist({"name": entrada[3], "country": entrada[4]});
               saveUNQfy(unqfy);
               break;
           case 'getArtistById':
@@ -68,6 +67,4 @@ let entrada = process.argv;
 
 
 }
-
-
 main();

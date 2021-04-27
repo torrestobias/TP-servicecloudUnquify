@@ -1,4 +1,4 @@
-<diagram program="umletino" version="14.4.0-SNAPSHOT"><zoom_level>10</zoom_level><help_text>Space for diagram notes</help_text><element><id>UMLClass</id><coordinates><x>30</x><y>390</y><w>280</w><h>180</h></coordinates><panel_attributes>Artist
+<diagram program="umletino" version="14.4.0-SNAPSHOT"><zoom_level>10</zoom_level><help_text>Space for diagram notes</help_text><element><id>UMLClass</id><coordinates><x>0</x><y>390</y><w>280</w><h>180</h></coordinates><panel_attributes>Artist
 --
 -id: int
 -name: String
@@ -9,7 +9,7 @@
 +addNewAlbum(Album: album): void
 +delAlbum(Int id)
 +updateAlbum(Int id, REVISAR TIPO, String title)
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>640</x><y>400</y><w>150</w><h>180</h></coordinates><panel_attributes>Track
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>610</x><y>400</y><w>150</w><h>180</h></coordinates><panel_attributes>Track
 --
 -id: int
 -name: String
@@ -19,7 +19,7 @@
 +getters...
 +setters..
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>300</x><y>440</y><w>80</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;60;10</additional_attributes></element><element><id>Relation</id><coordinates><x>520</x><y>440</y><w>140</w><h>40</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;120;20</additional_attributes></element><element><id>UMLClass</id><coordinates><x>370</x><y>0</y><w>420</w><h>330</h></coordinates><panel_attributes>UNQfy
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>270</x><y>440</y><w>80</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;60;10</additional_attributes></element><element><id>Relation</id><coordinates><x>490</x><y>440</y><w>140</w><h>30</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;120;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>340</x><y>0</y><w>420</w><h>330</h></coordinates><panel_attributes>UNQfy
 --
 -artists : List&lt;Artist&gt;
 -playlists: List&lt;Track&gt;
@@ -40,7 +40,7 @@
 +getTracksMatchingGenres(List&lt;String&gt; genres): List&lt;Track&gt;
 +threeMostListenedTracksOf(Artist): List&lt;Track&gt;
 +save(filename): void
-+load(filename): UNQfy</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>360</x><y>390</y><w>170</w><h>180</h></coordinates><panel_attributes>Album
++load(filename): UNQfy</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>330</x><y>390</y><w>170</w><h>180</h></coordinates><panel_attributes>Album
 --
 -id: int
 -name: String
@@ -52,7 +52,7 @@
 +getDurationAlbum(): int
 +delTrack(Int id)
 +updateTrack(Int id, String title, REVISAR TIPO, int duration)
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>30</x><y>0</y><w>210</w><h>150</h></coordinates><panel_attributes>User
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>0</y><w>210</w><h>150</h></coordinates><panel_attributes>User
 --
 -id: int
 -nickname: String
@@ -63,13 +63,13 @@
 +getNumberListened(Track): int
 +getters
 +setters
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>230</x><y>0</y><w>160</w><h>50</h></coordinates><panel_attributes>lt=-
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>200</x><y>0</y><w>160</w><h>50</h></coordinates><panel_attributes>lt=-
 m1=0..n
 m2=1..1
-register on &gt;</panel_attributes><additional_attributes>10;20;140;20</additional_attributes></element><element><id>Relation</id><coordinates><x>300</x><y>313</y><w>110</w><h>100</h></coordinates><panel_attributes>lt=-
+register on &gt;</panel_attributes><additional_attributes>10;20;140;20</additional_attributes></element><element><id>Relation</id><coordinates><x>270</x><y>313</y><w>110</w><h>100</h></coordinates><panel_attributes>lt=-
 m1=0..n
 m2=1..1
-add on &gt;</panel_attributes><additional_attributes>10;80;70;17</additional_attributes></element><element><id>UMLClass</id><coordinates><x>30</x><y>170</y><w>210</w><h>170</h></coordinates><panel_attributes>Playllst
+add on &gt;</panel_attributes><additional_attributes>10;80;70;17</additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>170</y><w>210</w><h>170</h></coordinates><panel_attributes>Playllst
 --
 -id: int
 -name: String
@@ -77,7 +77,9 @@ add on &gt;</panel_attributes><additional_attributes>10;80;70;17</additional_att
 -genres: List&lt;genre&gt;
 -tracks: List&lt;Track&gt;
 --
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>230</x><y>160</y><w>160</w><h>50</h></coordinates><panel_attributes>lt=-
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>200</x><y>160</y><w>160</w><h>50</h></coordinates><panel_attributes>lt=-
 m1=0..n
 m2=1..1
-register on &gt;</panel_attributes><additional_attributes>10;20;140;20</additional_attributes></element></diagram>
+register on &gt;</panel_attributes><additional_attributes>10;20;140;20</additional_attributes></element><element><id>UMLClass</id><coordinates><x>780</x><y>220</y><w>120</w><h>30</h></coordinates><panel_attributes>ExistArtistException</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>780</x><y>351</y><w>140</w><h>30</h></coordinates><panel_attributes>ExistTrackException</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>790</x><y>0</y><w>130</w><h>30</h></coordinates><panel_attributes>Error</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>840</x><y>24</y><w>30</w><h>210</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;190</additional_attributes></element><element><id>Relation</id><coordinates><x>910</x><y>24</y><w>30</w><h>360</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;340</additional_attributes></element><element><id>Relation</id><coordinates><x>490</x><y>357</y><w>310</w><h>70</h></coordinates><panel_attributes>lt=&lt;&lt;.
+&lt;&lt;throws&gt;&gt;</panel_attributes><additional_attributes>290;10;10;50</additional_attributes></element><element><id>Relation</id><coordinates><x>753</x><y>40</y><w>110</w><h>200</h></coordinates><panel_attributes>lt=&lt;&lt;.
+&lt;&lt;throws&gt;&gt;</panel_attributes><additional_attributes>70;180;10;10</additional_attributes></element></diagram>

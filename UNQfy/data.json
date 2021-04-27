@@ -8,23 +8,53 @@
   "objects": {
     "__00001__": {
       "artists": "__00002__",
-      "idArtist": 1
+      "idArtist": 4
     },
     "__00002__": {
-      "0": "__00003__"
+      "0": "__00003__",
+      "1": "__00004__",
+      "2": "__00005__",
+      "3": "__00006__"
     },
     "__00003__": {
       "id": 0,
-      "name": "GustavoCerati",
+      "name": "Gustavo Ceratti",
       "country": "Argentina",
-      "albums": "__00004__"
+      "albums": "__00007__"
     },
-    "__00004__": {}
+    "__00004__": {
+      "id": 1,
+      "name": "Charly Garcia",
+      "country": "Argentina",
+      "albums": "__00008__"
+    },
+    "__00005__": {
+      "id": 2,
+      "name": "Mercedes Sosa",
+      "country": "Argentina",
+      "albums": "__00009__"
+    },
+    "__00006__": {
+      "id": 3,
+      "name": "Lisandro Aristimuño",
+      "country": "Argentina",
+      "albums": "__00010__"
+    },
+    "__00007__": {},
+    "__00008__": {},
+    "__00009__": {},
+    "__00010__": {}
   },
   "types": {
     "__00001__": "UNQfy",
     "__00002__": "Array",
     "__00003__": "Artist",
-    "__00004__": "Array"
+    "__00004__": "Artist",
+    "__00005__": "Artist",
+    "__00006__": "Artist",
+    "__00007__": "Array",
+    "__00008__": "Array",
+    "__00009__": "Array",
+    "__00010__": "Array"
   }
 }
