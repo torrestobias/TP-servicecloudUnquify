@@ -4,6 +4,7 @@ const fs = require('fs'); // necesitado para guardar/cargar unqfy
 //const { stringify } = require('querystring');
 const unqmod = require('./unqfy'); // importamos el modulo unqfy
 let NotANumberException = require('./exceptions');
+const { Artist } = require('./unqfy');
 
 // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
 function getUNQfy(filename = 'data.json') {
@@ -24,6 +25,21 @@ function itsAValidEntry(entry) {
   }
   else { return true }
 }
+
+const functionList = {
+  addArtist: function(){getUNQfy().addArtist()}//, 
+  /* addAlbum: unqmod.addAlbum(artistId, albumData), 
+  addTrack: unqmod.addTrack(albumId, trackData), 
+  getArtistById: unqmod.getArtistById(id), 
+  getAlbumById: unqmod.getAlbumById(id), 
+  getTrackById: unqmod.getTrackById(id), 
+  getPlaylistById: unqmod.getPlaylistById(id), 
+  getTracksMatchingGenres: unqmod.getTracksMatchingGenres(genres), 
+  getTracksMatchingArtist: unqmod.getTracksMatchingArtist(artistName), 
+  createPlaylist: unqmod.createPlaylist(name, genresToInclude, maxDuration)
+ */}
+
+
 /*
  En esta funcion deberán interpretar los argumentos pasado por linea de comandos
  e implementar los diferentes comandos.
@@ -52,11 +68,35 @@ function itsAValidEntry(entry) {
    3. Ejecutar el comando correspondiente en Unqfy
    4. Guardar el estado de UNQfy (saveUNQfy)
  
+   
 */
+
+function executeCommand(userInput) {
+  input = userInput;
+  command = input.splice(0, 1);
+  objs = new Object();
+
+  while (input.length !== 0) {
+    objs[input.splice(0, 1)] = input.splice(0, 1)[0]
+  };
+
+  unqfy = getUNQfy();
+
+  functionList[command](objs);
+
+  saveUNQfy(unqfy);
+}
 
 function main() {
 
-  let entrada = process.argv;
+  userInput = process.argv;
+  console.log('arguments: ');
+  process.argv.splice(0, 2).forEach(argument => console.log(argument));
+
+
+  executeCommand(userInput);
+}
+/*   let entrada = process.argv;
 
   switch (entrada[2]) {
     case 'addArtist':
@@ -84,5 +124,5 @@ function main() {
     default:
       retorno = false;
   };
-}
+ }*/
 main();
