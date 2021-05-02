@@ -20,25 +20,39 @@ function saveUNQfy(unqfy, filename = 'data.json') {
 }
 
 function itsAValidEntry(entry) {
-  if (entry.split('').map(e => parseInt(e)).some(isNaN)) {
+  let parse = entry.split('').map(e => parseInt(e));
+  if (parse.some(isNaN)) {
     throw new NotANumberException(entry);
   }
-  else { return true }
+  return parse.join('');
+}
+
+function parseIntEntry(input) {
+  let parsed;
+  try {
+    parsed = itsAValidEntry(input);
+  } catch (error) {
+    if (error instanceof NotANumberException) {
+      console.log(error.name, error.message)
+    } else {
+      throw error
+    }
+  }
+  return parsed;
 }
 
 const functionList = {
-  addArtist: function(){getUNQfy().addArtist()}//, 
-  /* addAlbum: unqmod.addAlbum(artistId, albumData), 
-  addTrack: unqmod.addTrack(albumId, trackData), 
-  getArtistById: unqmod.getArtistById(id), 
-  getAlbumById: unqmod.getAlbumById(id), 
-  getTrackById: unqmod.getTrackById(id), 
-  getPlaylistById: unqmod.getPlaylistById(id), 
-  getTracksMatchingGenres: unqmod.getTracksMatchingGenres(genres), 
-  getTracksMatchingArtist: unqmod.getTracksMatchingArtist(artistName), 
-  createPlaylist: unqmod.createPlaylist(name, genresToInclude, maxDuration)
- */}
-
+  addArtist: function (unqfy, artistData) { return unqfy.addArtist(artistData) },
+  addAlbum: function (unqfy, artistId, albumData) { return unqfy.addAlbum(artistId, albumData) },
+  addTrack: function (unqfy, albumId, trackData) { return unqfy.addTrack(albumId, trackData) },
+  getArtistById: function (unqfy, objId) { return parseIntEntry(objId.id) !== undefined ? unqfy.getArtistById(parseIntEntry(objId.id)) : '' },
+  getAlbumById: function (unqfy, objId) { return unqfy.getAlbumById(objId.id) },
+  getTrackById: function (unqfy, objId) { return unqfy.getTrackById(objId.id) },
+  getPlaylistById: function (unqfy, objId) { return unqfy.getPlaylistById(objId.id) },
+  getTracksMatchingGenres: function (unqfy, genres) { return unqfy.getTracksMatchingGenres(genres) },
+  getTracksMatchingArtist: function (unqfy, artistName) { return unqfy.getTracksMatchingArtist(artistName) },
+  createPlaylist: function (unqfy, name, genresToInclude, maxDuration) { return unqfy.createPlaylist(name, genresToInclude, maxDuration) }
+}
 
 /*
  En esta funcion deberán interpretar los argumentos pasado por linea de comandos
@@ -79,11 +93,8 @@ function executeCommand(userInput) {
   while (input.length !== 0) {
     objs[input.splice(0, 1)] = input.splice(0, 1)[0]
   };
-
   unqfy = getUNQfy();
-
-  functionList[command](objs);
-
+  functionList[command](unqfy, objs)
   saveUNQfy(unqfy);
 }
 
@@ -93,36 +104,8 @@ function main() {
   console.log('arguments: ');
   process.argv.splice(0, 2).forEach(argument => console.log(argument));
 
-
   executeCommand(userInput);
 }
-/*   let entrada = process.argv;
 
-  switch (entrada[2]) {
-    case 'addArtist':
-      unqfy = getUNQfy();
-      console.log(entrada);
-      unqfy.addArtist({ "name": entrada[3], "country": entrada[4] });
-      saveUNQfy(unqfy);
-      break;
-    case 'getArtistById':
-      unqfy = getUNQfy();
-      let ok = false;
-      try {
-        ok = itsAValidEntry(entrada[3]);
-      } catch (error) {
-        if (error instanceof NotANumberException) {
-          console.log(error.name, error.message)
-        } else {
-          throw error
-        }
-      }
-      if (ok) {
-        unqfy.getArtistById(entrada[3]);
-      }
-      break;
-    default:
-      retorno = false;
-  };
- }*/
 main();
+
