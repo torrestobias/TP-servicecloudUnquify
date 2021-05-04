@@ -3,7 +3,10 @@ const fs = require('fs'); // necesitado para guardar/cargar unqfy
 const unqmod = require('./unqfy'); // importamos el modulo unqfy
 let NotANumberException = require('./exceptions/not-a-number');
 let ExistingArtistException = require('./exceptions/existing-artist');
+let NotAValidCommandException = require('./exceptions/not-a-valid-command')
 const { Artist } = require('./unqfy');
+const { throws } = require('assert');
+const WrongArgumentsException = require('./exceptions/wrong-arguments');
 
 // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
 function getUNQfy(filename = 'data.json') {
@@ -41,7 +44,17 @@ function validIdCheck(input) {
 }
 
 
-function exixtingArtistCheck(unqfy, artistData) {
+function validArgumentsCheck(requieres, objectdata) {
+let nameParams = Object.keys(objectdata);   
+  if (!(nameParams.every(k => requieres.includes(k)) &&
+    requieres.every(r => nameParams.includes(r)))) {
+    throw new WrongArgumentsException(`${nameParams}`);
+  }
+  return objectdata;
+}
+
+
+function existingArtistCheck(unqfy, artistData) {
   let artistChecked;
   try {
     artistChecked = unqfy.addArtist(artistData);
@@ -55,8 +68,20 @@ function exixtingArtistCheck(unqfy, artistData) {
   return artistChecked;
 }
 
+function execute(input) {
+  try {
+    executeCommand(input);
+  } catch (error) {
+    if (error instanceof NotAValidCommandException) {
+      console.log(error.name, error.message)
+    } else {
+      throw error
+    }
+  }
+}
+
 const functionList = {
-  addArtist: function (unqfy, artistData) { return exixtingArtistCheck(unqfy, artistData) },
+  addArtist: function (unqfy, artistData) { return existingArtistCheck(unqfy, validArgumentsCheck(["name", "country"], artistData)) },
   addAlbum: function (unqfy, artistId, albumData) { return unqfy.addAlbum(artistId, albumData) },
   addTrack: function (unqfy, albumId, trackData) { return unqfy.addTrack(albumId, trackData) },
   getArtistById: function (unqfy, objId) { return validIdCheck(objId.id) },
@@ -101,25 +126,38 @@ const functionList = {
 function executeCommand(userInput) {
   input = userInput;
   command = input.splice(0, 1);
-  objs = new Object();
 
-  while (input.length !== 0) {
-    objs[input.splice(0, 1)] = input.splice(0, 1)[0]
-  };
+  if (!Object.keys(functionList).some(commandlisted => commandlisted == command)) {
+    throw new NotAValidCommandException(command)
+  } else {
 
-  unqfy = getUNQfy();
-  functionList[command](unqfy, objs)
-  saveUNQfy(unqfy);
+    objs = new Object();
+
+    while (input.length !== 0) {
+      objs[input.splice(0, 1)] = input.splice(0, 1)[0]
+    };
+
+    unqfy = getUNQfy();
+    try {
+      functionList[command](unqfy, objs)
+    } catch (error) {
+      if (error instanceof WrongArgumentsException) {
+        console.log(error.name, error.message)
+      } else {
+        throw error
+      }
+    }
+    saveUNQfy(unqfy);
+  }
 }
 
-function main(/*args*/) {
+function main() {
 
   userInput = process.argv;
-  //userInput = args
-  console.log('arguments: ');
+  console.log('arguments: '); 
   userInput.splice(0, 2).forEach(argument => console.log(argument));
 
-  executeCommand(userInput);
+  execute(userInput);
 }
-//const args = process.argv
-main(/*args*/);
+
+main();
