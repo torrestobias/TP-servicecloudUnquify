@@ -1,9 +1,8 @@
 
-
 const fs = require('fs'); // necesitado para guardar/cargar unqfy
-//const { stringify } = require('querystring');
 const unqmod = require('./unqfy'); // importamos el modulo unqfy
-let NotANumberException = require('./exceptions');
+let NotANumberException = require('./exceptions/not-a-number');
+let ExistingArtistException = require('./exceptions/existing-artist');
 const { Artist } = require('./unqfy');
 
 // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
@@ -41,10 +40,25 @@ function parseIntEntry(input) {
   return parsed;
 }
 
+
+function exixtingArtistCheck(unqfy, albumId, trackData) {
+  let artistChecked;
+  try {
+    artistChecked = unqfy.addTrack(albumId, trackData);
+  } catch (error) {
+    if (error instanceof ExistingArtistException) {
+      console.log(error.name, error.message)
+    } else {
+      throw error
+    }
+  }
+  return artistChecked;
+}
+
 const functionList = {
   addArtist: function (unqfy, artistData) { return unqfy.addArtist(artistData) },
   addAlbum: function (unqfy, artistId, albumData) { return unqfy.addAlbum(artistId, albumData) },
-  addTrack: function (unqfy, albumId, trackData) { return unqfy.addTrack(albumId, trackData) },
+  addTrack: function (unqfy, albumId, trackData) { return exixtingArtistCheck(unqfy, albumId, trackData)},
   getArtistById: function (unqfy, objId) { return parseIntEntry(objId.id) !== undefined ? unqfy.getArtistById(parseIntEntry(objId.id)) : '' },
   getAlbumById: function (unqfy, objId) { return unqfy.getAlbumById(objId.id) },
   getTrackById: function (unqfy, objId) { return unqfy.getTrackById(objId.id) },
@@ -81,7 +95,6 @@ const functionList = {
    2. Obtener instancia de UNQfy (getUNQFy)
    3. Ejecutar el comando correspondiente en Unqfy
    4. Guardar el estado de UNQfy (saveUNQfy)
- 
    
 */
 
@@ -93,19 +106,20 @@ function executeCommand(userInput) {
   while (input.length !== 0) {
     objs[input.splice(0, 1)] = input.splice(0, 1)[0]
   };
+
   unqfy = getUNQfy();
   functionList[command](unqfy, objs)
   saveUNQfy(unqfy);
 }
 
-function main() {
+function main(/*args*/) {
 
   userInput = process.argv;
+  //userInput = args
   console.log('arguments: ');
-  process.argv.splice(0, 2).forEach(argument => console.log(argument));
+  userInput.splice(0, 2).forEach(argument => console.log(argument));
 
   executeCommand(userInput);
 }
-
-main();
-
+//const args = process.argv
+main(/*args*/);

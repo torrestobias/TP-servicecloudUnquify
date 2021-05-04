@@ -2,7 +2,7 @@ let Artist = require('./artist');
 
 const picklify = require('picklify'); // para cargar/guarfar unqfy
 const fs = require('fs'); // para cargar/guarfar unqfy
-
+let ExistingArtistException = require('./exceptions/existing-artist');
 
 class UNQfy {
 
@@ -13,6 +13,9 @@ class UNQfy {
 
   addArtist(artistData) {
     let nuevoArtista = new Artist(artistData.name, artistData.country, this.idArtist);
+    if (this.artists.some(artist => artist.name == artistData.name)){
+      throw new ExistingArtistException(artistData);
+    }
     console.log("Se crea el artista:" + nuevoArtista.getName());
     this.idArtist += 1;
     this.artists.push(nuevoArtista);

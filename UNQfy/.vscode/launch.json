@@ -5,6 +5,26 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Main con getArtist",
+            "program": "${workspaceFolder}/main.js",
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "pwa-node",
+            "args": ["getArtistById", "id", "1"]
+        },
+        {
+            "name": "Main con addArtist",
+            "program": "${workspaceFolder}/main.js",
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "pwa-node",
+            "args": ["addArtist", "name", "Guns'n Roses","country", "USA"]
+        },
+        {
             "type": "node",
             "request": "launch",
             "name": "Run main.js",
