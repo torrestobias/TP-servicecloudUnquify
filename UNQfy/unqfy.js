@@ -13,7 +13,7 @@ class UNQfy {
 
   addArtist(artistData) {
     let nuevoArtista = new Artist(artistData.name, artistData.country, this.idArtist);
-    if (this.artists.some(artist => artist.name == artistData.name)){
+    if (this.artists.some(artist => artist.name.toLowerCase() == artistData.name.toLowerCase())){
       throw new ExistingArtistException(artistData);
     }
     console.log("Se crea el artista:" + nuevoArtista.getName());

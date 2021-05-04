@@ -18,7 +18,7 @@ function saveUNQfy(unqfy, filename = 'data.json') {
   unqfy.save(filename);
 }
 
-function itsAValidEntry(entry) {
+function parseIntEntry(entry) {
   let parse = entry.split('').map(e => parseInt(e));
   if (parse.some(isNaN)) {
     throw new NotANumberException(entry);
@@ -26,10 +26,10 @@ function itsAValidEntry(entry) {
   return parse.join('');
 }
 
-function parseIntEntry(input) {
-  let parsed;
+function validIdCheck(input) {
+  let artist;
   try {
-    parsed = itsAValidEntry(input);
+    artist = unqfy.getArtistById(parseIntEntry(input));
   } catch (error) {
     if (error instanceof NotANumberException) {
       console.log(error.name, error.message)
@@ -37,14 +37,14 @@ function parseIntEntry(input) {
       throw error
     }
   }
-  return parsed;
+  return artist;
 }
 
 
-function exixtingArtistCheck(unqfy, albumId, trackData) {
+function exixtingArtistCheck(unqfy, artistData) {
   let artistChecked;
   try {
-    artistChecked = unqfy.addTrack(albumId, trackData);
+    artistChecked = unqfy.addArtist(artistData);
   } catch (error) {
     if (error instanceof ExistingArtistException) {
       console.log(error.name, error.message)
@@ -56,10 +56,10 @@ function exixtingArtistCheck(unqfy, albumId, trackData) {
 }
 
 const functionList = {
-  addArtist: function (unqfy, artistData) { return unqfy.addArtist(artistData) },
+  addArtist: function (unqfy, artistData) { return exixtingArtistCheck(unqfy, artistData) },
   addAlbum: function (unqfy, artistId, albumData) { return unqfy.addAlbum(artistId, albumData) },
-  addTrack: function (unqfy, albumId, trackData) { return exixtingArtistCheck(unqfy, albumId, trackData)},
-  getArtistById: function (unqfy, objId) { return parseIntEntry(objId.id) !== undefined ? unqfy.getArtistById(parseIntEntry(objId.id)) : '' },
+  addTrack: function (unqfy, albumId, trackData) { return unqfy.addTrack(albumId, trackData) },
+  getArtistById: function (unqfy, objId) { return validIdCheck(objId.id) },
   getAlbumById: function (unqfy, objId) { return unqfy.getAlbumById(objId.id) },
   getTrackById: function (unqfy, objId) { return unqfy.getTrackById(objId.id) },
   getPlaylistById: function (unqfy, objId) { return unqfy.getPlaylistById(objId.id) },
