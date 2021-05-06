@@ -22,10 +22,12 @@ class ValidateEntry {
         return unqfy;
     }
 
+    // Guarda la instancia de UNQfy.
     saveUNQfy(unqfy, filename = 'data.json') {
         unqfy.save(filename);
     }
 
+    // Parsea a numero o lanza excepcion si no es posible
     parseIntEntry(entry) {
         if (entry === undefined) {
             throw new WrongArgumentsException(`'${entry}'`);
@@ -37,6 +39,7 @@ class ValidateEntry {
         return parse.join('');
     };
 
+    // Valida que las key ingresadas sean las requeridas por el comando ejecutado
     validArgumentsCheck(requieres, objectdata) {
         let nameParams = Object.keys(objectdata);
         if (!(nameParams.every(k => requieres.includes(k)) &&
@@ -46,9 +49,20 @@ class ValidateEntry {
         return objectdata;
     }
 
+    // Chequea que el comando ingresado sea valido
+    itsAValidCommand(command) {
+        if (!Object.keys(this.functionList).some(commandlisted => commandlisted == command)) {
+            throw new NotAValidCommandException(command)
+        }
+    }
+
+    // Ejecuta el comando enviado desde MAIN() y captura todas las excepciones del flujo
     execute(input) {
+        let args = input;
+        const command = args.splice(0, 1);
         try {
-            this.executeCommand(input);
+            this.itsAValidCommand(command);
+            this.executeCommand(command, args);
         } catch (error) {
             if (error instanceof NotAValidCommandException) {
                 console.log(error.name, error.message)
@@ -78,6 +92,7 @@ class ValidateEntry {
         }
     }
 
+    // Handlers de cada comando -->
     addArtistHandler(unqfy, artistData) {
         return unqfy.addArtist(this.validArgumentsCheck(["name", "country"], artistData));
     };
@@ -118,6 +133,8 @@ class ValidateEntry {
         return unqfy.createPlaylist(name, genresToInclude, maxDuration);
     };
 
+
+    // Objeto que relaciona cada comando con su handler 
     functionList = {
         addArtist: (unqfy, artistData) => this.addArtistHandler(unqfy, artistData),
         addAlbum: (unqfy, albumData) => this.addAlbumHandler(unqfy, albumData),
@@ -131,19 +148,20 @@ class ValidateEntry {
         createPlaylist: (unqfy, name, genresToInclude, maxDuration) => this.createPlaylistHandler(unqfy, name, genresToInclude, maxDuration)
     }
 
-    executeCommand(userInput) {
-        let input = userInput;
-        const command = input.splice(0, 1);
-
-        if (!Object.keys(this.functionList).some(commandlisted => commandlisted == command)) {
-            throw new NotAValidCommandException(command)
-        }
-        const objs = new Object();
+    // Arma el dataObject, 
+    makeDataObject(args) {
+        let input = args;
+        const dataObject = new Object();
         while (input.length !== 0) {
-            objs[input.splice(0, 1)] = input.splice(0, 1)[0]
+            dataObject[input.splice(0, 1)] = input.splice(0, 1)[0]
         };
+        return dataObject;
+    }
+
+    // Carga una instancia de UNQfy, llama la funcion con el dataObject y guarda la instancia de UNQfy.
+    executeCommand(command, args) {
         const unqfy = this.getUNQfy();
-        this.functionList[command](unqfy, objs);
+        this.functionList[command](unqfy, this.makeDataObject(args));
         this.saveUNQfy(unqfy);
     }
 }
