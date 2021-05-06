@@ -2,11 +2,12 @@
 const fs = require('fs'); // necesitado para guardar/cargar unqfy
 const unqmod = require('./unqfy'); // importamos el modulo unqfy
 let NotANumberException = require('./exceptions/not-a-number');
-let ExistingArtistException = require('./exceptions/existing-artist');
+let ExistingArtistException = require('./exceptions/inexisting-artist');
 let NotAValidCommandException = require('./exceptions/not-a-valid-command')
 const { Artist } = require('./unqfy');
 const { throws } = require('assert');
 const WrongArgumentsException = require('./exceptions/wrong-arguments');
+const InexistingArtistException = require('./exceptions/inexisting-artist');
 
 // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
 function getUNQfy(filename = 'data.json') {
@@ -29,23 +30,8 @@ function parseIntEntry(entry) {
   return parse.join('');
 }
 
-function validIdCheck(input) {
-  let artist;
-  try {
-    artist = unqfy.getArtistById(parseIntEntry(input));
-  } catch (error) {
-    if (error instanceof NotANumberException) {
-      console.log(error.name, error.message)
-    } else {
-      throw error
-    }
-  }
-  return artist;
-}
-
-
 function validArgumentsCheck(requieres, objectdata) {
-let nameParams = Object.keys(objectdata);   
+  let nameParams = Object.keys(objectdata);
   if (!(nameParams.every(k => requieres.includes(k)) &&
     requieres.every(r => nameParams.includes(r)))) {
     throw new WrongArgumentsException(`${nameParams}`);
@@ -75,16 +61,28 @@ function execute(input) {
     if (error instanceof NotAValidCommandException) {
       console.log(error.name, error.message)
     } else {
-      throw error
+      if (error instanceof WrongArgumentsException) {
+        console.log(error.name, error.message)
+      } else {
+        if (error instanceof NotANumberException) {
+          console.log(error.name, error.message)
+        } else {
+          if (error instanceof InexistingArtistException) {
+            console.log(error.name, error.message)
+          } else {
+            throw error
+          }
+        }
+      }
     }
   }
 }
 
 const functionList = {
   addArtist: function (unqfy, artistData) { return existingArtistCheck(unqfy, validArgumentsCheck(["name", "country"], artistData)) },
-  addAlbum: function (unqfy, artistId, albumData) { return unqfy.addAlbum(artistId, albumData) },
+  addAlbum: function (unqfy, albumData) { return unqfy.addAlbum(parseIntEntry(albumData.artistId), validArgumentsCheck(["artistId", "name", "year"], albumData)) },
   addTrack: function (unqfy, albumId, trackData) { return unqfy.addTrack(albumId, trackData) },
-  getArtistById: function (unqfy, objId) { return validIdCheck(objId.id) },
+  getArtistById: function (unqfy, objId) { return unqfy.getArtistById(parseIntEntry(objId.id)) },
   getAlbumById: function (unqfy, objId) { return unqfy.getAlbumById(objId.id) },
   getTrackById: function (unqfy, objId) { return unqfy.getTrackById(objId.id) },
   getPlaylistById: function (unqfy, objId) { return unqfy.getPlaylistById(objId.id) },
@@ -138,15 +136,7 @@ function executeCommand(userInput) {
     };
 
     unqfy = getUNQfy();
-    try {
-      functionList[command](unqfy, objs)
-    } catch (error) {
-      if (error instanceof WrongArgumentsException) {
-        console.log(error.name, error.message)
-      } else {
-        throw error
-      }
-    }
+    functionList[command](unqfy, objs)
     saveUNQfy(unqfy);
   }
 }
@@ -154,9 +144,7 @@ function executeCommand(userInput) {
 function main() {
 
   userInput = process.argv;
-  console.log('arguments: '); 
-  userInput.splice(0, 2).forEach(argument => console.log(argument));
-
+  userInput.splice(0, 2);
   execute(userInput);
 }
 

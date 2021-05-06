@@ -1,34 +1,35 @@
 class Artist {
 
-    constructor(name,country,id){
-        this.id = id;    
+    constructor(name, country, id) {
+        this.id = id;
         this.name = name;
         this.country = country;
         this.albums = [];
     }
 
-    getName(){
+    getName() {
         return this.name;
     }
 
-    getAlbums(){
+    getAlbums() {
         return albums;
     }
 
-    getAlbumById(id){
-        return this.albums.find(album => album.id ===id);
+    getAlbumById(id) {
+        return this.albums.find(album => album.id === id);
     }
 
-    addNewAlbum(album){
-        return this.albums.push(album);
+    addNewAlbum(album) {
+        this.albums.push(album);
     }
 
-    delAlbum(id){
-        return this.albums.filter(album => album.id !==id); 
+    delAlbum(id) {
+        this.albums = this.albums.filter(album => album.id !== id);
     }
 
-    
-
+    updateAlbum(){
+        //TODO
+    }
 }
 
 module.exports = Artist;

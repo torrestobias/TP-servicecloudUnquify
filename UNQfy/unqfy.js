@@ -1,25 +1,29 @@
 let Artist = require('./artist');
+let Album = require('./album')
 
 const picklify = require('picklify'); // para cargar/guarfar unqfy
 const fs = require('fs'); // para cargar/guarfar unqfy
-let ExistingArtistException = require('./exceptions/existing-artist');
+let ExistingArtistException = require('./exceptions/inexisting-artist');
+const InexistingArtistException = require('./exceptions/inexisting-artist')
 
 class UNQfy {
 
   constructor() {
     this.artists = [];
     this.idArtist = 0;
+    this.idAlbum = 0;
   }
 
   addArtist(artistData) {
     let nuevoArtista = new Artist(artistData.name, artistData.country, this.idArtist);
-    if (this.artists.some(artist => artist.name.toLowerCase() == artistData.name.toLowerCase())){
+    if (this.artists.some(artist => artist.name.toLowerCase() == artistData.name.toLowerCase())) {
       throw new ExistingArtistException(artistData);
+    } else {
+      console.log("Se crea el artista:" + nuevoArtista.getName());
+      this.idArtist += 1;
+      this.artists.push(nuevoArtista);
+      return nuevoArtista;
     }
-    console.log("Se crea el artista:" + nuevoArtista.getName());
-    this.idArtist += 1;
-    this.artists.push(nuevoArtista);
-    return nuevoArtista;
   }
 
   // albumData: objeto JS con los datos necesarios para crear un album
@@ -27,6 +31,11 @@ class UNQfy {
   //   albumData.year (number)
   // retorna: el nuevo album creado
   addAlbum(artistId, albumData) {
+    let nuevoAlbum = new Album(this.idAlbum, albumData.name, albumData.year);
+    this.idAlbum += 1;
+    this.getArtistById(artistId).addNewAlbum(nuevoAlbum);
+    console.log("Se crea el album:" + nuevoAlbum.getName());
+    return nuevoAlbum;
     /* Crea un album y lo agrega al artista con id artistId.
       El objeto album creado debe tener (al menos):
        - una propiedad name (string)
@@ -52,12 +61,12 @@ class UNQfy {
   getArtistById(id) {
     console.log("Buscando artista numero:" + id);
     let artistaEncontrado = this.artists.find(artist => artist.id == id);
-    try {
+    if (artistaEncontrado == undefined || null) {
+      throw new InexistingArtistException(id);
+    } else {
       console.log("Artista " + artistaEncontrado.name + " encontrado.");
-    } catch (e) {
-      console.log(e.name, "No existe un artista con el id ingresado:", id)
+      return artistaEncontrado;
     }
-    return artistaEncontrado;
   }
 
   getAlbumById(id) {
@@ -107,7 +116,7 @@ class UNQfy {
   static load(filename) {
     const serializedData = fs.readFileSync(filename, { encoding: 'utf-8' });
     //COMPLETAR POR EL ALUMNO: Agregar a la lista todas las clases que necesitan ser instanciadas
-    const classes = [UNQfy, Artist];
+    const classes = [UNQfy, Artist, Album];
     return picklify.unpicklify(JSON.parse(serializedData), classes);
   }
 }

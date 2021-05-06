@@ -2,8 +2,10 @@
 --
 -id: int
 -name: String
+-country: String
 -albums: List&lt;Album&gt;
 --
++getName(): String
 +getAlums(): List&lt;Album&gt;
 +getAlbumById(int: id): Album
 +addNewAlbum(Album: album): void
@@ -47,6 +49,7 @@
 -year: Number
 -tracks: List&lt;Track&gt;
 --
++getName(): String
 +getTrackById(id): Track
 +addNewTrack(Track: track): void
 +getDurationAlbum(): int
