@@ -7,6 +7,10 @@ class Artist {
         this.albums = [];
     }
 
+    getId() {
+        return this.id;
+    }
+
     getName() {
         return this.name;
     }
@@ -16,7 +20,7 @@ class Artist {
     }
 
     getAlbumById(id) {
-        return this.albums.find(album => album.id === id);
+        return this.albums.find(album => album.getId(id) == id);
     }
 
     addNewAlbum(album) {

@@ -3,8 +3,9 @@ let Album = require('./album')
 
 const picklify = require('picklify'); // para cargar/guarfar unqfy
 const fs = require('fs'); // para cargar/guarfar unqfy
-let ExistingArtistException = require('./exceptions/inexisting-artist');
-const InexistingArtistException = require('./exceptions/inexisting-artist')
+let ExistingArtistException = require('./exceptions/non-existent-artist');
+const NonExistentArtistException = require('./exceptions/non-existent-artist');
+const NonExistentAlbumException = require('./exceptions/non-existent-album');
 
 class UNQfy {
 
@@ -61,16 +62,23 @@ class UNQfy {
   getArtistById(id) {
     console.log("Buscando artista numero:" + id);
     let artistaEncontrado = this.artists.find(artist => artist.id == id);
-    if (artistaEncontrado == undefined || null) {
-      throw new InexistingArtistException(id);
+    if (artistaEncontrado === undefined) {
+      throw new NonExistentArtistException(id);
     } else {
-      console.log("Artista " + artistaEncontrado.name + " encontrado.");
+      console.log("Artista '" + artistaEncontrado.getName() + "' encontrado.");
       return artistaEncontrado;
     }
   }
 
   getAlbumById(id) {
-
+    console.log("Buscando album numero:" + id);
+    let albumEncontrado = this.artists.map(artist => artist.getAlbumById(id)).find(album => album !== undefined);
+    if (albumEncontrado === undefined) {
+      throw new NonExistentAlbumException(id);
+    } else {
+      console.log("Album: '" + albumEncontrado.getName() + "' encontrado.");
+      return albumEncontrado;
+    }
   }
 
   getTrackById(id) {

@@ -2,12 +2,13 @@
 const fs = require('fs'); // necesitado para guardar/cargar unqfy
 const unqmod = require('./unqfy'); // importamos el modulo unqfy
 let NotANumberException = require('./exceptions/not-a-number');
-let ExistingArtistException = require('./exceptions/inexisting-artist');
+let ExistingArtistException = require('./exceptions/non-existent-artist');
 let NotAValidCommandException = require('./exceptions/not-a-valid-command')
 const { Artist } = require('./unqfy');
 const { throws } = require('assert');
 const WrongArgumentsException = require('./exceptions/wrong-arguments');
-const InexistingArtistException = require('./exceptions/inexisting-artist');
+const InexistingArtistException = require('./exceptions/non-existent-artist');
+const NonExistentAlbumException = require('./exceptions/non-existent-album')
 
 // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
 function getUNQfy(filename = 'data.json') {
@@ -23,11 +24,16 @@ function saveUNQfy(unqfy, filename = 'data.json') {
 }
 
 function parseIntEntry(entry) {
-  let parse = entry.split('').map(e => parseInt(e));
-  if (parse.some(isNaN)) {
-    throw new NotANumberException(entry);
+  if (entry === undefined) {
+    throw new WrongArgumentsException(`'${entry}'`);
+  } else {
+    let parse = entry.split('').map(e => parseInt(e));
+    if (parse.some(isNaN)) {
+      throw new NotANumberException(entry);
+    } else {
+      return parse.join('');
+    }
   }
-  return parse.join('');
 }
 
 function validArgumentsCheck(requieres, objectdata) {
@@ -70,7 +76,11 @@ function execute(input) {
           if (error instanceof InexistingArtistException) {
             console.log(error.name, error.message)
           } else {
-            throw error
+            if (error instanceof NonExistentAlbumException) {
+              console.log(error.name, error.message)
+            } else {
+              throw error
+            }
           }
         }
       }
@@ -83,9 +93,9 @@ const functionList = {
   addAlbum: function (unqfy, albumData) { return unqfy.addAlbum(parseIntEntry(albumData.artistId), validArgumentsCheck(["artistId", "name", "year"], albumData)) },
   addTrack: function (unqfy, albumId, trackData) { return unqfy.addTrack(albumId, trackData) },
   getArtistById: function (unqfy, objId) { return unqfy.getArtistById(parseIntEntry(objId.id)) },
-  getAlbumById: function (unqfy, objId) { return unqfy.getAlbumById(objId.id) },
-  getTrackById: function (unqfy, objId) { return unqfy.getTrackById(objId.id) },
-  getPlaylistById: function (unqfy, objId) { return unqfy.getPlaylistById(objId.id) },
+  getAlbumById: function (unqfy, objId) { return unqfy.getAlbumById(parseIntEntry(objId.id)) },
+  getTrackById: function (unqfy, objId) { return unqfy.getTrackById(parseIntEntry(objId.id)) },
+  getPlaylistById: function (unqfy, objId) { return unqfy.getPlaylistById(parseIntEntry(objId.id)) },
   getTracksMatchingGenres: function (unqfy, genres) { return unqfy.getTracksMatchingGenres(genres) },
   getTracksMatchingArtist: function (unqfy, artistName) { return unqfy.getTracksMatchingArtist(artistName) },
   createPlaylist: function (unqfy, name, genresToInclude, maxDuration) { return unqfy.createPlaylist(name, genresToInclude, maxDuration) }
