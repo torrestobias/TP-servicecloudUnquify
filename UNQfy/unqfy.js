@@ -1,9 +1,8 @@
-let Artist = require('./artist');
-let Album = require('./album')
-
 const picklify = require('picklify'); // para cargar/guarfar unqfy
 const fs = require('fs'); // para cargar/guarfar unqfy
-let ExistingArtistException = require('./exceptions/non-existent-artist');
+const Artist = require('./artist');
+const Album = require('./album')
+const ExistingArtistException = require('./exceptions/existing-artist');
 const NonExistentArtistException = require('./exceptions/non-existent-artist');
 const NonExistentAlbumException = require('./exceptions/non-existent-album');
 
@@ -20,28 +19,19 @@ class UNQfy {
     if (this.artists.some(artist => artist.name.toLowerCase() == artistData.name.toLowerCase())) {
       throw new ExistingArtistException(artistData);
     } else {
-      console.log("Se crea el artista:" + nuevoArtista.getName());
       this.idArtist += 1;
       this.artists.push(nuevoArtista);
+      console.log("Se crea el artista:" + nuevoArtista.getName());
       return nuevoArtista;
     }
   }
 
-  // albumData: objeto JS con los datos necesarios para crear un album
-  //   albumData.name (string)
-  //   albumData.year (number)
-  // retorna: el nuevo album creado
   addAlbum(artistId, albumData) {
     let nuevoAlbum = new Album(this.idAlbum, albumData.name, albumData.year);
-    this.idAlbum += 1;
     this.getArtistById(artistId).addNewAlbum(nuevoAlbum);
+    this.idAlbum += 1;
     console.log("Se crea el album:" + nuevoAlbum.getName());
     return nuevoAlbum;
-    /* Crea un album y lo agrega al artista con id artistId.
-      El objeto album creado debe tener (al menos):
-       - una propiedad name (string)
-       - una propiedad year (number)
-    */
   }
 
 
