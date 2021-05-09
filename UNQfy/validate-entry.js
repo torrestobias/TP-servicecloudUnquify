@@ -1,6 +1,6 @@
 const fs = require('fs'); // necesitado para guardar/cargar unqfy
 const unqmod = require('./unqfy'); // importamos el modulo unqfy
-const { Artist } = require('./unqfy');
+//const { Artist } = require('./unqfy');
 const NotANumberException = require('./exceptions/not-a-number');
 const ExistingArtistException = require('./exceptions/existing-artist');
 const NotAValidCommandException = require('./exceptions/not-a-valid-command')
@@ -37,6 +37,20 @@ class ValidateEntry {
             throw new NotANumberException(entry);
         }
         return parse.join('');
+    };
+
+    // Parse elementos del objectData
+    parseObjectData(requeries, objectData) {
+        requeries.array.forEach(element => {
+            if (requeries[element] instanceof Number) {
+                objectData[element] = this.parseIntEntry(objectData[element])
+            } else {
+                if (requeries[element] instanceof Array) {
+                    objectData[element] = [objectData[element]]
+                }
+            }
+        }
+        );
     };
 
     // Valida que las key ingresadas sean las requeridas por el comando ejecutado
@@ -98,11 +112,11 @@ class ValidateEntry {
     };
 
     addAlbumHandler(unqfy, albumData) {
-        return unqfy.addAlbum(this.parseIntEntry(albumData.artistId), this.validArgumentsCheck(["artistId", "name", "year"], albumData));
+        return unqfy.addAlbum(this.parseIntEntry(albumData.artistId), this.validArgumentsCheck(["artistId", "name", "year"], this.parseObjectData({ year: Number }, albumData)));
     };
 
     addTrackHandler(unqfy, trackData) {
-        return unqfy.addTrack(this.parseIntEntry(trackData.albumId), this.validArgumentsCheck(["albumId", "name", "duration", "genres"], trackData));
+        return unqfy.addTrack(this.parseIntEntry(trackData.albumId), this.validArgumentsCheck(["albumId", "name", "duration", "genres"], this.parseObjectData({ duration: Number, genres: Array }, trackData)));
     };
 
     getArtistByIdHandler(unqfy, objId) {

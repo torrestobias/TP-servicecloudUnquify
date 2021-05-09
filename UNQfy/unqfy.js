@@ -1,7 +1,8 @@
 const picklify = require('picklify'); // para cargar/guarfar unqfy
 const fs = require('fs'); // para cargar/guarfar unqfy
 const Artist = require('./artist');
-const Album = require('./album')
+const Album = require('./album');
+const Track = require('./track');
 const ExistingArtistException = require('./exceptions/existing-artist');
 const NonExistentArtistException = require('./exceptions/non-existent-artist');
 const NonExistentAlbumException = require('./exceptions/non-existent-album');
@@ -12,6 +13,7 @@ class UNQfy {
     this.artists = [];
     this.idArtist = 0;
     this.idAlbum = 0;
+    this.idTrack = 0;
   }
 
   addArtist(artistData) {
@@ -41,13 +43,19 @@ class UNQfy {
   //   trackData.genres (lista de strings)
   // retorna: el nuevo track creado
   addTrack(albumId, trackData) {
+    let nuevoTrack = new Track(this.idTrack, trackData.name, trackData.genres, trackData.duration);
+    this.getAlbumById(albumId).addNewTrack(nuevoTrack);
+    this.idTrack += 1;
+    console.log("Se crea el track:" + nuevoTrack.getName());
+    return nuevoTrack;
+  }
+
     /* Crea un track y lo agrega al album con id albumId.
     El objeto track creado debe tener (al menos):
         - una propiedad name (string),
         - una propiedad duration (number),
         - una propiedad genres (lista de strings)
     */
-  }
 
   getArtistById(id) {
     console.log("Buscando artista numero:" + id);
@@ -114,7 +122,7 @@ class UNQfy {
   static load(filename) {
     const serializedData = fs.readFileSync(filename, { encoding: 'utf-8' });
     //COMPLETAR POR EL ALUMNO: Agregar a la lista todas las clases que necesitan ser instanciadas
-    const classes = [UNQfy, Artist, Album];
+    const classes = [UNQfy, Artist, Album, Track];
     return picklify.unpicklify(JSON.parse(serializedData), classes);
   }
 }
@@ -123,5 +131,7 @@ class UNQfy {
 module.exports = {
   UNQfy: UNQfy,
   Artist: Artist,
+  Album: Album,
+  Track: Track,
 };
 
