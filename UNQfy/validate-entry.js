@@ -6,7 +6,8 @@ const ExistingArtistException = require('./exceptions/existing-artist');
 const NotAValidCommandException = require('./exceptions/not-a-valid-command')
 const WrongArgumentsException = require('./exceptions/wrong-arguments');
 const InexistingArtistException = require('./exceptions/non-existent-artist');
-const NonExistentAlbumException = require('./exceptions/non-existent-album')
+const NonExistentAlbumException = require('./exceptions/non-existent-album');
+const NonExistentTrackException = require('./exceptions/non-existent-track');
 
 class ValidateEntry {
 
@@ -36,21 +37,22 @@ class ValidateEntry {
         if (parse.some(isNaN)) {
             throw new NotANumberException(entry);
         }
-        return parse.join('');
+        return Number(parse.join(''));
     };
 
-    // Parse elementos del objectData
+    // Parsea elementos del objectData segun los requerimientos
     parseObjectData(requeries, objectData) {
-        requeries.array.forEach(element => {
-            if (requeries[element] instanceof Number) {
-                objectData[element] = this.parseIntEntry(objectData[element])
+        Object.entries(requeries).forEach(([key, value]) => {
+            if (value == 'Number') {
+                objectData[key] = this.parseIntEntry(objectData[key])
             } else {
-                if (requeries[element] instanceof Array) {
-                    objectData[element] = [objectData[element]]
+                if (value == 'Array') {
+                    objectData[key] = objectData[key].split(', ')
                 }
             }
         }
         );
+        return objectData;
     };
 
     // Valida que las key ingresadas sean las requeridas por el comando ejecutado
@@ -96,7 +98,11 @@ class ValidateEntry {
                                 if (error instanceof NonExistentAlbumException) {
                                     console.log(error.name, error.message)
                                 } else {
-                                    throw error
+                                    if (error instanceof NonExistentTrackException) {
+                                        console.log(error.name, error.message)
+                                    } else {
+                                        throw error
+                                    }
                                 }
                             }
                         }
@@ -112,11 +118,11 @@ class ValidateEntry {
     };
 
     addAlbumHandler(unqfy, albumData) {
-        return unqfy.addAlbum(this.parseIntEntry(albumData.artistId), this.validArgumentsCheck(["artistId", "name", "year"], this.parseObjectData({ year: Number }, albumData)));
+        return unqfy.addAlbum(this.parseIntEntry(albumData.artistId), this.validArgumentsCheck(["artistId", "name", "year"], this.parseObjectData({ year: 'Number' }, albumData)));
     };
 
     addTrackHandler(unqfy, trackData) {
-        return unqfy.addTrack(this.parseIntEntry(trackData.albumId), this.validArgumentsCheck(["albumId", "name", "duration", "genres"], this.parseObjectData({ duration: Number, genres: Array }, trackData)));
+        return unqfy.addTrack(this.parseIntEntry(trackData.albumId), this.validArgumentsCheck(["albumId", "name", "duration", "genres"], this.parseObjectData({ duration: 'Number', genres: 'Array' }, trackData)));
     };
 
     getArtistByIdHandler(unqfy, objId) {

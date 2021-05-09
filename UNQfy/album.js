@@ -15,6 +15,10 @@ class Album {
         return this.id;
     };
 
+    getTracks() {
+        return this.tracks;
+    }
+
     getTrackById(id) {
         return this.tracks.find(track => track.id === id);
     };

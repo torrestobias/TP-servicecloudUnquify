@@ -6,6 +6,7 @@ const Track = require('./track');
 const ExistingArtistException = require('./exceptions/existing-artist');
 const NonExistentArtistException = require('./exceptions/non-existent-artist');
 const NonExistentAlbumException = require('./exceptions/non-existent-album');
+const NonExistentTrackException = require('./exceptions/non-existent-track');
 
 class UNQfy {
 
@@ -80,7 +81,14 @@ class UNQfy {
   }
 
   getTrackById(id) {
-
+    console.log("Buscando track numero:" + id);
+    let trackEncontrado = this.artists.flatMap(artist => artist.getAlbums()).map(album => album.getTrackById(id)).find(track => track !== undefined);
+    if (trackEncontrado === undefined) {
+      throw new NonExistentTrackException(id);
+    } else {
+      console.log("Track: '" + trackEncontrado.getName() + "' encontrado.");
+      return trackEncontrado;
+    }
   }
 
   getPlaylistById(id) {

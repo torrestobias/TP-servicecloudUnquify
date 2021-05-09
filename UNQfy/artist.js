@@ -16,7 +16,7 @@ class Artist {
     }
 
     getAlbums() {
-        return albums;
+        return this.albums;
     }
 
     getAlbumById(id) {
