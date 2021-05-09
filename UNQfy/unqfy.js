@@ -3,10 +3,9 @@ const fs = require('fs'); // para cargar/guarfar unqfy
 const Artist = require('./artist');
 const Album = require('./album');
 const Track = require('./track');
-const ExistingArtistException = require('./exceptions/existing-artist');
-const NonExistentArtistException = require('./exceptions/non-existent-artist');
-const NonExistentAlbumException = require('./exceptions/non-existent-album');
-const NonExistentTrackException = require('./exceptions/non-existent-track');
+const ExistingObjectException = require('./exceptions/existing-object');
+const NonExistentObjectException = require('./exceptions/non-existent-object');
+
 
 class UNQfy {
 
@@ -19,75 +18,77 @@ class UNQfy {
 
   addArtist(artistData) {
     let nuevoArtista = new Artist(artistData.name, artistData.country, this.idArtist);
-    if (this.artists.some(artist => artist.name.toLowerCase() == artistData.name.toLowerCase())) {
-      throw new ExistingArtistException(artistData);
-    } else {
-      this.idArtist += 1;
-      this.artists.push(nuevoArtista);
-      console.log("Se crea el artista:" + nuevoArtista.getName());
-      return nuevoArtista;
-    }
-  }
+    this.checkExistentObject(this.artists, nuevoArtista);
+    this.incrementIdArtist();
+    this.addNewObject(artist => this.artists.push(artist), nuevoArtista)
+    return nuevoArtista;
+  };
 
   addAlbum(artistId, albumData) {
     let nuevoAlbum = new Album(this.idAlbum, albumData.name, albumData.year);
-    this.getArtistById(artistId).addNewAlbum(nuevoAlbum);
-    this.idAlbum += 1;
-    console.log("Se crea el album:" + nuevoAlbum.getName());
+    let artist = this.getArtistById(artistId);
+    this.checkExistentObject(artist.getAlbums(), nuevoAlbum);
+    this.incrementIdAlbum();
+    this.addNewObject(album => artist.addNewAlbum(album), nuevoAlbum)
     return nuevoAlbum;
-  }
+  };
 
-
-  // trackData: objeto JS con los datos necesarios para crear un track
-  //   trackData.name (string)
-  //   trackData.duration (number)
-  //   trackData.genres (lista de strings)
-  // retorna: el nuevo track creado
   addTrack(albumId, trackData) {
     let nuevoTrack = new Track(this.idTrack, trackData.name, trackData.genres, trackData.duration);
-    this.getAlbumById(albumId).addNewTrack(nuevoTrack);
-    this.idTrack += 1;
-    console.log("Se crea el track:" + nuevoTrack.getName());
+    let album = this.getAlbumById(albumId);
+    this.checkExistentObject(album.getTracks(), nuevoTrack);
+    this.incrementIdTrack();
+    this.addNewObject(track => album.addNewTrack(track), nuevoTrack)
     return nuevoTrack;
+  };
+
+  checkExistentObject(objects, newObject) {
+    if (objects.some(object => object.name.toLowerCase() == newObject.name.toLowerCase())) {
+      throw new ExistingObjectException(newObject);
+    }
   }
 
-    /* Crea un track y lo agrega al album con id albumId.
-    El objeto track creado debe tener (al menos):
-        - una propiedad name (string),
-        - una propiedad duration (number),
-        - una propiedad genres (lista de strings)
-    */
+  addNewObject(fx, newObject) {
+    fx(newObject);
+    console.log(`Se crea el ${newObject.constructor.name}: ${newObject.getName()}`);
+  }
+
+  incrementIdArtist() {
+    this.idArtist += 1;
+  }
+
+  incrementIdAlbum() {
+    this.idAlbum += 1;
+  }
+
+  incrementIdTrack() {
+    this.idTrack += 1;
+  }
 
   getArtistById(id) {
-    console.log("Buscando artista numero:" + id);
     let artistaEncontrado = this.artists.find(artist => artist.id == id);
-    if (artistaEncontrado === undefined) {
-      throw new NonExistentArtistException(id);
-    } else {
-      console.log("Artista '" + artistaEncontrado.getName() + "' encontrado.");
-      return artistaEncontrado;
-    }
+    this.checkNonExistentObject("Artist", id, artistaEncontrado)
+    return artistaEncontrado;
   }
 
   getAlbumById(id) {
-    console.log("Buscando album numero:" + id);
     let albumEncontrado = this.artists.map(artist => artist.getAlbumById(id)).find(album => album !== undefined);
-    if (albumEncontrado === undefined) {
-      throw new NonExistentAlbumException(id);
-    } else {
-      console.log("Album: '" + albumEncontrado.getName() + "' encontrado.");
-      return albumEncontrado;
-    }
+    this.checkNonExistentObject("Album", id, albumEncontrado)
+    return albumEncontrado;
   }
 
   getTrackById(id) {
-    console.log("Buscando track numero:" + id);
     let trackEncontrado = this.artists.flatMap(artist => artist.getAlbums()).map(album => album.getTrackById(id)).find(track => track !== undefined);
-    if (trackEncontrado === undefined) {
-      throw new NonExistentTrackException(id);
+    this.checkNonExistentObject("Track", id, trackEncontrado)
+    return trackEncontrado;
+  }
+
+  checkNonExistentObject(objectName, id, searchingOject) {
+    console.log(`Buscando ${objectName} número: ${id}`);
+    if (searchingOject === undefined) {
+      throw new NonExistentObjectException(objectName, id);
     } else {
-      console.log("Track: '" + trackEncontrado.getName() + "' encontrado.");
-      return trackEncontrado;
+      console.log(`${objectName}: '${searchingOject.getName()}' encontrado.`);
     }
   }
 

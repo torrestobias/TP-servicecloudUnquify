@@ -2,12 +2,10 @@ const fs = require('fs'); // necesitado para guardar/cargar unqfy
 const unqmod = require('./unqfy'); // importamos el modulo unqfy
 //const { Artist } = require('./unqfy');
 const NotANumberException = require('./exceptions/not-a-number');
-const ExistingArtistException = require('./exceptions/existing-artist');
+const ExistingObjectException = require('./exceptions/existing-object');
 const NotAValidCommandException = require('./exceptions/not-a-valid-command')
 const WrongArgumentsException = require('./exceptions/wrong-arguments');
-const InexistingArtistException = require('./exceptions/non-existent-artist');
-const NonExistentAlbumException = require('./exceptions/non-existent-album');
-const NonExistentTrackException = require('./exceptions/non-existent-track');
+const NonExistentObjectException = require('./exceptions/non-existent-object');
 
 class ValidateEntry {
 
@@ -89,21 +87,13 @@ class ValidateEntry {
                     if (error instanceof NotANumberException) {
                         console.log(error.name, error.message)
                     } else {
-                        if (error instanceof ExistingArtistException) {
+                        if (error instanceof ExistingObjectException) {
                             console.log(error.name, error.message)
                         } else {
-                            if (error instanceof InexistingArtistException) {
+                            if (error instanceof NonExistentObjectException) {
                                 console.log(error.name, error.message)
                             } else {
-                                if (error instanceof NonExistentAlbumException) {
-                                    console.log(error.name, error.message)
-                                } else {
-                                    if (error instanceof NonExistentTrackException) {
-                                        console.log(error.name, error.message)
-                                    } else {
-                                        throw error
-                                    }
-                                }
+                                throw error
                             }
                         }
                     }
@@ -125,20 +115,8 @@ class ValidateEntry {
         return unqfy.addTrack(this.parseIntEntry(trackData.albumId), this.validArgumentsCheck(["albumId", "name", "duration", "genres"], this.parseObjectData({ duration: 'Number', genres: 'Array' }, trackData)));
     };
 
-    getArtistByIdHandler(unqfy, objId) {
-        return unqfy.getArtistById(this.parseIntEntry(objId.id));
-    };
-
-    getAlbumByIdHandler(unqfy, objId) {
-        return unqfy.getAlbumById(this.parseIntEntry(objId.id));
-    };
-
-    getTrackByIdHandler(unqfy, objId) {
-        return unqfy.getTrackById(this.parseIntEntry(objId.id))
-    };
-
-    getPlaylistByIdHandler(unqfy, objId) {
-        return unqfy.getPlaylistById(this.parseIntEntry(objId.id));
+    getByIdHandler(fx, objId) {
+        return fx(this.parseIntEntry(objId.id));
     };
 
     getTracksMatchingGenresHandler(unqfy, genres) {
@@ -159,10 +137,10 @@ class ValidateEntry {
         addArtist: (unqfy, artistData) => this.addArtistHandler(unqfy, artistData),
         addAlbum: (unqfy, albumData) => this.addAlbumHandler(unqfy, albumData),
         addTrack: (unqfy, trackData) => this.addTrackHandler(unqfy, trackData),
-        getArtistById: (unqfy, objs) => this.getArtistByIdHandler(unqfy, objs),
-        getAlbumById: (unqfy, objs) => this.getAlbumByIdHandler(unqfy, objs),
-        getTrackById: (unqfy, objs) => this.getTrackByIdHandler(unqfy, objs),
-        getPlaylistById: (unqfy, objs) => this.getPlaylistByIdHandler(unqfy, objs),
+        getArtistById: (unqfy, objs) => this.getByIdHandler((id) => unqfy.getArtistById(id), objs),
+        getAlbumById: (unqfy, objs) => this.getByIdHandler((id) => unqfy.getAlbumById(id), objs),
+        getTrackById: (unqfy, objs) => this.getByIdHandler((id) => unqfy.getTrackById(id), objs),
+        getPlaylistById: (unqfy, objs) => this.getByIdHandler((id) => unqfy.getPlaylistById(id), objs),
         getTracksMatchingGenres: (unqfy, genres) => this.getTracksMatchingGenresHandler(unqfy, genres),
         getTracksMatchingArtist: (unqfy, artistName) => this.getTracksMatchingArtistHandler(unqfy, artistName),
         createPlaylist: (unqfy, name, genresToInclude, maxDuration) => this.createPlaylistHandler(unqfy, name, genresToInclude, maxDuration)
