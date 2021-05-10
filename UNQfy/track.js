@@ -22,5 +22,7 @@ class Track {
    getDuration(){
        return this.duration;
    }
+
+   
 }
 module.exports = Track;

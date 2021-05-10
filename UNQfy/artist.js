@@ -34,6 +34,11 @@ class Artist {
     updateAlbum(){
         //TODO
     }
+
+    getTrackArtist(){
+      const tracks = this.albums.flatMap(album => album.tracks);
+      return tracks;
+    }
 }
 
 module.exports = Artist;
