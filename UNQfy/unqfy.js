@@ -99,12 +99,31 @@ class UNQfy {
   // genres: array de generos(strings)
   // retorna: los tracks que contenga alguno de los generos en el parametro genres
   getTracksMatchingGenres(genres) {
+    
+    const albums = this.artists.flatMap(artist => artist.albums);
+    const tracks = albums.flatMap(album => album.tracks);
+    const trackInGenre = tracks.filter(track => track.genres.some(genre => genres.includes(genre)));
+
+    return trackInGenre;
 
   }
+
+  
 
   // artistName: nombre de artista(string)
   // retorna: los tracks interpredatos por el artista con nombre artistName
   getTracksMatchingArtist(artistName) {
+
+    const artistNameValue = artistName.toLowerCase();
+    const artist = this.artists.filter(artist => artist.name.toLowerCase() === artistNameValue)[0];
+
+    if(artist === null || artist === undefined){
+
+      return [];
+    } else{
+
+      return artist.getTrackArtist();
+    }
 
   }
 
