@@ -27,6 +27,21 @@ class Album {
         this.tracks.push(track);
     };
 
+    getTrackByGenre(genre){
+        let trackByGenre = this.tracks.filter(track => track.genres.includes(genre));
+        return trackByGenre;
+    }
+
+    getAllGenres(genres){
+        let allGenres = [];
+        /*for(var genre in genres){
+            let pruebita = this.getTrackByGenre(genre);
+            allGenres.push(pruebita);
+        }*/
+        allGenres.push(genres.map(genre => this.getTrackByGenre(genre)));
+        return allGenres;
+    }
+
     getDurationAlbum() {
         return this.tracks.reduce(function (trackduration, track) {
             return trackduration + track.getDuration()
