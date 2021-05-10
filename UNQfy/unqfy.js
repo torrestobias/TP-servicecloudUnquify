@@ -3,14 +3,18 @@ const fs = require('fs'); // para cargar/guarfar unqfy
 const Artist = require('./artist');
 const Album = require('./album');
 const Track = require('./track');
+const PlayList = require('./playlist');
 const ExistingObjectException = require('./exceptions/existing-object');
 const NonExistentObjectException = require('./exceptions/non-existent-object');
+const ExistingPlaylistException = require('./exceptions/existing-playlist-exception');
+
 
 
 class UNQfy {
 
   constructor() {
     this.artists = [];
+    this.playlist = [];
     this.idArtist = 0;
     this.idAlbum = 0;
     this.idTrack = 0;
@@ -120,7 +124,18 @@ class UNQfy {
         * un metodo duration() que retorne la duración de la playlist.
         * un metodo hasTrack(aTrack) que retorna true si aTrack se encuentra en la playlist.
     */
-
+      let nuevoPlaylist = new PlayList(name, genresToInclude, maxDuration);
+      if(this.playlist.some(playli => playli.name.toLowerCase() == name.toLowerCase())){
+        throw new ExistingPlaylistException(nuevoPlaylist);
+      }
+      else{
+        //cargo los tracks en la playlist
+        //let temas = this.getTracksMatchingGenres(genresToInclude);
+        //this.nuevoPlaylist.addTracksToPlaylist(temas);
+        this.playlist.push(nuevoPlaylist);
+        console.log("Creación con éxito, Playlist:" + name);
+        return nuevoPlaylist;
+      }
   }
 
   save(filename) {
