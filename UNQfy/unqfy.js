@@ -7,6 +7,7 @@ const PlayList = require('./playlist');
 const ExistingObjectException = require('./exceptions/existing-object');
 const NonExistentObjectException = require('./exceptions/non-existent-object');
 const ExistingPlaylistException = require('./exceptions/existing-playlist-exception');
+const ArtistDontExistError = require('./exceptions/ArtistDontExistError');
 
 
 
@@ -96,6 +97,16 @@ class UNQfy {
     }
   }
 
+  getArtistByName(artistName){
+    // Retorna al artista con el nombre indicado, si es que existe
+    let artist = this.artists.find(artist => artist.name.toLowerCase() === artistName.toLowerCase())
+    if(artist !== undefined){
+      return artist
+    } else{
+      throw new ArtistDontExistError()
+    }
+  }
+
   getPlaylistById(id) {
 
   }
@@ -162,6 +173,23 @@ class UNQfy {
   searchPlaylistByName(name){
     return this.playlist.filter(playlists => playlists.name.includes(name));
   }
+
+  deleteTrack(artistName,trackName){
+      let artist = this.getArtistByName()
+  }
+
+  deleteArtist(artistName){
+    let artist = this.getArtistByName(artistName.name)
+    if(artist !== undefined){
+      this.artists = this.artists.filter(art => art.name !== artist.name)
+      this.playlists.map(playlist => playlist.removeArtistAlbums(artist))
+      console.log("Se ha eliminado el artista " + artist.name + " correctamente")
+    }else{
+      throw Error("No se pudo eliminar el artista " + artistName.name +" ya que no existe")
+    }
+  }
+  
+
 
 
   // artistName: nombre de artista(string)
