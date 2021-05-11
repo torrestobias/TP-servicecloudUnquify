@@ -117,7 +117,7 @@ class UNQfy {
 
     const albums = this.artists.flatMap(artist => artist.albums);
     const tracks = albums.flatMap(album => album.tracks);
-    const trackInGenre = tracks.filter(track => console.log(track.getGenres(), genres()))//.some(genre => genres.includes(genre)));
+    const trackInGenre = tracks.filter(track => track.getGenres().some(genre => genres.includes(genre)));
 
     return trackInGenre;
 
@@ -242,6 +242,22 @@ class UNQfy {
 
   }
 
+  searchTracksByArtist(artist) {
+    let tracks = this.getTracksMatchingArtist(artist);
+    console.log(
+      'Tracks: ' + tracks.map(track => track.getName()),
+    );
+    return { tracks };
+  }
+
+  searchTracksByGenre(genre) {
+    let tracks = this.getTracksMatchingGenres([genre]);
+    console.log(
+      'Tracks: ' + tracks.map(track => track.getName()),
+    );
+    return { tracks };
+  }
+
 
   // name: nombre de la playlist
   // genresToInclude: array de generos
@@ -254,9 +270,10 @@ class UNQfy {
         * un metodo duration() que retorne la duración de la playlist.
         * un metodo hasTrack(aTrack) que retorna true si aTrack se encuentra en la playlist.
     */
+    console.log("create", name, genresToInclude, maxDuration)
     let nuevoPlaylist = new PlayList(name, genresToInclude, maxDuration);
-    this.playlist.forEach(playli => console.log(playli.getName()))
-    if (this.playlist.some(playli => playli.name.toLowerCase() == name.toLowerCase())) {
+    //this.playlist.forEach(playli => console.log(playli.getName()))
+    if (this.playlist.some(playli => playli.getName().toLowerCase() == name.toLowerCase())) {
       throw new ExistingPlaylistException(nuevoPlaylist);
     }
     else {

@@ -140,13 +140,26 @@ class ValidateEntry {
     };
 
     createPlaylistHandler(unqfy, playlistData){//name, genresToInclude, maxDuration) {
-        let gen = [genresToInclude]
-        return unqfy.createPlaylist(this.validArgumentsCheck(["name"], playlistData));//name, gen, maxDuration);
+        console.log(playlistData)
+        return unqfy.createPlaylist(playlistData.name, this.validArgumentsCheck(["name", "genres", "maxDuration"], this.parseObjectData({ genres: 'Array' }, playlistData)).genres, this.parseIntEntry(playlistData.maxDuration));//name, gen, maxDuration);
     };
 
     deletePlaylistHandler(unqfy, playlistData) {
         return unqfy.deletePlaylist(this.validArgumentsCheck(["name"], playlistData));
     }
+
+    searchByNameHandler(unqfy, objs) {
+        return unqfy.searchByName(this.validArgumentsCheck(["name"], objs).name);
+    }
+
+    searchTracksByArtistHandler(unqfy, objs) {
+        return unqfy.searchTracksByArtist(this.validArgumentsCheck(["name"], objs).name);
+    }
+
+    searchTracksByGenreHandler(unqfy, objs) {
+        return unqfy.searchTracksByGenre(this.validArgumentsCheck(["genre"], objs).genre);
+    }
+
 
 
     // Objeto que relaciona cada comando con su handler 
@@ -164,7 +177,10 @@ class ValidateEntry {
         deleteTrack: (unqfy,trackData) => this.deleteTrackHandler(unqfy, trackData),
         deleteArtist: (unqfy,artistData) => this.deleteArtistHandler(unqfy, artistData),
         deleteAlbum: (unqfy,albumData) => this.deleteAlbumHandler(unqfy, albumData),
-        deletePlaylist: (unqfy,playlistData) => this.deletePlaylistHandler(unqfy, playlistData)
+        deletePlaylist: (unqfy,playlistData) => this.deletePlaylistHandler(unqfy, playlistData),
+        searchByName: (unqfy, objs) => this.searchByNameHandler(unqfy, objs),
+        searchTracksByArtist: (unqfy, objs) => this.searchTracksByArtistHandler(unqfy, objs),
+        searchTracksByGenre: (unqfy, objs) => this.searchTracksByGenreHandler(unqfy, objs)
     }
 
     // Arma el dataObject, 
