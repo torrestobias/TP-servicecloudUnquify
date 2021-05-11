@@ -23,12 +23,16 @@ class Album {
         return this.tracks.find(track => track.id === id);
     };
 
+    getTrackByName(name) {
+        return this.tracks.find(track => track.getName() === name);
+    };
+
     addNewTrack(track) {
         this.tracks.push(track);
     };
 
     getTrackByGenre(genre){
-        let trackByGenre = this.tracks.filter(track => track.genres.includes(genre));
+        let trackByGenre = this.tracks.filter(track => track.getGenres().includes(genre));
         return trackByGenre;
     }
 
@@ -45,11 +49,11 @@ class Album {
     getDurationAlbum() {
         return this.tracks.reduce(function (trackduration, track) {
             return trackduration + track.getDuration()
-        }, 0);
+        }, 0);  
     };
 
     delTrack(id) {
-        this.tracks = this.tracks.filter(track => this.tracks.id !== id);
+        this.tracks = this.tracks.filter(track => track.id !== id);
     };
 
     updateTrack() {

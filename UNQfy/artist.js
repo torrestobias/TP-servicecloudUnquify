@@ -20,7 +20,11 @@ class Artist {
     }
 
     getAlbumById(id) {
-        return this.albums.find(album => album.getId(id) == id);
+        return this.albums.find(album => album.getId() == id);
+    }
+
+    getAlbumByName(name) {
+        return this.albums.find(album => album.getName() == name);
     }
 
     addNewAlbum(album) {
@@ -31,13 +35,17 @@ class Artist {
         this.albums = this.albums.filter(album => album.id !== id);
     }
 
-    updateAlbum(){
+    delAlbumByName(name) {
+        this.albums = this.albums.filter(album => album.getName() !== name);
+    }
+
+    updateAlbum() {
         //TODO
     }
 
-    getTrackArtist(){
-      const tracks = this.albums.flatMap(album => album.tracks);
-      return tracks;
+    getTrackArtist() {
+        const tracks = this.albums.flatMap(album => album.tracks);
+        return tracks;
     }
 }
 

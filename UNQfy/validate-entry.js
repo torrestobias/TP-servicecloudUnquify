@@ -107,13 +107,25 @@ class ValidateEntry {
         return unqfy.addArtist(this.validArgumentsCheck(["name", "country"], artistData));
     };
 
+    deleteArtistHandler(unqfy, artistData) {
+        return unqfy.deleteArtist(this.validArgumentsCheck(["artistName"], artistData));
+    }
+
     addAlbumHandler(unqfy, albumData) {
         return unqfy.addAlbum(this.parseIntEntry(albumData.artistId), this.validArgumentsCheck(["artistId", "name", "year"], this.parseObjectData({ year: 'Number' }, albumData)));
     };
 
+    deleteAlbumHandler(unqfy, albumData) {
+        return unqfy.deleteAlbum(this.validArgumentsCheck(["artistName", "name"], albumData));
+    }
+
     addTrackHandler(unqfy, trackData) {
         return unqfy.addTrack(this.parseIntEntry(trackData.albumId), this.validArgumentsCheck(["albumId", "name", "duration", "genres"], this.parseObjectData({ duration: 'Number', genres: 'Array' }, trackData)));
     };
+
+    deleteTrackHandler(unqfy, trackData) {
+        return unqfy.deleteTrack(this.validArgumentsCheck(["artistName", "name"], trackData));
+    }
 
     getByIdHandler(fx, objId) {
         return fx(this.parseIntEntry(objId.id));
@@ -127,9 +139,14 @@ class ValidateEntry {
         return unqfy.getTracksMatchingArtist(artistName);
     };
 
-    createPlaylistHandler(unqfy, name, genresToInclude, maxDuration) {
-        return unqfy.createPlaylist(name, genresToInclude, maxDuration);
+    createPlaylistHandler(unqfy, playlistData){//name, genresToInclude, maxDuration) {
+        let gen = [genresToInclude]
+        return unqfy.createPlaylist(this.validArgumentsCheck(["name"], playlistData));//name, gen, maxDuration);
     };
+
+    deletePlaylistHandler(unqfy, playlistData) {
+        return unqfy.deletePlaylist(this.validArgumentsCheck(["name"], playlistData));
+    }
 
 
     // Objeto que relaciona cada comando con su handler 
@@ -143,7 +160,11 @@ class ValidateEntry {
         getPlaylistById: (unqfy, objs) => this.getByIdHandler((id) => unqfy.getPlaylistById(id), objs),
         getTracksMatchingGenres: (unqfy, genres) => this.getTracksMatchingGenresHandler(unqfy, genres),
         getTracksMatchingArtist: (unqfy, artistName) => this.getTracksMatchingArtistHandler(unqfy, artistName),
-        createPlaylist: (unqfy, name, genresToInclude, maxDuration) => this.createPlaylistHandler(unqfy, name, genresToInclude, maxDuration)
+        createPlaylist: (unqfy, playlistData) => this.createPlaylistHandler(unqfy, playlistData),//name, genresToInclude, maxDuration),
+        deleteTrack: (unqfy,trackData) => this.deleteTrackHandler(unqfy, trackData),
+        deleteArtist: (unqfy,artistData) => this.deleteArtistHandler(unqfy, artistData),
+        deleteAlbum: (unqfy,albumData) => this.deleteAlbumHandler(unqfy, albumData),
+        deletePlaylist: (unqfy,playlistData) => this.deletePlaylistHandler(unqfy, playlistData)
     }
 
     // Arma el dataObject, 

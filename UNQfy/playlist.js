@@ -22,6 +22,12 @@ class PlayList{
         let list = trackList.filter(track => track.duration < this.maxDuration);
         this.tracks.push.apply(this.tracks,list);
     }
+
+    removeTracks(trackList){
+        let tracksId = trackList.map(track => track.getId());
+        let list = trackList.filter(track => !tracksId.includes(track.getId()));
+        this.tracks = list;
+    }
 }
 
 module.exports = PlayList;

@@ -97,12 +97,12 @@ class UNQfy {
     }
   }
 
-  getArtistByName(artistName){
+  getArtistByName(artistName) {
     // Retorna al artista con el nombre indicado, si es que existe
     let artist = this.artists.find(artist => artist.name.toLowerCase() === artistName.toLowerCase())
-    if(artist !== undefined){
+    if (artist !== undefined) {
       return artist
-    } else{
+    } else {
       throw new ArtistDontExistError()
     }
   }
@@ -114,83 +114,116 @@ class UNQfy {
   // genres: array de generos(strings)
   // retorna: los tracks que contenga alguno de los generos en el parametro genres
   getTracksMatchingGenres(genres) {
-    
+
     const albums = this.artists.flatMap(artist => artist.albums);
     const tracks = albums.flatMap(album => album.tracks);
-    const trackInGenre = tracks.filter(track => track.genres.some(genre => genres.includes(genre)));
+    const trackInGenre = tracks.filter(track => console.log(track.getGenres(), genres()))//.some(genre => genres.includes(genre)));
 
     return trackInGenre;
 
   }
 
-  searchByName(name){
+  searchByName(name) {
     let artists = this.searchArtistByName(name);
     let albums = this.searchAlbumsByName(name);
     let tracks = this.searchTracksByName(name);
     let playlists = this.searchPlaylistByName(name);
     console.log('Artists :' + this.getNamesFromList(artists),
-                'Albums: ' + this.getNamesFromList(albums),
-                'Tracks: ' + this.getNamesFromList(tracks),
-                'Playlists: ' + this.getNamesFromList(playlists)
+      'Albums: ' + this.getNamesFromList(albums),
+      'Tracks: ' + this.getNamesFromList(tracks),
+      'Playlists: ' + this.getNamesFromList(playlists)
     );
-    return {artists,albums,tracks,playlists};
+    return { artists, albums, tracks, playlists };
   }
 
-  searchArtistByName(name){
+  searchArtistByName(name) {
     return this.artists.filter(artist => artist.name.toLowerCase().includes(name.toLowerCase()));
   }
 
-  searchAlbumsByName(name){
+  searchAlbumsByName(name) {
     let album = this.getAllAlbums();
     return album.filter(album => album.name.toLowerCase().includes(name.toLowerCase()));
   }
 
-  getAllTracks(){
-    let allTracks = this.getAllAlbums().map(album => album.tracks).reduce(function (a,b) {
+  getAllTracks() {
+    let allTracks = this.getAllAlbums().map(album => album.tracks).reduce(function (a, b) {
       return a.concat(b)
-    },[])
+    }, [])
     return allTracks;
   }
 
-  getAllAlbums(){
-    if(this.artists.length === 0){
+  getAllAlbums() {
+    if (this.artists.length === 0) {
       return []
     }
-    return this.artists.map(artist => artist.albums).reduce((a,b) => {
+    return this.artists.map(artist => artist.albums).reduce((a, b) => {
       return a.concat(b)
     })
   }
 
-  getNamesFromList(list){
-    return list.map( elem => elem.name);
+  getNamesFromList(list) {
+    return list.map(elem => elem.name);
   }
 
-  searchTracksByName(name){
+  searchTracksByName(name) {
     let tracks = this.getAllTracks();
     return tracks.filter(track => track.name.toLowerCase().includes(name.toLowerCase()));
   }
 
-  searchPlaylistByName(name){
+  searchPlaylistByName(name) {
     return this.playlist.filter(playlists => playlists.name.includes(name));
   }
 
-  deleteTrack(artistName,trackName){
-      let artist = this.getArtistByName()
-  }
-
-  deleteArtist(artistName){
-    let artist = this.getArtistByName(artistName.name)
-    if(artist !== undefined){
-      this.artists = this.artists.filter(art => art.name !== artist.name)
-      this.playlists.map(playlist => playlist.removeArtistAlbums(artist))
-      console.log("Se ha eliminado el artista " + artist.name + " correctamente")
-    }else{
-      throw Error("No se pudo eliminar el artista " + artistName.name +" ya que no existe")
+  deleteTrack(trackData) {
+    let artist = this.getArtistByName(trackData.artistName);
+    let album = artist.getAlbums().find(album => album.getTracks().map(track => track.getName()).includes(trackData.name))
+    if (album == undefined) {
+      throw Error("No se pudo eliminar el track " + trackData.name + " ya que no existe")
+    }
+    let track = album.getTrackByName(trackData.name);
+    if (artist !== undefined && album !== undefined && track !== undefined) {
+      album.delTrack(track.getId());
+      this.playlist.forEach(playlist => playlist.removeTracks([track]))
+      console.log("Se ha eliminado el track " + track.name + " del album " + album.name + " del artista " + artist.name + " correctamente")
+    } else {
+      throw Error("No se pudo eliminar el track " + trackData.name + " ya que no existe")
     }
   }
-  
 
+  deleteArtist(artistName) {
+    let artist = this.getArtistByName(artistName.artistName)
+    if (artist !== undefined) {
+      let tracksArtist = this.getTracksMatchingArtist(artistName.artistName)
+      this.artists = this.artists.filter(art => art.name !== artist.name)
+      this.playlist.forEach(playlist => playlist.removeTracks(tracksArtist))
+      console.log("Se ha eliminado el artista " + artist.name + " correctamente")
+    } else {
+      throw Error("No se pudo eliminar el artista " + artistName.artistName + " ya que no existe")
+    }
+  };
 
+  deleteAlbum(albumData) {
+    let artist = this.getArtistByName(albumData.artistName);
+    let album = artist.getAlbums().find(album => album.getName() === albumData.name);
+    if (artist !== undefined && album !== undefined) {
+      let tracksAlbum = album.getTracks();
+      artist.delAlbumByName(albumData.name);
+      this.playlist.forEach(playlist => playlist.removeTracks(tracksAlbum))
+      console.log("Se ha eliminado el album " + album.name + " del artista" + artist.name + " correctamente")
+    } else {
+      throw Error("No se pudo eliminar el album " + albumData.name + " ya que no existe")
+    }
+  }
+
+  deletePlaylist(playlistData) {
+    let playlist = this.playlist.find(playlist => playlist.getName() === playlistData.name);
+    if (playlist !== undefined) {
+      this.playlist = this.playlist.filter(pl => pl.getName() !== playlist.name)
+      console.log("Se ha eliminado la playlist " + playlist.name + " correctamente")
+    } else {
+      throw Error("No se pudo eliminar a playlist " + playlistData.name + " ya que no existe")
+    }
+  };
 
   // artistName: nombre de artista(string)
   // retorna: los tracks interpredatos por el artista con nombre artistName
@@ -199,10 +232,10 @@ class UNQfy {
     const artistNameValue = artistName.toLowerCase();
     const artist = this.artists.filter(artist => artist.name.toLowerCase() === artistNameValue)[0];
 
-    if(artist === null || artist === undefined){
+    if (artist === null || artist === undefined) {
 
       return [];
-    } else{
+    } else {
 
       return artist.getTrackArtist();
     }
@@ -221,18 +254,19 @@ class UNQfy {
         * un metodo duration() que retorne la duración de la playlist.
         * un metodo hasTrack(aTrack) que retorna true si aTrack se encuentra en la playlist.
     */
-      let nuevoPlaylist = new PlayList(name, genresToInclude, maxDuration);
-      if(this.playlist.some(playli => playli.name.toLowerCase() == name.toLowerCase())){
-        throw new ExistingPlaylistException(nuevoPlaylist);
-      }
-      else{
-        //cargo los tracks en la playlist
-        let temas = this.getTracksMatchingGenres(genresToInclude);
-        nuevoPlaylist.addTracksToPlaylist(temas);
-        this.playlist.push(nuevoPlaylist);
-        console.log("Creación con éxito, Playlist:" + name);
-        return nuevoPlaylist;
-      }
+    let nuevoPlaylist = new PlayList(name, genresToInclude, maxDuration);
+    this.playlist.forEach(playli => console.log(playli.getName()))
+    if (this.playlist.some(playli => playli.name.toLowerCase() == name.toLowerCase())) {
+      throw new ExistingPlaylistException(nuevoPlaylist);
+    }
+    else {
+      //cargo los tracks en la playlist
+      let temas = this.getTracksMatchingGenres(genresToInclude);
+      nuevoPlaylist.addTracksToPlaylist(temas);
+      this.playlist.push(nuevoPlaylist);
+      console.log("Creación con éxito, Playlist:" + name);
+      return nuevoPlaylist;
+    }
   }
 
   save(filename) {
@@ -243,7 +277,7 @@ class UNQfy {
   static load(filename) {
     const serializedData = fs.readFileSync(filename, { encoding: 'utf-8' });
     //COMPLETAR POR EL ALUMNO: Agregar a la lista todas las clases que necesitan ser instanciadas
-    const classes = [UNQfy, Artist, Album, Track];
+    const classes = [UNQfy, Artist, Album, Track, PlayList];
     return picklify.unpicklify(JSON.parse(serializedData), classes);
   }
 }
@@ -254,5 +288,6 @@ module.exports = {
   Artist: Artist,
   Album: Album,
   Track: Track,
+  PlayList: PlayList,
 };
 
