@@ -112,7 +112,57 @@ class UNQfy {
 
   }
 
-  
+  searchByName(name){
+    let artists = this.searchArtistByName(name);
+    let albums = this.searchAlbumsByName(name);
+    let tracks = this.searchTracksByName(name);
+    let playlists = this.searchPlaylistByName(name);
+    console.log('Artists :' + this.getNamesFromList(artists),
+                'Albums: ' + this.getNamesFromList(albums),
+                'Tracks: ' + this.getNamesFromList(tracks),
+                'Playlists: ' + this.getNamesFromList(playlists)
+    );
+    return {artists,albums,tracks,playlists};
+  }
+
+  searchArtistByName(name){
+    return this.artists.filter(artist => artist.name.toLowerCase().includes(name.toLowerCase()));
+  }
+
+  searchAlbumsByName(name){
+    let album = this.getAllAlbums();
+    return album.filter(album => album.name.toLowerCase().includes(name.toLowerCase()));
+  }
+
+  getAllTracks(){
+    let allTracks = this.getAllAlbums().map(album => album.tracks).reduce(function (a,b) {
+      return a.concat(b)
+    },[])
+    return allTracks;
+  }
+
+  getAllAlbums(){
+    if(this.artists.length === 0){
+      return []
+    }
+    return this.artists.map(artist => artist.albums).reduce((a,b) => {
+      return a.concat(b)
+    })
+  }
+
+  getNamesFromList(list){
+    return list.map( elem => elem.name);
+  }
+
+  searchTracksByName(name){
+    let tracks = this.getAllTracks();
+    return tracks.filter(track => track.name.toLowerCase().includes(name.toLowerCase()));
+  }
+
+  searchPlaylistByName(name){
+    return this.playlist.filter(playlists => playlists.name.includes(name));
+  }
+
 
   // artistName: nombre de artista(string)
   // retorna: los tracks interpredatos por el artista con nombre artistName
@@ -149,8 +199,8 @@ class UNQfy {
       }
       else{
         //cargo los tracks en la playlist
-        //let temas = this.getTracksMatchingGenres(genresToInclude);
-        //this.nuevoPlaylist.addTracksToPlaylist(temas);
+        let temas = this.getTracksMatchingGenres(genresToInclude);
+        nuevoPlaylist.addTracksToPlaylist(temas);
         this.playlist.push(nuevoPlaylist);
         console.log("Creación con éxito, Playlist:" + name);
         return nuevoPlaylist;

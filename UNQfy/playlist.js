@@ -15,15 +15,13 @@ class PlayList{
     duration() {return this.maxDuration};
 
     hasTrack(aTrack){
-        return (this.tracks.some(track => track.name.toLoweCase() == aTrack.toLoweCase()))
+        return (this.tracks.some(tema => tema.getName().toLowerCase() == aTrack.getName().toLowerCase()))
     }
 
     addTracksToPlaylist(trackList){ 
-        let list = [];
-        for(var elem in trackList){
-            if(elem.duration < this.maxDuration) {list.push(elem)};
-        }
-        this.tracks.concat(list)}
+        let list = trackList.filter(track => track.duration < this.maxDuration);
+        this.tracks.push.apply(this.tracks,list);
+    }
 }
 
 module.exports = PlayList;
