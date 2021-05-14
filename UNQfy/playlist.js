@@ -18,7 +18,7 @@ class PlayList{
         return (this.tracks.some(tema => tema.getName().toLowerCase() == aTrack.getName().toLowerCase()))
     }
 
-    addTracksToPlaylist(trackList){ 
+    addTracksToPlaylist(trackList){ //modificar para que la duracion sea de toda la playlist
         let list = trackList.filter(track => track.duration < this.maxDuration);
         this.tracks.push.apply(this.tracks,list);
     }
