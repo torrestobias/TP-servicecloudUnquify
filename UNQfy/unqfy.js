@@ -6,10 +6,6 @@ const Track = require('./track');
 const PlayList = require('./playlist');
 const ExistingObjectException = require('./exceptions/existing-object');
 const NonExistentObjectException = require('./exceptions/non-existent-object');
-const ExistingPlaylistException = require('./exceptions/existing-playlist-exception');
-const ArtistDontExistError = require('./exceptions/ArtistDontExistError');
-
-
 
 class UNQfy {
 
@@ -103,7 +99,7 @@ class UNQfy {
     if (artist !== undefined) {
       return artist
     } else {
-      throw new ArtistDontExistError()
+      throw new NonExistentObjectException("Artist", artistName);
     }
   }
 
@@ -272,19 +268,15 @@ class UNQfy {
     */
     console.log("create", name, genresToInclude, maxDuration)
     let nuevoPlaylist = new PlayList(name, genresToInclude, maxDuration);
-    //this.playlist.forEach(playli => console.log(playli.getName()))
-    if (this.playlist.some(playli => playli.getName().toLowerCase() == name.toLowerCase())) {
-      throw new ExistingPlaylistException(nuevoPlaylist);
-    }
-    else {
-      //cargo los tracks en la playlist
-      let temas = this.getTracksMatchingGenres(genresToInclude);
-      nuevoPlaylist.addTracksToPlaylist(temas);
-      this.playlist.push(nuevoPlaylist);
-      console.log("Creación con éxito, Playlist:" + name);
-      return nuevoPlaylist;
-    }
+    this.checkExistentObject(this.playlist, nuevoPlaylist);
+    //cargo los tracks en la playlist
+    let temas = this.getTracksMatchingGenres(genresToInclude);
+    nuevoPlaylist.addTracksToPlaylist(temas);
+    this.playlist.push(nuevoPlaylist);
+    console.log("Creación con éxito, Playlist:" + name);
+    return nuevoPlaylist;
   }
+
 
   save(filename) {
     const serializedData = picklify.picklify(this);

@@ -78,19 +78,11 @@ class ValidateEntry {
             this.itsAValidCommand(command);
             this.executeCommand(command, args);
         } catch (error) {
-            if (error instanceof NotAValidCommandException) {
-                console.log(error.name, error.message)
-            }
-            else if (error instanceof WrongArgumentsException) {
-                console.log(error.name, error.message)
-            }
-            else if (error instanceof NotANumberException) {
-                console.log(error.name, error.message)
-            }
-            else if (error instanceof ExistingObjectException) {
-                console.log(error.name, error.message)
-            }
-            else if (error instanceof NonExistentObjectException) {
+            if (error instanceof NotAValidCommandException
+                || error instanceof WrongArgumentsException
+                || error instanceof NotANumberException
+                || error instanceof ExistingObjectException
+                || error instanceof NonExistentObjectException) {
                 console.log(error.name, error.message)
             } else {
                 throw error
