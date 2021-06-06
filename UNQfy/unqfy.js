@@ -266,15 +266,19 @@ class UNQfy {
         * un metodo duration() que retorne la duración de la playlist.
         * un metodo hasTrack(aTrack) que retorna true si aTrack se encuentra en la playlist.
     */
-    console.log("create", name, genresToInclude, maxDuration)
-    let nuevoPlaylist = new PlayList(name, genresToInclude, maxDuration);
-    this.checkExistentObject(this.playlist, nuevoPlaylist);
-    //cargo los tracks en la playlist
-    let temas = this.getTracksMatchingGenres(genresToInclude);
-    nuevoPlaylist.addTracksToPlaylist(temas);
-    this.playlist.push(nuevoPlaylist);
-    console.log("Creación con éxito, Playlist:" + name);
-    return nuevoPlaylist;
+      let tracks = this.getAllTracks();
+      let tracksToPlaylist = tracks.filter(track => track.trackInclude(genresToInclude))
+      let nuevoPlaylist = new PlayList(name, genresToInclude, maxDuration);
+      if(this.playlist.some(playli => playli.name.toLowerCase() == name.toLowerCase())){
+        throw new ExistingPlaylistException(nuevoPlaylist);
+      }
+      else{
+        //cargo los tracks en la playlist
+        nuevoPlaylist.addTracksToPlaylist(tracksToPlaylist);
+        this.playlist.push(nuevoPlaylist);
+        console.log("Creación con éxito, Playlist:" + name);
+        return nuevoPlaylist;
+      }
   }
 
 

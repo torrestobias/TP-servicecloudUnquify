@@ -23,6 +23,9 @@ class Track {
        return this.duration;
    }
 
+   trackInclude(genreNames){
+    return genreNames.some(genre => this.genres.indexOf(genre) >= 0)
+}
    
 }
 module.exports = Track;
