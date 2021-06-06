@@ -22,8 +22,19 @@ class User {
     }
 
     getListenedTrackNoRepeat(){
-        const listenList = this.listenedTrack
+        const listenList = this.listenedTrack.filter((item, index) => {
+            return this.listenedTrack.indexOf(item) === index
+        })
     }
     
+    getTimesHeard(aTrack){
+        let counter = 0;
+        for (i = 0 ; i < this.listenedTrack.length ; i++){
+            if( aTrack.id === this.listenTrack[i].id){
+                counter++;
+            }
+        }
+        return counter;
+    }
 
 }
