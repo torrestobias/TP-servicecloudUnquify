@@ -266,16 +266,34 @@ class UNQfy {
         * un metodo duration() que retorne la duración de la playlist.
         * un metodo hasTrack(aTrack) que retorna true si aTrack se encuentra en la playlist.
     */
-    console.log("create", name, genresToInclude, maxDuration)
-    let nuevoPlaylist = new PlayList(name, genresToInclude, maxDuration);
-    this.checkExistentObject(this.playlist, nuevoPlaylist);
-    //cargo los tracks en la playlist
-    let temas = this.getTracksMatchingGenres(genresToInclude);
-    nuevoPlaylist.addTracksToPlaylist(temas);
-    this.playlist.push(nuevoPlaylist);
-    console.log("Creación con éxito, Playlist:" + name);
-    return nuevoPlaylist;
+      let tracks = this.getAllTracks();
+      let tracksToPlaylist = tracks.filter(track => track.trackInclude(genresToInclude))
+      let nuevoPlaylist = new PlayList(name, genresToInclude, maxDuration);
+      if(this.playlist.some(playli => playli.name.toLowerCase() == name.toLowerCase())){
+        throw new ExistingPlaylistException(nuevoPlaylist);
+      }
+      else{
+        //cargo los tracks en la playlist
+        nuevoPlaylist.addTracksToPlaylist(tracksToPlaylist);
+        this.playlist.push(nuevoPlaylist);
+        console.log("Creación con éxito, Playlist:" + name);
+        return nuevoPlaylist;
+      }
   }
+
+
+  /*Método que consulta los álbumes de dicho artista en Spotify,
+   en base a los datos recibidos instancia los álbumes correspondientes y los asocia al artista. */
+  populateAlbumsForArtist(artistName){
+    const rp = require('request-promise');
+    const options = {
+      url: 'https://api.spotify.com/v1/artists/1vCWHaC5f2uS3yhpwWbIA6/albums',
+      headers: { Authorization: 'Bearer ' + 'BQD3M-UfYEoJ0w2GnNiGgzjW57LbrsCLT9jgifz2btf4dyynObnGLvDg5Dm7y5AGtwZDqMjwUVoqsF0-gdZhZlDIYuvmqJ3spLvwZRatQ37v2q9bhcFHvL2vI-P2sm8FN91oM7vL9p3WsXwSj4jqF0q6RgrLuqvOysQbAzVXf2UdvqD2RA' },
+      json: true,
+};
+  rp.get(options).then((response) => console.log(response)
+  
+  )}
 
 
   save(filename) {
