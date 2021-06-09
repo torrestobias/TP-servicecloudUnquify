@@ -1,7 +1,8 @@
 class User {
-    constructor(id, nickname){
+    constructor(id, nickname, name){
         this.id = id;
         this.nickname = nickname;
+        this.name = name;
         this.listenedTrack = [];
     }
 
@@ -9,7 +10,7 @@ class User {
         return this.id;
     }
 
-    getNickname(){
+    getName(){
         return this.nickname;
     }
 
@@ -28,13 +29,9 @@ class User {
     }
     
     getTimesHeard(aTrack){
-        let counter = 0;
-        for (i = 0 ; i < this.listenedTrack.length ; i++){
-            if( aTrack.id === this.listenTrack[i].id){
-                counter++;
-            }
-        }
-        return counter;
+        const timesHeard = this.listenedTrack.filter( track => track.id === aTrack.id );
+        return timesHeard;
     }
-
 }
+
+module.exports = User;
