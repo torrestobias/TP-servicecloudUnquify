@@ -104,4 +104,4 @@ dist
 .tern-port
 
 # Json DataBase
-.data.json
+*data.json

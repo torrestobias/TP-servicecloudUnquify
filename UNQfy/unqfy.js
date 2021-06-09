@@ -7,10 +7,6 @@ const PlayList = require('./playlist');
 const User = require('./user');
 const ExistingObjectException = require('./exceptions/existing-object');
 const NonExistentObjectException = require('./exceptions/non-existent-object');
-const ExistingPlaylistException = require('./exceptions/existing-playlist-exception');
-const ArtistDontExistError = require('./exceptions/ArtistDontExistError');
-
-
 
 class UNQfy {
 
@@ -119,7 +115,7 @@ class UNQfy {
     if (artist !== undefined) {
       return artist
     } else {
-      throw new ArtistDontExistError()
+      throw new NonExistentObjectException("Artist", artistName);
     }
   }
 
@@ -286,22 +282,22 @@ class UNQfy {
         * un metodo duration() que retorne la duración de la playlist.
         * un metodo hasTrack(aTrack) que retorna true si aTrack se encuentra en la playlist.
     */
-    console.log("create", name, genresToInclude, maxDuration)
-    let nuevoPlaylist = new PlayList(name, genresToInclude, maxDuration);
-    //this.playlist.forEach(playli => console.log(playli.getName()))
-    if (this.playlist.some(playli => playli.getName().toLowerCase() == name.toLowerCase())) {
-      throw new ExistingPlaylistException(nuevoPlaylist);
-    }
-    else {
-      //cargo los tracks en la playlist
-      let temas = this.getTracksMatchingGenres(genresToInclude);
-      nuevoPlaylist.addTracksToPlaylist(temas);
-      this.playlist.push(nuevoPlaylist);
-      console.log("Creación con éxito, Playlist:" + name);
-      return nuevoPlaylist;
-    }
+      let tracks = this.getAllTracks();
+      let tracksToPlaylist = tracks.filter(track => track.trackInclude(genresToInclude))
+      let nuevoPlaylist = new PlayList(name, genresToInclude, maxDuration);
+      if(this.playlist.some(playli => playli.name.toLowerCase() == name.toLowerCase())){
+        throw new ExistingPlaylistException(nuevoPlaylist);
+      }
+      else{
+        //cargo los tracks en la playlist
+        nuevoPlaylist.addTracksToPlaylist(tracksToPlaylist);
+        this.playlist.push(nuevoPlaylist);
+        console.log("Creación con éxito, Playlist:" + name);
+        return nuevoPlaylist;
+      }
   }
 
+<<<<<<< HEAD
   getAlbumsForArtist(artistName){
 
       const artist = this.getArtistByName(artistName);
@@ -310,6 +306,8 @@ class UNQfy {
 
       return allAlbumsForArtist;
   }
+=======
+>>>>>>> 3cbf58145158b996683b40d32d23c7d78c1c43af
 
   save(filename) {
     const serializedData = picklify.picklify(this);
