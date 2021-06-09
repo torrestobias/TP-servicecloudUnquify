@@ -148,8 +148,8 @@ class ValidateEntry {
         return unqfy.searchTracksByGenre(this.validArgumentsCheck(["genre"], objs).genre);
     }
 
-    populateAlbumsForArtist(unqfy, objs){
-        return unqfy.populateAlbumsForArtist(this.validArgumentsCheck(["name"],objs).name);
+    populateAlbumsForArtistsHandler(unqfy, artistName){
+        return unqfy.populateAlbumsForArtist(this.validArgumentsCheck(["name"], artistName));
     }
 
 
@@ -172,7 +172,7 @@ class ValidateEntry {
         searchByName: (unqfy, objs) => this.searchByNameHandler(unqfy, objs),
         searchTracksByArtist: (unqfy, objs) => this.searchTracksByArtistHandler(unqfy, objs),
         searchTracksByGenre: (unqfy, objs) => this.searchTracksByGenreHandler(unqfy, objs),
-        populateAlbumsForArtist: (unqfy, objs) => this.populateAlbumsForArtist(artistName)
+        populateAlbumsForArtists: (unqfy, artistName) => this.populateAlbumsForArtistsHandler(unqfy,artistName)
     }
 
     // Arma el dataObject, 

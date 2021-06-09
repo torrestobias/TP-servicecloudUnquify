@@ -285,13 +285,14 @@ class UNQfy {
   /*Método que consulta los álbumes de dicho artista en Spotify,
    en base a los datos recibidos instancia los álbumes correspondientes y los asocia al artista. */
   populateAlbumsForArtist(artistName){
+    let artista = artistName;
     const rp = require('request-promise');
     const options = {
-      url: 'https://api.spotify.com/v1/artists/1vCWHaC5f2uS3yhpwWbIA6/albums',
-      headers: { Authorization: 'Bearer ' + 'BQD3M-UfYEoJ0w2GnNiGgzjW57LbrsCLT9jgifz2btf4dyynObnGLvDg5Dm7y5AGtwZDqMjwUVoqsF0-gdZhZlDIYuvmqJ3spLvwZRatQ37v2q9bhcFHvL2vI-P2sm8FN91oM7vL9p3WsXwSj4jqF0q6RgrLuqvOysQbAzVXf2UdvqD2RA' },
+      url: 'https://api.spotify.com/v1/artists/1vCWHaC5f2uS3yhpwWbIA6/albums?limit=2',
+      headers: { Authorization: 'Bearer ' + 'BQD8cEYdc-Nh2r5vGkZejQYPH2dz8eSJCdrbymzpTFnnOezlmRvu4ek_qvLYlJs2t_oPC6_Hf5l-3uTpw_8ZMpfpuCFr8pwEFHwbfAVFMUkcJOiZR-fgT71x6XEeURh__ja9BSb_F74bi0kFIZepqGLmOxSAflPbWuOFW3dF8ojskK7xCA' },
       json: true,
 };
-  rp.get(options).then((response) => console.log(response)
+  rp.get(options).then((response) => console.log(response.items)
   
   )}
 
