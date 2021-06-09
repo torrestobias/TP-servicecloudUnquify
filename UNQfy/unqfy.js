@@ -297,7 +297,6 @@ class UNQfy {
       }
   }
 
-<<<<<<< HEAD
   getAlbumsForArtist(artistName){
 
       const artist = this.getArtistByName(artistName);
@@ -306,8 +305,6 @@ class UNQfy {
 
       return allAlbumsForArtist;
   }
-=======
->>>>>>> 3cbf58145158b996683b40d32d23c7d78c1c43af
 
   save(filename) {
     const serializedData = picklify.picklify(this);
