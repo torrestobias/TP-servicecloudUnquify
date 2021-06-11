@@ -59,13 +59,15 @@
       "id": 0,
       "name": "Ur",
       "genres": "__00015__",
-      "duration": 345
+      "duration": 345,
+      "lyrics": null
     },
     "__00013__": {
       "id": 1,
       "name": "Can't not",
       "genres": "__00016__",
-      "duration": 345
+      "duration": 345,
+      "lyrics": null
     },
     "__00014__": {
       "0": "__00012__",
@@ -84,7 +86,8 @@
       "id": 2,
       "name": "Just",
       "genres": "__00018__",
-      "duration": 345
+      "duration": 345,
+      "lyrics": null
     },
     "__00018__": {
       "0": "rock",

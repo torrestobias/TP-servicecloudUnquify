@@ -172,7 +172,8 @@ class ValidateEntry {
         searchByName: (unqfy, objs) => this.searchByNameHandler(unqfy, objs),
         searchTracksByArtist: (unqfy, objs) => this.searchTracksByArtistHandler(unqfy, objs),
         searchTracksByGenre: (unqfy, objs) => this.searchTracksByGenreHandler(unqfy, objs),
-        populateAlbumsForArtists: (unqfy, artistName) => this.populateAlbumsForArtistsHandler(unqfy,artistName)
+        populateAlbumsForArtists: (unqfy, artistName) => this.populateAlbumsForArtistsHandler(unqfy,artistName),
+        getLyricsTrack: (unqfy, objs) => this.getByIdHandler((id) => unqfy.getLyrics(id), objs)
     }
 
     // Arma el dataObject, 

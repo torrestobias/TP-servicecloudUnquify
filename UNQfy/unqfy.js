@@ -6,6 +6,7 @@ const Track = require('./track');
 const PlayList = require('./playlist');
 const ExistingObjectException = require('./exceptions/existing-object');
 const NonExistentObjectException = require('./exceptions/non-existent-object');
+const Apimusicxmatch = require("./apimusicxmatch/apimusicxmatch");
 
 class UNQfy {
 
@@ -82,6 +83,22 @@ class UNQfy {
     let trackEncontrado = this.artists.flatMap(artist => artist.getAlbums()).map(album => album.getTrackById(id)).find(track => track !== undefined);
     this.checkNonExistentObject("Track", id, trackEncontrado)
     return trackEncontrado;
+  }
+
+  getLyrics(id) {
+    let track = this.getTrackById(id);
+    return this.getTrackLyrics(track);
+  }
+
+  getTrackLyrics(track) {
+    if (track.hasLyrics()) {
+      console.log('true');
+    } else {
+      console.log('false')
+      new Apimusicxmatch().getLyricByTitle(track, this)
+    }
+    console.log(track.getLyrics())
+    return track.getLyrics();
   }
 
   checkNonExistentObject(objectName, id, searchingOject) {

@@ -5,24 +5,35 @@ class Track {
         this.name = name;
         this.genres = genres;
         this.duration = duration;
+        this.lyrics = null;
     };
 
-   getId(){
-       return this.id;
-   } 
+    getId() {
+        return this.id;
+    }
 
-   getName(){
-       return this.name;
-   }
+    getName() {
+        return this.name;
+    }
 
-   getGenres(){
-       return this.genres;
-   }
+    getGenres() {
+        return this.genres;
+    }
 
-   getDuration(){
-       return this.duration;
-   }
+    getDuration() {
+        return this.duration;
+    }
 
-   
+    setLyrics(lyrics) {
+        this.lyrics = lyrics;
+    }
+
+    hasLyrics() {
+        return (this.lyrics !== null)
+    }
+
+    getLyrics() {
+        return this.lyrics
+    }
 }
 module.exports = Track;
