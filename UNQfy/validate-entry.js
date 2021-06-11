@@ -148,6 +148,9 @@ class ValidateEntry {
         return unqfy.searchTracksByGenre(this.validArgumentsCheck(["genre"], objs).genre);
     }
 
+    populateAlbumsForArtistsHandler(unqfy, objs){
+        return unqfy.populateAlbumsForArtist(this.validArgumentsCheck(["name"], objs).name);
+    }
 
 
     // Objeto que relaciona cada comando con su handler 
@@ -168,7 +171,8 @@ class ValidateEntry {
         deletePlaylist: (unqfy, playlistData) => this.deletePlaylistHandler(unqfy, playlistData),
         searchByName: (unqfy, objs) => this.searchByNameHandler(unqfy, objs),
         searchTracksByArtist: (unqfy, objs) => this.searchTracksByArtistHandler(unqfy, objs),
-        searchTracksByGenre: (unqfy, objs) => this.searchTracksByGenreHandler(unqfy, objs)
+        searchTracksByGenre: (unqfy, objs) => this.searchTracksByGenreHandler(unqfy, objs),
+        populateAlbumsForArtist: (unqfy, artistName) => this.populateAlbumsForArtistsHandler(unqfy,artistName)
     }
 
     // Arma el dataObject, 
@@ -185,7 +189,7 @@ class ValidateEntry {
     executeCommand(command, args) {
         const unqfy = this.getUNQfy();
         this.functionList[command](unqfy, this.makeDataObject(args));
-        this.saveUNQfy(unqfy);
+        //this.saveUNQfy(unqfy);
     }
 }
 
