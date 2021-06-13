@@ -28,7 +28,18 @@ class Artist {
     }
 
     addNewAlbum(album) {
-        this.albums.push(album);
+        if(this.albums.length<1){
+           this.albums.push(album);
+           console.log("✓ Se crea el album "+album.name)
+        }
+        else{
+            if(!this.albums.some(alb => alb.name.toLowerCase() === album.name.toLowerCase())) {
+                this.albums.push(album);
+                console.log("✓ Se crea el album "+album.name);
+            }
+            else{console.log("X El album "+album.name+" ya está creado.")}
+        }
+
     }
 
     delAlbum(id) {
@@ -47,6 +58,11 @@ class Artist {
         const tracks = this.albums.flatMap(album => album.tracks);
         return tracks;
     }
+    
+    thisAlbumIsCreated(album){
+        return (this.albums.includes(alb => alb.name === album.name ))
+      }
+
 }
 
 module.exports = Artist;

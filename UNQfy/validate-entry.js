@@ -187,9 +187,9 @@ class ValidateEntry {
 
     // Carga una instancia de UNQfy, llama la funcion con el dataObject y guarda la instancia de UNQfy.
     executeCommand(command, args) {
-        const unqfy = this.getUNQfy();
-        this.functionList[command](unqfy, this.makeDataObject(args));
-        //this.saveUNQfy(unqfy);
+        const unqfy = this.getUNQfy(); 
+        this.functionList[command](unqfy, this.makeDataObject(args)); 
+        //this.saveUNQfy(unqfy,'data.json'); 
     }
 }
 
