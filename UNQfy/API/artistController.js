@@ -8,12 +8,15 @@ const router = Router();
 router.use(express.json());
 
 
-app.use('/artists', router);
+app.use('/api', router);
 
-router.route('/:artistId').get((req,res) => {
+/*
+* GET : devuelve el artista con id dado.
+*/
+
+router.route('/artists/:artistId').get((req,res) => {
     const unqfy = getUNQfy();
-    //res.send('algo');
-
+   
     const artistId = parseInt(req.params.artistId);
     const artist = unqfy.getArtistById(artistId);
     res.status(201);

@@ -7,20 +7,22 @@ const NotAValidCommandException = require('./exceptions/not-a-valid-command')
 const WrongArgumentsException = require('./exceptions/wrong-arguments');
 const NonExistentObjectException = require('./exceptions/non-existent-object');
 
+function  // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
+getUNQfy(filename = 'data.json') {
+    let unqfy = new unqmod.UNQfy();
+    if (fs.existsSync(filename)) {
+        unqfy = unqmod.UNQfy.load(filename);
+    }
+    return unqfy;
+}
+
+
 class ValidateEntry {
 
     constructor() {
     };
 
-    // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
-    getUNQfy(filename = 'data.json') {
-        let unqfy = new unqmod.UNQfy();
-        if (fs.existsSync(filename)) {
-            unqfy = unqmod.UNQfy.load(filename);
-        }
-        return unqfy;
-    }
-
+   
     // Guarda la instancia de UNQfy.
     saveUNQfy(unqfy, filename = 'data.json') {
         unqfy.save(filename);
@@ -193,4 +195,4 @@ class ValidateEntry {
     }
 }
 
-module.exports = ValidateEntry;
+module.exports = { ValidateEntry, getUNQfy };
