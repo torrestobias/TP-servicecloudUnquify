@@ -27,6 +27,7 @@ class UNQfy {
     if(!this.checkExistentObject(this.artists, nuevoArtista)){
       this.incrementIdArtist();
       this.addNewObject(artist => this.artists.push(artist), nuevoArtista)
+      this.save('data.json');
     }
     else{
       console.log("Ya existe el usuario "+artistData.name)
@@ -39,6 +40,7 @@ class UNQfy {
     if(!this.checkExistentObject(this.users, newUser)){
       this.incrementIdUser();
       this.addNewObject(user => this.users.push(user), newUser)
+      this.save('data.json');
     }
     else{
       console.log("Ya existe el usuario "+userData.name)
@@ -52,6 +54,7 @@ class UNQfy {
     if(!this.checkExistentObject(artist.getAlbums(), nuevoAlbum)){
       this.incrementIdAlbum();
       this.addNewObject(album => artist.addNewAlbum(album), nuevoAlbum)
+      this.save('data.json');
     }
     else{
       console.log("Ya existe el album "+albumData.name)
@@ -67,6 +70,7 @@ class UNQfy {
     if(!this.checkExistentObject(album.getTracks(), nuevoTrack)){
       this.incrementIdTrack();
       this.addNewObject(track => album.addNewTrack(track), nuevoTrack)
+      this.save('data.json');
     }
     else{
       console.log("Ya existe el track "+trackData.name)
@@ -322,6 +326,7 @@ class UNQfy {
         //cargo los tracks en la playlist
         nuevoPlaylist.addTracksToPlaylist(tracksToPlaylist);
         this.playlist.push(nuevoPlaylist);
+        this.save('data.json');
         console.log("Creación con éxito, Playlist:" + name);
         return nuevoPlaylist;
       }

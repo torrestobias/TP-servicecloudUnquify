@@ -1,14 +1,7 @@
 {
-<<<<<<< HEAD
   "access_token": "BQBFKExS3781nKo48gsyoxYO5TovKxdpexAWtcw5lQ2Z19NGCIQ04ItAiCAn83XR1g-gmk1BfY7KZlXpCT974_64Lqy6Q6c1JPvLl6BwgGaRrfoSf16YY0TdTADwYuKfn2cBNtDvhJhhEi32pa0fdgAt4VXdbF931Kv5RFnMXrVlS3vZiw",
   "token_type": "Bearer",
   "expires_in": 3600,
   "refresh_token": "AQA4-31Q9QIe18Usu4biIZ-nCpf6-c8kXY1cGJg_wXEa9mvKqqln1WbFgv13YXG1XKRBrhESVQWxpEEDWlm4sTtA7539uRQExfhE6_ga1c2-zsJswWXDBUMcbDR0ZKqY-kg",
-=======
-  "access_token": "BQC2pQzM1xEDTuKlOi-w5VjQQ6rAauoIzERtSMNGsaemS8uOVJ50QWQm_w2k_7FR-88AO6-q3xs6SPFA96aX1ztcDQ3lugux0k38Z2-UM8wubcPZfDn44-Hk6VylbA8j41dfO4yDXCylLj5d99aNpxfI7TBxu-fe_Rz8RsKGmSd7jQXegQ",
-  "token_type": "Bearer",
-  "expires_in": 3600,
-  "refresh_token": "AQBoztL8ReROWDadN1WJ_EiS2w7hSnpo90uM2JYV3WxEKyGqLsb4tLuPf6aDL_ObxGyW2Xb2t7R_sg2at5wPUeRSOinb8Ba9D2cjI2SqmKAwk8nhfyQ_zWvLTFszQBdkm3Q",
->>>>>>> 0db51cb70dd4475f910386935235d903b341963a
   "scope": "user-read-email user-read-private"
 }
