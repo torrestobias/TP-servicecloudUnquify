@@ -59,6 +59,10 @@ class Album {
     updateTrack() {
         //TODO
     }
+
+    updateYear(year){
+        this.year = year;
+    }
 }
 
 module.exports = Album;

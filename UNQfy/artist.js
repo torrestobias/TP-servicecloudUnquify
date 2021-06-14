@@ -60,8 +60,11 @@ class Artist {
     }
     
     thisAlbumIsCreated(album){
-        return (this.albums.includes(alb => alb.name === album.name ))
+        let rta = (this.albums.some(alb => alb.name === album.name ))
+        return rta;
       }
+
+
 
 }
 

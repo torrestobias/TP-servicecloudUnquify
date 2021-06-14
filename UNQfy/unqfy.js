@@ -20,6 +20,7 @@ class UNQfy {
     this.idAlbum = 0;
     this.idTrack = 0;
     this.idUser = 0;
+    this.idPlaylist = 0;
   }
 
   addArtist(artistData) {
@@ -123,6 +124,13 @@ class UNQfy {
     return trackEncontrado;
   }
 
+
+  getPlaylistById(id) {
+    let playListEncontrado = this.playlist.find(playlist => playlist.id === id);
+    this.checkNonExistentObject("Playlist",id,playListEncontrado);
+    return playListEncontrado;
+  }
+
   checkNonExistentObject(objectName, id, searchingOject) {
     console.log(`Buscando ${objectName} número: ${id}`);
     if (searchingOject === undefined) {
@@ -142,9 +150,7 @@ class UNQfy {
     }
   }
 
-  getPlaylistById(id) {
-
-  }
+  
 
   // genres: array de generos(strings)
   // retorna: los tracks que contenga alguno de los generos en el parametro genres
@@ -226,6 +232,7 @@ class UNQfy {
     if (artist !== undefined && album !== undefined && track !== undefined) {
       album.delTrack(track.getId());
       this.playlist.forEach(playlist => playlist.removeTracks([track]))
+      this.idTrack-=1;
       this.save('data.json')
       console.log("Se ha eliminado el track " + track.name + " del album " + album.name + " del artista " + artist.name + " correctamente")
     } else {
@@ -239,6 +246,7 @@ class UNQfy {
       let tracksArtist = this.getTracksMatchingArtist(artistName.artistName)
       this.artists = this.artists.filter(art => art.name !== artist.name)
       this.playlist.forEach(playlist => playlist.removeTracks(tracksArtist))
+      this.idArtist-=1;
       this.save('data.json')
       console.log("Se ha eliminado el artista " + artist.name + " correctamente")
     } else {
@@ -253,6 +261,7 @@ class UNQfy {
       let tracksAlbum = album.getTracks();
       artist.delAlbumByName(albumData.name);
       this.playlist.forEach(playlist => playlist.removeTracks(tracksAlbum))
+      this.idAlbum-=1;
       this.save('data.json')
       console.log("Se ha eliminado el album " + album.name + " del artista " + artist.name + " correctamente")
     } else {
@@ -264,6 +273,7 @@ class UNQfy {
     let playlist = this.playlist.find(playlist => playlist.getName() === playlistData.name);
     if (playlist !== undefined) {
       this.playlist = this.playlist.filter(pl => pl.getName() !== playlist.name)
+      this.idPlaylist-=1;
       this.save('data.json')
       console.log("Se ha eliminado la playlist " + playlist.name + " correctamente")
     } else {
@@ -305,6 +315,20 @@ class UNQfy {
   }
 
 
+  searchArtistByAlbumId(albumId){
+    let album = this.getAlbumById(albumId);
+    let artista = this.artists.filter(elem => elem.thisAlbumIsCreated(album))
+    if(artista.length>0){
+      return artista[0];
+    }
+    else{
+      return [];
+    }
+  }
+
+  
+
+
   // name: nombre de la playlist
   // genresToInclude: array de generos
   // maxDuration: duración en segundos
@@ -318,7 +342,7 @@ class UNQfy {
     */
       let tracks = this.getAllTracks();
       let tracksToPlaylist = tracks.filter(track => track.trackInclude(genresToInclude))
-      let nuevoPlaylist = new PlayList(name, genresToInclude, maxDuration);
+      let nuevoPlaylist = new PlayList(this.idPlaylist,name, genresToInclude, maxDuration);
       if(this.playlist.some(playli => playli.name.toLowerCase() == name.toLowerCase())){
         throw new ExistingPlaylistException(nuevoPlaylist);
       }
@@ -326,13 +350,17 @@ class UNQfy {
         //cargo los tracks en la playlist
         nuevoPlaylist.addTracksToPlaylist(tracksToPlaylist);
         this.playlist.push(nuevoPlaylist);
+        this.idPlaylist+=1;
         this.save('data.json');
         console.log("Creación con éxito, Playlist:" + name);
         return nuevoPlaylist;
       }
   }
 
-  
+  updateYearOfAlbum(album, year){
+    album.updateYear(year);
+    this.save('data.json');
+  }
 
   getAlbumsForArtist(artistName){
 
@@ -380,12 +408,11 @@ class UNQfy {
       this.incrementIdAlbum();
     })
       this.save('data.json');
-    
     })
-    
-
-  
    }
+
+
+
 
 
 

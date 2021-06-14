@@ -3,27 +3,93 @@ const { Router } = require('express');
 const express = require('express');
 const unqmod = require('../unqfy');
 const {getUNQfy} = require("../validate-entry");
+const { send } = require('process');
 const app = express();
 const router = express.Router();
 router.use(express.json());
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 
-app.use('/albums', router);
-
-
-/*
-* Post : agregar album a un artista.
-*/
-router.route('/:artistId').get((req,res) => {
-    const unqfy = getUNQfy();
-    //res.send('algo');
-
-    const artistId = parseInt(req.params.artistId);
-    const artist = unqfy.getArtistById(artistId);
-    res.status(201);
-    res.json(artist);
-});
 
 app.listen(8000, ()=>{
-    console.log("El servidor está inicializado en el puerto 3000");
+    console.log("El servidor está inicializado en el puerto 8000");
 })
+
+//app.use('/albums', router);
+
+
+
+const root = '/api/albums';
+
+
+
+// GET : Obtiene el album correspondiente al id del parametro.
+app.get(root+'/:albumId', function (req, res) {
+    try{
+        const unqfy = getUNQfy();
+        const albumId = parseInt(req.params.albumId);
+        const album = unqfy.getAlbumById(albumId);
+        res.status(200)
+        res.send(JSON.stringify(album));
+    }
+    catch{
+            //Levantar error
+        }
+  });
+
+
+
+
+// POST : Agregar un album a un artista.
+app.post(root, function (req, res) {
+    try{
+        let unqfy = getUNQfy();
+        let artistId = req.body.artistId;
+        let name = req.body.name;
+        let year = req.body.year;
+        unqfy.addAlbum(artistId,{'name' : name, 'year' : year});
+        let artist = unqfy.getArtistById(artistId);
+        let album = artist.getAlbumByName(name);
+        res.status(201);
+        res.send(JSON.stringify(album));
+    
+    }
+    catch{
+            //Levantar error
+        }
+  });
+
+// PATCH : Actualizar el año de un album.
+app.patch(root+'/:albumId', function (req, res) {
+    try{
+        let unqfy = getUNQfy();
+        let albumId = parseInt(req.params.albumId);
+        let year = req.body.year;
+        let album = unqfy.getAlbumById(albumId);
+        unqfy.updateYearOfAlbum(album,year);
+        let albumRta = unqfy.getAlbumById(albumId);
+        res.status(200);
+        res.send(JSON.stringify(albumRta));
+    }
+    catch{
+            //Levantar error
+        }
+  });
+
+
+// DELETE : Borra el album correspondiente al id pasado por parametro.
+app.delete(root+'/:albumId', function (req, res) {
+    try{
+        let unqfy = getUNQfy();
+        let albumId = parseInt(req.params.albumId);
+        let album = unqfy.getAlbumById(albumId);
+        let artist = unqfy.searchArtistByAlbumId(albumId);
+        unqfy.deleteAlbum({'artistName' : artist.name, 'name' : album.name});
+        //res.status(204);
+    }
+    catch{
+            //Levantar error
+        }
+  });
