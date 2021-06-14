@@ -54,6 +54,11 @@ class Artist {
         //TODO
     }
 
+    updateArtist(name, country){
+        this.name = name;
+        this.country = country;
+    }
+
     getTrackArtist() {
         const tracks = this.albums.flatMap(album => album.tracks);
         return tracks;

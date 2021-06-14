@@ -392,6 +392,11 @@ class UNQfy {
      })
    }
 
+   updateArtistWithNewData(artist, name, country){
+      artist.updateArtist(name,country);
+      this.save('data.json'); 
+   }
+
    
 
    getAlbumsForArtisSpotify(artistIdSpotify, cred, request,artistName){
