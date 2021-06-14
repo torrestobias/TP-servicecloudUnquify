@@ -37,6 +37,19 @@ app.get(root+'/:id', function (req, res) {
   });
 
 
+// GET : Obtener una playlist por nombre.
+app.get(root, function (req, res) {
+    try{
+        const unqfy = getUNQfy();
+        const name = req.query.name;
+        const playlist = unqfy.searchByName(name);
+        res.status(200)
+        res.send(JSON.stringify(playlist.playlists));
+    }
+    catch{
+            //Levantar error
+        }
+  });
 
 
 // POST : Crea una playlist con máxima duración y tracks pertenecientes a alguno de los géneros.
@@ -49,13 +62,15 @@ app.post(root, function (req, res) {
         let genres = req.body.genres;
         unqfy.createPlaylist(name, genres, maxDuration);
         let playlist = unqfy.searchPlaylistByName(name);
-        res.status(201);
-        res.send({
-            "id" : playlist.id,
-            "name" : playlist.name,
-            "duration" : playlist.maxDuration,
-            "tracks" : playlist.tracks
-        });
+        let hola = playlist[0];
+        res.json(
+            {
+                "id" : hola.id,
+                "name" : hola.name,
+                "duration" : hola.maxDuration,
+                "tracks" : hola.tracks
+            }
+        );
     }
     catch{
             //Levantar error

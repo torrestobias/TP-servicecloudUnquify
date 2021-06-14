@@ -2,12 +2,13 @@ const fs = require('fs');
 const { Router } = require('express');
 const express = require('express');
 const unqmod = require('../unqfy');
-const {getUNQfy} = require("../validate-entry");
+const ValidateEntry = require("../validate-entry");
 const { send } = require('process');
 const app = express();
 const router = express.Router();
 router.use(express.json());
 const bodyParser = require('body-parser');
+const unqfy = require('../unqfy');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -23,16 +24,16 @@ app.listen(8000, ()=>{
 
 const root = '/api/albums';
 
-
+const validate = new ValidateEntry();
 
 // GET : Obtiene el album correspondiente al id del parametro.
 app.get(root+'/:albumId', function (req, res) {
     try{
-        const unqfy = getUNQfy();
+        const unqfy = validate.getUNQfy();
         const albumId = parseInt(req.params.albumId);
         const album = unqfy.getAlbumById(albumId);
         res.status(200)
-        res.send(JSON.stringify(album));
+        res.json(album);
     }
     catch{
             //Levantar error
@@ -40,12 +41,25 @@ app.get(root+'/:albumId', function (req, res) {
   });
 
 
+  // GET : Obtiene los albums correspondientes al nombre pasado por parametro.
+app.get(root, function (req, res) {
+    try{
+        const unqfy = validate.getUNQfy();
+        const name = req.body.name;
+        const rta = unqfy.searchByName(name)
+        res.status(200)
+        res.json(rta.albums);
+    }
+    catch{
+            //Levantar error
+        }
+  });
 
 
 // POST : Agregar un album a un artista.
 app.post(root, function (req, res) {
     try{
-        let unqfy = getUNQfy();
+        let unqfy = validate.getUNQfy();
         let artistId = req.body.artistId;
         let name = req.body.name;
         let year = req.body.year;
@@ -64,7 +78,7 @@ app.post(root, function (req, res) {
 // PATCH : Actualizar el año de un album.
 app.patch(root+'/:albumId', function (req, res) {
     try{
-        let unqfy = getUNQfy();
+        let unqfy = validate.getUNQfy();
         let albumId = parseInt(req.params.albumId);
         let year = req.body.year;
         let album = unqfy.getAlbumById(albumId);
@@ -82,7 +96,7 @@ app.patch(root+'/:albumId', function (req, res) {
 // DELETE : Borra el album correspondiente al id pasado por parametro.
 app.delete(root+'/:albumId', function (req, res) {
     try{
-        let unqfy = getUNQfy();
+        let unqfy = validate.getUNQfy();
         let albumId = parseInt(req.params.albumId);
         let album = unqfy.getAlbumById(albumId);
         let artist = unqfy.searchArtistByAlbumId(albumId);

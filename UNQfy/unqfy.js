@@ -276,9 +276,9 @@ class UNQfy {
       this.idPlaylist-=1;
       this.save('data.json')
       console.log("Se ha eliminado la playlist " + playlist.name + " correctamente")
-    } else {
-      throw Error("No se pudo eliminar a playlist " + playlistData.name + " ya que no existe")
-    }
+    // } else {
+    //   throw Error("No se pudo eliminar a playlist " + playlistData.name + " ya que no existe")
+  }
   };
 
   // artistName: nombre de artista(string)
