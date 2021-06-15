@@ -35,5 +35,9 @@ class Track {
     getLyrics() {
         return this.lyrics
     }
+   trackInclude(genreNames){
+    return genreNames.some(genre => this.genres.indexOf(genre) >= 0)
+}
+   
 }
 module.exports = Track;

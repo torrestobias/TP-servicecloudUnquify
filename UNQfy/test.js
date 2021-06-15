@@ -9,6 +9,11 @@ function createAndAddArtist(unqfy, artistName, country) {
   return artist;
 }
 
+function createAndAddUser(unqfy, userName, userNickname) {
+  const user = unqfy.addUser({ name: userName, userNickname});
+  return user;
+}
+
 function createAndAddAlbum(unqfy, artistId, albumName, albumYear) {
   return unqfy.addAlbum(artistId, { name: albumName, year: albumYear });
 }
@@ -16,7 +21,6 @@ function createAndAddAlbum(unqfy, artistId, albumName, albumYear) {
 function createAndAddTrack(unqfy, albumId, trackName, trackDuraction, trackGenres) {
   return unqfy.addTrack(albumId, { name: trackName, duration: trackDuraction, genres: trackGenres });
 }
-
 
 describe('Add, remove and filter data', () => {
   let unqfy = null;
@@ -115,6 +119,8 @@ describe('Add, remove and filter data', () => {
     assert.isTrue(matchingTracks.includes(t3));
   });
 });
+
+
 
 describe('Playlist Creation and properties', () => {
   let unqfy = null;

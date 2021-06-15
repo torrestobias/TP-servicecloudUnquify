@@ -5,6 +5,7 @@ class PlayList{
         this.genresToInclude = genresToInclude;
         this.maxDuration = maxDuration;
         this.tracks = [];
+        this.actualDuration = 0;
     }
 
 
@@ -15,12 +16,14 @@ class PlayList{
     duration() {return this.maxDuration};
 
     hasTrack(aTrack){
-        return (this.tracks.some(tema => tema.getName().toLowerCase() == aTrack.getName().toLowerCase()))
+        //return (this.tracks.some(tema => tema.getName().toLowerCase() == aTrack.getName().toLowerCase()))
+        return this.tracks.includes(aTrack)
     }
 
-    addTracksToPlaylist(trackList){ //modificar para que la duracion sea de toda la playlist
-        let list = trackList.filter(track => track.duration < this.maxDuration);
-        this.tracks.push.apply(this.tracks,list);
+    addTracksToPlaylist(trackList){ 
+        for(let track of trackList){
+            this.addTrack(track)
+        }
     }
 
     removeTracks(trackList){
@@ -28,6 +31,18 @@ class PlayList{
         let list = trackList.filter(track => !tracksId.includes(track.getId()));
         this.tracks = list;
     }
+
+    addTrack(track){
+        let duration = this.actualDuration + track.getDuration();
+        if(duration <= this.maxDuration){
+            this.tracks.push(track);
+            this.actualDuration += track.getDuration();
+        }
+    }
+
+
+
+
 }
 
 module.exports = PlayList;

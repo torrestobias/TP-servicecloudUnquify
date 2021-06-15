@@ -4,6 +4,7 @@ const Artist = require('./artist');
 const Album = require('./album');
 const Track = require('./track');
 const PlayList = require('./playlist');
+const User = require('./user');
 const ExistingObjectException = require('./exceptions/existing-object');
 const NonExistentObjectException = require('./exceptions/non-existent-object');
 const Apimusicxmatch = require("./apimusicxmatch/apimusicxmatch");
@@ -13,9 +14,11 @@ class UNQfy {
   constructor() {
     this.artists = [];
     this.playlist = [];
+    this.users = [];
     this.idArtist = 0;
     this.idAlbum = 0;
     this.idTrack = 0;
+    this.idUser = 0;
   }
 
   addArtist(artistData) {
@@ -25,6 +28,15 @@ class UNQfy {
     this.addNewObject(artist => this.artists.push(artist), nuevoArtista)
     return nuevoArtista;
   };
+
+  addUser(userData){
+    
+    let newUser = new User(this.idUser, userData.nickname, userData.name);
+    this.checkExistentObject(this.users, newUser);
+    this.incrementIdUser();
+    this.addNewObject(user => this.users.push(user), newUser)
+    return newUser;
+  }
 
   addAlbum(artistId, albumData) {
     let nuevoAlbum = new Album(this.idAlbum, albumData.name, albumData.year);
@@ -65,6 +77,10 @@ class UNQfy {
 
   incrementIdTrack() {
     this.idTrack += 1;
+  }
+
+  incrementIdUser(){
+    this.idUser += 1;
   }
 
   getArtistById(id) {
@@ -298,6 +314,14 @@ class UNQfy {
       }
   }
 
+  getAlbumsForArtist(artistName){
+
+      const artist = this.getArtistByName(artistName);
+
+      const allAlbumsForArtist = artist.albums.map(album => album.name);
+
+      return allAlbumsForArtist;
+  }
 
   /*Método que consulta los álbumes de dicho artista en Spotify,
    en base a los datos recibidos instancia los álbumes correspondientes y los asocia al artista. */
