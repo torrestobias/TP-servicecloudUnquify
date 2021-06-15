@@ -188,6 +188,19 @@ class UNQfy {
      
   }
 
+  searchTracksByName(name) {
+    let tracks = this.getAllTracks();
+    return tracks.filter(track => track.name.toLowerCase().includes(name.toLowerCase()));
+  }
+
+  searchPlaylistByName(name) {
+    if(this.playlist.length>0){
+      let rta = this.playlist.filter(play => play.name.toLowerCase().includes(name.toLowerCase()));
+      return rta
+    }
+    else{ return [];}
+  }
+
   getAllTracks() {
     let allTracks = this.getAllAlbums().map(album => album.tracks).reduce(function (a, b) {
       return a.concat(b)
@@ -213,14 +226,7 @@ class UNQfy {
     }
   }
 
-  searchTracksByName(name) {
-    let tracks = this.getAllTracks();
-    return tracks.filter(track => track.name.toLowerCase().includes(name.toLowerCase()));
-  }
-
-  searchPlaylistByName(name) {
-    return this.playlist.filter(playlists => playlists.name.includes(name));
-  }
+ 
 
   deleteTrack(trackData) {
     let artist = this.getArtistByName(trackData.artistName);
@@ -270,9 +276,9 @@ class UNQfy {
   }
 
   deletePlaylist(playlistData) {
-    let playlist = this.playlist.find(playlist => playlist.getName() === playlistData.name);
+    let playlist = this.playlist.find(playlist => playlist.getName().toLowerCase() === playlistData.name.toLowerCase());
     if (playlist !== undefined) {
-      this.playlist = this.playlist.filter(pl => pl.getName() !== playlist.name)
+      this.playlist = this.playlist.filter(pl => pl.getName().toLowerCase() !== playlistData.name.toLowerCase())
       this.idPlaylist-=1;
       this.save('data.json')
       console.log("Se ha eliminado la playlist " + playlist.name + " correctamente")
@@ -352,7 +358,7 @@ class UNQfy {
         this.playlist.push(nuevoPlaylist);
         this.idPlaylist+=1;
         this.save('data.json');
-        console.log("Creación con éxito, Playlist:" + name);
+        console.log("Creación con éxito, Playlist: " + name);
         return nuevoPlaylist;
       }
   }

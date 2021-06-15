@@ -41,11 +41,11 @@ app.get(root+'/:albumId', function (req, res) {
   });
 
 
-  // GET : Obtiene los albums correspondientes al nombre pasado por parametro.
+  // GET : Obtiene los albums correspondientes al nombre pasado por query param.
 app.get(root, function (req, res) {
     try{
         const unqfy = validate.getUNQfy();
-        const name = req.body.name;
+        const name = req.query.name;
         const rta = unqfy.searchByName(name)
         res.status(200)
         res.json(rta.albums);
@@ -67,7 +67,7 @@ app.post(root, function (req, res) {
         let artist = unqfy.getArtistById(artistId);
         let album = artist.getAlbumByName(name);
         res.status(201);
-        res.send(JSON.stringify(album));
+        res.json(album);
     
     }
     catch{
@@ -85,7 +85,7 @@ app.patch(root+'/:albumId', function (req, res) {
         unqfy.updateYearOfAlbum(album,year);
         let albumRta = unqfy.getAlbumById(albumId);
         res.status(200);
-        res.send(JSON.stringify(albumRta));
+        res.json(albumRta);
     }
     catch{
             //Levantar error
@@ -101,7 +101,8 @@ app.delete(root+'/:albumId', function (req, res) {
         let album = unqfy.getAlbumById(albumId);
         let artist = unqfy.searchArtistByAlbumId(albumId);
         unqfy.deleteAlbum({'artistName' : artist.name, 'name' : album.name});
-        //res.status(204);
+        res.status(204);
+        res.json("Album borrado.");
     }
     catch{
             //Levantar error
