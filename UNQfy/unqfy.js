@@ -7,7 +7,12 @@ const PlayList = require('./playlist');
 const User = require('./user');
 const ExistingObjectException = require('./exceptions/existing-object');
 const NonExistentObjectException = require('./exceptions/non-existent-object');
+<<<<<<< HEAD
 const Apimusicxmatch = require("./apimusicxmatch/apimusicxmatch");
+=======
+const configJson = require('./spotifyCreds.json');
+const { RSA_PKCS1_OAEP_PADDING } = require('constants');
+>>>>>>> main
 
 class UNQfy {
 
@@ -23,43 +28,64 @@ class UNQfy {
 
   addArtist(artistData) {
     let nuevoArtista = new Artist(artistData.name, artistData.country, this.idArtist);
-    this.checkExistentObject(this.artists, nuevoArtista);
-    this.incrementIdArtist();
-    this.addNewObject(artist => this.artists.push(artist), nuevoArtista)
+    if(!this.checkExistentObject(this.artists, nuevoArtista)){
+      this.incrementIdArtist();
+      this.addNewObject(artist => this.artists.push(artist), nuevoArtista)
+      this.save('data.json');
+    }
+    else{
+      console.log("Ya existe el usuario "+artistData.name)
+    }
     return nuevoArtista;
   };
 
   addUser(userData){
-    
     let newUser = new User(this.idUser, userData.nickname, userData.name);
-    this.checkExistentObject(this.users, newUser);
-    this.incrementIdUser();
-    this.addNewObject(user => this.users.push(user), newUser)
+    if(!this.checkExistentObject(this.users, newUser)){
+      this.incrementIdUser();
+      this.addNewObject(user => this.users.push(user), newUser)
+      this.save('data.json');
+    }
+    else{
+      console.log("Ya existe el usuario "+userData.name)
+    }
     return newUser;
   }
 
   addAlbum(artistId, albumData) {
     let nuevoAlbum = new Album(this.idAlbum, albumData.name, albumData.year);
     let artist = this.getArtistById(artistId);
-    this.checkExistentObject(artist.getAlbums(), nuevoAlbum);
-    this.incrementIdAlbum();
-    this.addNewObject(album => artist.addNewAlbum(album), nuevoAlbum)
+    if(!this.checkExistentObject(artist.getAlbums(), nuevoAlbum)){
+      this.incrementIdAlbum();
+      this.addNewObject(album => artist.addNewAlbum(album), nuevoAlbum)
+      this.save('data.json');
+    }
+    else{
+      console.log("Ya existe el album "+albumData.name)
+    }
+    
+    
     return nuevoAlbum;
   };
 
   addTrack(albumId, trackData) {
     let nuevoTrack = new Track(this.idTrack, trackData.name, trackData.genres, trackData.duration);
     let album = this.getAlbumById(albumId);
-    this.checkExistentObject(album.getTracks(), nuevoTrack);
-    this.incrementIdTrack();
-    this.addNewObject(track => album.addNewTrack(track), nuevoTrack)
+    if(!this.checkExistentObject(album.getTracks(), nuevoTrack)){
+      this.incrementIdTrack();
+      this.addNewObject(track => album.addNewTrack(track), nuevoTrack)
+      this.save('data.json');
+    }
+    else{
+      console.log("Ya existe el track "+trackData.name)
+    }
+    
     return nuevoTrack;
   };
 
+
   checkExistentObject(objects, newObject) {
-    if (objects.some(object => object.name.toLowerCase() == newObject.name.toLowerCase())) {
-      throw new ExistingObjectException(newObject);
-    }
+    return objects.some(object => object.name.toLowerCase() == newObject.name.toLowerCase())
   }
 
   addNewObject(fx, newObject) {
@@ -157,11 +183,10 @@ class UNQfy {
     let albums = this.searchAlbumsByName(name);
     let tracks = this.searchTracksByName(name);
     let playlists = this.searchPlaylistByName(name);
-    console.log('Artists :' + this.getNamesFromList(artists),
-      'Albums: ' + this.getNamesFromList(albums),
-      'Tracks: ' + this.getNamesFromList(tracks),
-      'Playlists: ' + this.getNamesFromList(playlists)
-    );
+    console.log('Artists: ' + this.getNamesFromList(artists));
+    console.log('Albums: ' + this.getNamesFromList(albums));
+    console.log('Tracks: ' + this.getNamesFromList(tracks));
+    console.log('Playlists: ' + this.getNamesFromList(playlists));
     return { artists, albums, tracks, playlists };
   }
 
@@ -171,7 +196,10 @@ class UNQfy {
 
   searchAlbumsByName(name) {
     let album = this.getAllAlbums();
-    return album.filter(album => album.name.toLowerCase().includes(name.toLowerCase()));
+    if(album.length===0){
+      return true
+    }else{return album.filter(album => album.name.toLowerCase().includes(name.toLowerCase()));}
+     
   }
 
   getAllTracks() {
@@ -191,7 +219,12 @@ class UNQfy {
   }
 
   getNamesFromList(list) {
-    return list.map(elem => elem.name);
+    if(list.length>0){
+      return list.map(elem => elem.name);
+    }
+    else{
+      return "";
+    }
   }
 
   searchTracksByName(name) {
@@ -213,6 +246,7 @@ class UNQfy {
     if (artist !== undefined && album !== undefined && track !== undefined) {
       album.delTrack(track.getId());
       this.playlist.forEach(playlist => playlist.removeTracks([track]))
+      this.save('data.json')
       console.log("Se ha eliminado el track " + track.name + " del album " + album.name + " del artista " + artist.name + " correctamente")
     } else {
       throw Error("No se pudo eliminar el track " + trackData.name + " ya que no existe")
@@ -225,6 +259,7 @@ class UNQfy {
       let tracksArtist = this.getTracksMatchingArtist(artistName.artistName)
       this.artists = this.artists.filter(art => art.name !== artist.name)
       this.playlist.forEach(playlist => playlist.removeTracks(tracksArtist))
+      this.save('data.json')
       console.log("Se ha eliminado el artista " + artist.name + " correctamente")
     } else {
       throw Error("No se pudo eliminar el artista " + artistName.artistName + " ya que no existe")
@@ -238,7 +273,8 @@ class UNQfy {
       let tracksAlbum = album.getTracks();
       artist.delAlbumByName(albumData.name);
       this.playlist.forEach(playlist => playlist.removeTracks(tracksAlbum))
-      console.log("Se ha eliminado el album " + album.name + " del artista" + artist.name + " correctamente")
+      this.save('data.json')
+      console.log("Se ha eliminado el album " + album.name + " del artista " + artist.name + " correctamente")
     } else {
       throw Error("No se pudo eliminar el album " + albumData.name + " ya que no existe")
     }
@@ -248,6 +284,7 @@ class UNQfy {
     let playlist = this.playlist.find(playlist => playlist.getName() === playlistData.name);
     if (playlist !== undefined) {
       this.playlist = this.playlist.filter(pl => pl.getName() !== playlist.name)
+      this.save('data.json')
       console.log("Se ha eliminado la playlist " + playlist.name + " correctamente")
     } else {
       throw Error("No se pudo eliminar a playlist " + playlistData.name + " ya que no existe")
@@ -309,10 +346,13 @@ class UNQfy {
         //cargo los tracks en la playlist
         nuevoPlaylist.addTracksToPlaylist(tracksToPlaylist);
         this.playlist.push(nuevoPlaylist);
+        this.save('data.json');
         console.log("Creación con éxito, Playlist:" + name);
         return nuevoPlaylist;
       }
   }
+
+  
 
   getAlbumsForArtist(artistName){
 
@@ -323,6 +363,7 @@ class UNQfy {
       return allAlbumsForArtist;
   }
 
+<<<<<<< HEAD
   /*Método que consulta los álbumes de dicho artista en Spotify,
    en base a los datos recibidos instancia los álbumes correspondientes y los asocia al artista. */
   populateAlbumsForArtist(artistName){
@@ -339,8 +380,58 @@ class UNQfy {
 
 
   save(filename) {
+=======
+
+
+   /*Método que consulta los álbumes de dicho artista en Spotify,
+   en base a los datos recibidos instancia los álbumes correspondientes y los asocia al artista. */
+   populateAlbumsForArtist(artistName){
+    var cred = configJson['access_token'];
+    const rp = require('request-promise');
+    const options = {
+      url: 'https://api.spotify.com/v1/search/?q='+artistName+'&type=artist&limit=1',
+      headers: { Authorization: 'Bearer ' + cred },
+      json: true,
+    };
+    rp.get(options).then((response)=>{
+      let artistId = response.artists.items[0].id;
+      this.getAlbumsForArtisSpotify(artistId,cred,rp,artistName);
+    })
+     .catch((ex)=>{
+       throw new NonExistentObjectException(ex, "No existe el artista")
+     })
+   }
+
+   
+
+   getAlbumsForArtisSpotify(artistIdSpotify, cred, request,artistName){
+    var artist = this.getArtistByName(artistName);
+    const options = {
+      url: 'https://api.spotify.com/v1/artists/'+artistIdSpotify+'/albums?limit=5',  //////////////////Limite de 5 para no cargar tanta cantidad 
+      headers: { Authorization: 'Bearer ' + cred },
+      json: true,
+    };
+    request.get(options).then((response) => {
+    let listaAlbums=response.items;
+    listaAlbums.map(elem=>{
+      artist.addNewAlbum(new Album(this.idAlbum, elem.name, elem.release_date.slice(0,4)));
+      this.incrementIdAlbum();
+    })
+      this.save('data.json');
+    
+    })
+    
+
+  
+   }
+
+
+
+  save(filename = 'data.json') {
+>>>>>>> main
     const serializedData = picklify.picklify(this);
-    fs.writeFileSync(filename, JSON.stringify(serializedData, null, 2));
+    fs.writeFileSync(filename, JSON.stringify(serializedData,null, 2));
+   
   }
 
   static load(filename) {
