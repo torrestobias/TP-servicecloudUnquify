@@ -41,6 +41,11 @@ class Apimusicxmatch {
             if (header.status_code !== 200) {
                 throw new Error('status code != 200');
             }
+
+            if (body.track_list.length === 0) {
+                throw new Error('no existe ningun track con el nombre indicado');
+            }
+
             Promise.resolve(body.track_list[0].track.track_id)
                 .then((result) => {
                     //console.log(result);
@@ -52,8 +57,9 @@ class Apimusicxmatch {
                         if (header.status_code !== 200) {
                             throw new Error('status code != 200');
                         }
-                        console.log(body.lyrics.lyrics_body);
                         track.setLyrics(body.lyrics.lyrics_body);
+                        console.log(track.getLyrics())
+                        unqfy.save('data.json')
                     })
                 })
         }).catch((error) => {

@@ -26,6 +26,7 @@ class Track {
 
     setLyrics(lyrics) {
         this.lyrics = lyrics;
+        return this
     }
 
     hasLyrics() {

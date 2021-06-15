@@ -121,20 +121,21 @@ class UNQfy {
     return trackEncontrado;
   }
 
-  getLyrics(id) {
+  async getLyrics(id) {
     let track = this.getTrackById(id);
-    return this.getTrackLyrics(track);
+    await this.getTrackLyrics(track);
+    return track.getLyrics();
   }
 
   getTrackLyrics(track) {
     if (track.hasLyrics()) {
-      console.log('true');
+      console.log('****  cargando datos desde el filesystem  ***');
+      console.log(track.getLyrics())
     } else {
-      console.log('false')
-      new Apimusicxmatch().getLyricByTitle(track, this)
+      console.log('****  obteniendo datos de la red  ***')
+      var musicxmatch = new Apimusicxmatch()
+      musicxmatch.getLyricByTitle(track, this)
     }
-    console.log(track.getLyrics())
-    return track.getLyrics();
   }
 
   checkNonExistentObject(objectName, id, searchingOject) {
