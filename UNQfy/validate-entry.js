@@ -139,16 +139,10 @@ class ValidateEntry {
     searchTracksByGenreHandler(unqfy, objs) {
         return unqfy.searchTracksByGenre(this.validArgumentsCheck(["genre"], objs).genre);
     }
-
-<<<<<<< HEAD
-    populateAlbumsForArtistsHandler(unqfy, artistName){
-        return unqfy.populateAlbumsForArtist(this.validArgumentsCheck(["name"], artistName));
-=======
+    
     populateAlbumsForArtistsHandler(unqfy, objs){
         return unqfy.populateAlbumsForArtist(this.validArgumentsCheck(["name"], objs).name);
->>>>>>> main
     }
-
 
     // Objeto que relaciona cada comando con su handler 
     functionList = {
@@ -167,12 +161,8 @@ class ValidateEntry {
         searchByName: (unqfy, objs) => this.searchByNameHandler(unqfy, objs),
         searchTracksByArtist: (unqfy, objs) => this.searchTracksByArtistHandler(unqfy, objs),
         searchTracksByGenre: (unqfy, objs) => this.searchTracksByGenreHandler(unqfy, objs),
-<<<<<<< HEAD
-        populateAlbumsForArtists: (unqfy, artistName) => this.populateAlbumsForArtistsHandler(unqfy,artistName),
-        getLyricsTrack: (unqfy, objs) => this.getByIdHandler((id) => unqfy.getLyrics(id), objs)
-=======
+        getLyricsTrack: (unqfy, objs) => this.getByIdHandler((id) => unqfy.getLyrics(id), objs),
         populateAlbumsForArtist: (unqfy, artistName) => this.populateAlbumsForArtistsHandler(unqfy,artistName)
->>>>>>> main
     }
 
     // Arma el dataObject, 
@@ -187,8 +177,8 @@ class ValidateEntry {
 
     // Carga una instancia de UNQfy, llama la funcion con el dataObject y guarda la instancia de UNQfy.
     executeCommand(command, args) {
-        const unqfy = this.getUNQfy(); 
-        this.functionList[command](unqfy, this.makeDataObject(args)); 
+        const unqfy = this.getUNQfy();
+        this.functionList[command](unqfy, this.makeDataObject(args));
         //this.saveUNQfy(unqfy,'data.json'); 
     }
 }

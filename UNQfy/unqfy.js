@@ -7,12 +7,9 @@ const PlayList = require('./playlist');
 const User = require('./user');
 const ExistingObjectException = require('./exceptions/existing-object');
 const NonExistentObjectException = require('./exceptions/non-existent-object');
-<<<<<<< HEAD
 const Apimusicxmatch = require("./apimusicxmatch/apimusicxmatch");
-=======
 const configJson = require('./spotifyCreds.json');
 const { RSA_PKCS1_OAEP_PADDING } = require('constants');
->>>>>>> main
 
 class UNQfy {
 
@@ -28,26 +25,26 @@ class UNQfy {
 
   addArtist(artistData) {
     let nuevoArtista = new Artist(artistData.name, artistData.country, this.idArtist);
-    if(!this.checkExistentObject(this.artists, nuevoArtista)){
+    if (!this.checkExistentObject(this.artists, nuevoArtista)) {
       this.incrementIdArtist();
       this.addNewObject(artist => this.artists.push(artist), nuevoArtista)
       this.save('data.json');
     }
-    else{
-      console.log("Ya existe el usuario "+artistData.name)
+    else {
+      console.log("Ya existe el usuario " + artistData.name)
     }
     return nuevoArtista;
   };
 
-  addUser(userData){
+  addUser(userData) {
     let newUser = new User(this.idUser, userData.nickname, userData.name);
-    if(!this.checkExistentObject(this.users, newUser)){
+    if (!this.checkExistentObject(this.users, newUser)) {
       this.incrementIdUser();
       this.addNewObject(user => this.users.push(user), newUser)
       this.save('data.json');
     }
-    else{
-      console.log("Ya existe el usuario "+userData.name)
+    else {
+      console.log("Ya existe el usuario " + userData.name)
     }
     return newUser;
   }
@@ -55,34 +52,31 @@ class UNQfy {
   addAlbum(artistId, albumData) {
     let nuevoAlbum = new Album(this.idAlbum, albumData.name, albumData.year);
     let artist = this.getArtistById(artistId);
-    if(!this.checkExistentObject(artist.getAlbums(), nuevoAlbum)){
+    if (!this.checkExistentObject(artist.getAlbums(), nuevoAlbum)) {
       this.incrementIdAlbum();
       this.addNewObject(album => artist.addNewAlbum(album), nuevoAlbum)
       this.save('data.json');
     }
-    else{
-      console.log("Ya existe el album "+albumData.name)
+    else {
+      console.log("Ya existe el album " + albumData.name)
     }
-    
-    
     return nuevoAlbum;
   };
 
   addTrack(albumId, trackData) {
     let nuevoTrack = new Track(this.idTrack, trackData.name, trackData.genres, trackData.duration);
     let album = this.getAlbumById(albumId);
-    if(!this.checkExistentObject(album.getTracks(), nuevoTrack)){
+    if (!this.checkExistentObject(album.getTracks(), nuevoTrack)) {
       this.incrementIdTrack();
       this.addNewObject(track => album.addNewTrack(track), nuevoTrack)
       this.save('data.json');
     }
-    else{
-      console.log("Ya existe el track "+trackData.name)
+    else {
+      console.log("Ya existe el track " + trackData.name)
     }
-    
+
     return nuevoTrack;
   };
-
 
   checkExistentObject(objects, newObject) {
     return objects.some(object => object.name.toLowerCase() == newObject.name.toLowerCase())
@@ -105,7 +99,7 @@ class UNQfy {
     this.idTrack += 1;
   }
 
-  incrementIdUser(){
+  incrementIdUser() {
     this.idUser += 1;
   }
 
@@ -196,10 +190,9 @@ class UNQfy {
 
   searchAlbumsByName(name) {
     let album = this.getAllAlbums();
-    if(album.length===0){
+    if (album.length === 0) {
       return true
-    }else{return album.filter(album => album.name.toLowerCase().includes(name.toLowerCase()));}
-     
+    } else { return album.filter(album => album.name.toLowerCase().includes(name.toLowerCase())); }
   }
 
   getAllTracks() {
@@ -219,10 +212,10 @@ class UNQfy {
   }
 
   getNamesFromList(list) {
-    if(list.length>0){
+    if (list.length > 0) {
       return list.map(elem => elem.name);
     }
-    else{
+    else {
       return "";
     }
   }
@@ -294,7 +287,6 @@ class UNQfy {
   // artistName: nombre de artista(string)
   // retorna: los tracks interpredatos por el artista con nombre artistName
   getTracksMatchingArtist(artistName) {
-
     const artistNameValue = artistName.toLowerCase();
     const artist = this.artists.filter(artist => artist.name.toLowerCase() === artistNameValue)[0];
 
@@ -305,7 +297,6 @@ class UNQfy {
 
       return artist.getTrackArtist();
     }
-
   }
 
   searchTracksByArtist(artist) {
@@ -324,7 +315,6 @@ class UNQfy {
     return { tracks };
   }
 
-
   // name: nombre de la playlist
   // genresToInclude: array de generos
   // maxDuration: duración en segundos
@@ -336,102 +326,70 @@ class UNQfy {
         * un metodo duration() que retorne la duración de la playlist.
         * un metodo hasTrack(aTrack) que retorna true si aTrack se encuentra en la playlist.
     */
-      let tracks = this.getAllTracks();
-      let tracksToPlaylist = tracks.filter(track => track.trackInclude(genresToInclude))
-      let nuevoPlaylist = new PlayList(name, genresToInclude, maxDuration);
-      if(this.playlist.some(playli => playli.name.toLowerCase() == name.toLowerCase())){
-        throw new ExistingPlaylistException(nuevoPlaylist);
-      }
-      else{
-        //cargo los tracks en la playlist
-        nuevoPlaylist.addTracksToPlaylist(tracksToPlaylist);
-        this.playlist.push(nuevoPlaylist);
-        this.save('data.json');
-        console.log("Creación con éxito, Playlist:" + name);
-        return nuevoPlaylist;
-      }
+    let tracks = this.getAllTracks();
+    let tracksToPlaylist = tracks.filter(track => track.trackInclude(genresToInclude))
+    let nuevoPlaylist = new PlayList(name, genresToInclude, maxDuration);
+    if (this.playlist.some(playli => playli.name.toLowerCase() == name.toLowerCase())) {
+      throw new ExistingPlaylistException(nuevoPlaylist);
+    }
+    else {
+      //cargo los tracks en la playlist
+      nuevoPlaylist.addTracksToPlaylist(tracksToPlaylist);
+      this.playlist.push(nuevoPlaylist);
+      this.save('data.json');
+      console.log("Creación con éxito, Playlist:" + name);
+      return nuevoPlaylist;
+    }
   }
 
-  
+  getAlbumsForArtist(artistName) {
 
-  getAlbumsForArtist(artistName){
+    const artist = this.getArtistByName(artistName);
 
-      const artist = this.getArtistByName(artistName);
+    const allAlbumsForArtist = artist.albums.map(album => album.name);
 
-      const allAlbumsForArtist = artist.albums.map(album => album.name);
-
-      return allAlbumsForArtist;
+    return allAlbumsForArtist;
   }
 
-<<<<<<< HEAD
   /*Método que consulta los álbumes de dicho artista en Spotify,
-   en base a los datos recibidos instancia los álbumes correspondientes y los asocia al artista. */
-  populateAlbumsForArtist(artistName){
-    let artista = artistName;
-    const rp = require('request-promise');
-    const options = {
-      url: 'https://api.spotify.com/v1/artists/1vCWHaC5f2uS3yhpwWbIA6/albums?limit=2',
-      headers: { Authorization: 'Bearer ' + 'BQD8cEYdc-Nh2r5vGkZejQYPH2dz8eSJCdrbymzpTFnnOezlmRvu4ek_qvLYlJs2t_oPC6_Hf5l-3uTpw_8ZMpfpuCFr8pwEFHwbfAVFMUkcJOiZR-fgT71x6XEeURh__ja9BSb_F74bi0kFIZepqGLmOxSAflPbWuOFW3dF8ojskK7xCA' },
-      json: true,
-};
-  rp.get(options).then((response) => console.log(response.items)
-  
-  )}
-
-
-  save(filename) {
-=======
-
-
-   /*Método que consulta los álbumes de dicho artista en Spotify,
-   en base a los datos recibidos instancia los álbumes correspondientes y los asocia al artista. */
-   populateAlbumsForArtist(artistName){
+  en base a los datos recibidos instancia los álbumes correspondientes y los asocia al artista. */
+  populateAlbumsForArtist(artistName) {
     var cred = configJson['access_token'];
     const rp = require('request-promise');
     const options = {
-      url: 'https://api.spotify.com/v1/search/?q='+artistName+'&type=artist&limit=1',
+      url: 'https://api.spotify.com/v1/search/?q=' + artistName + '&type=artist&limit=1',
       headers: { Authorization: 'Bearer ' + cred },
       json: true,
     };
-    rp.get(options).then((response)=>{
+    rp.get(options).then((response) => {
       let artistId = response.artists.items[0].id;
-      this.getAlbumsForArtisSpotify(artistId,cred,rp,artistName);
+      this.getAlbumsForArtisSpotify(artistId, cred, rp, artistName);
     })
-     .catch((ex)=>{
-       throw new NonExistentObjectException(ex, "No existe el artista")
-     })
-   }
+      .catch((ex) => {
+        throw new NonExistentObjectException(ex, "No existe el artista")
+      })
+  }
 
-   
-
-   getAlbumsForArtisSpotify(artistIdSpotify, cred, request,artistName){
+  getAlbumsForArtisSpotify(artistIdSpotify, cred, request, artistName) {
     var artist = this.getArtistByName(artistName);
     const options = {
-      url: 'https://api.spotify.com/v1/artists/'+artistIdSpotify+'/albums?limit=5',  //////////////////Limite de 5 para no cargar tanta cantidad 
+      url: 'https://api.spotify.com/v1/artists/' + artistIdSpotify + '/albums?limit=5',  //////////////////Limite de 5 para no cargar tanta cantidad 
       headers: { Authorization: 'Bearer ' + cred },
       json: true,
     };
     request.get(options).then((response) => {
-    let listaAlbums=response.items;
-    listaAlbums.map(elem=>{
-      artist.addNewAlbum(new Album(this.idAlbum, elem.name, elem.release_date.slice(0,4)));
-      this.incrementIdAlbum();
-    })
+      let listaAlbums = response.items;
+      listaAlbums.map(elem => {
+        artist.addNewAlbum(new Album(this.idAlbum, elem.name, elem.release_date.slice(0, 4)));
+        this.incrementIdAlbum();
+      })
       this.save('data.json');
-    
     })
-    
-
-  
-   }
-
-
+  }
 
   save(filename = 'data.json') {
->>>>>>> main
     const serializedData = picklify.picklify(this);
-    fs.writeFileSync(filename, JSON.stringify(serializedData,null, 2));
-   
+    fs.writeFileSync(filename, JSON.stringify(serializedData, null, 2));
   }
 
   static load(filename) {
@@ -450,4 +408,3 @@ module.exports = {
   Track: Track,
   PlayList: PlayList,
 };
-

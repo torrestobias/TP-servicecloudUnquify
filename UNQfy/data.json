@@ -61,20 +61,6 @@
       "tracks": "__00020__"
     },
     "__00012__": {
-<<<<<<< HEAD
-      "id": 0,
-      "name": "Ur",
-      "genres": "__00015__",
-      "duration": 345,
-      "lyrics": null
-    },
-    "__00013__": {
-      "id": 1,
-      "name": "Can't not",
-      "genres": "__00016__",
-      "duration": 345,
-      "lyrics": null
-=======
       "id": 1,
       "name": "Fuerza Natural",
       "year": "2009",
@@ -85,7 +71,6 @@
       "name": "Ahí Vamos",
       "year": "2006",
       "tracks": "__00022__"
->>>>>>> main
     },
     "__00014__": {
       "id": 3,
@@ -106,18 +91,10 @@
       "tracks": "__00025__"
     },
     "__00017__": {
-<<<<<<< HEAD
-      "id": 2,
-      "name": "Just",
-      "genres": "__00018__",
-      "duration": 345,
-      "lyrics": null
-=======
       "id": 6,
       "name": "La Familia Festeja Fuerte (En Vivo Estadio River Plate)",
       "year": "2018",
       "tracks": "__00026__"
->>>>>>> main
     },
     "__00018__": {
       "id": 8,
