@@ -121,18 +121,18 @@ class UNQfy {
     return trackEncontrado;
   }
 
-  async getLyrics(id) {
+  getLyrics(id) {
     let track = this.getTrackById(id);
-    await this.getTrackLyrics(track);
+    this.getTrackLyrics(track);
     return track.getLyrics();
   }
 
   getTrackLyrics(track) {
     if (track.hasLyrics()) {
-      console.log('****  cargando datos desde el filesystem  ***');
+      console.log('****  cargando datos desde el filesystem  ***\n');
       console.log(track.getLyrics())
     } else {
-      console.log('****  obteniendo datos de la red  ***')
+      console.log('****  obteniendo datos de la red  ***\n')
       var musicxmatch = new Apimusicxmatch()
       musicxmatch.getLyricByTitle(track, this)
     }
@@ -374,7 +374,7 @@ class UNQfy {
   getAlbumsForArtisSpotify(artistIdSpotify, cred, request, artistName) {
     var artist = this.getArtistByName(artistName);
     const options = {
-      url: 'https://api.spotify.com/v1/artists/' + artistIdSpotify + '/albums?limit=5',  //////////////////Limite de 5 para no cargar tanta cantidad 
+      url: 'https://api.spotify.com/v1/artists/' + artistIdSpotify + '/albums?limit=30',  //////////////////Limite de 5 para no cargar tanta cantidad 
       headers: { Authorization: 'Bearer ' + cred },
       json: true,
     };

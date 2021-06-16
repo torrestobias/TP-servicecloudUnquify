@@ -1,10 +1,10 @@
 class Album {
 
-    constructor(id, name, year) {
+    constructor(id, name, year, tracks = []) {
         this.id = id;
         this.name = name;
         this.year = year;
-        this.tracks = [];
+        this.tracks = tracks;
     };
 
     getName() {
@@ -58,6 +58,21 @@ class Album {
 
     updateTrack() {
         //TODO
+    }
+
+    addNewTrack(track) {
+        if (this.tracks.length < 1) {
+            this.tracks.push(track);
+            console.log("✓ Se crea el track " + track.name)
+        }
+        else {
+            if (!this.tracks.some(t => t.name.toLowerCase() === track.name.toLowerCase())) {
+                this.tracks.push(track);
+                console.log("✓ Se crea el track " + track.name);
+            }
+            else { console.log("X El track " + tack.name + " ya está creado.") }
+        }
+
     }
 }
 
