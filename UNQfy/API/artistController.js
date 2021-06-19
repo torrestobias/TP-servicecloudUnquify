@@ -1,10 +1,12 @@
-const fs = require('fs');
 const { Router } = require('express');
 const express = require('express');
 const ValidateEntry = require("../validate-entry");
 const app = express();
 const router = Router();
 router.use(express.json());
+const errors = require("./apiErrors");
+const BadRequest = errors.BadRequest
+const badRequest = new errors.BadRequest();
 
 const validate = new ValidateEntry();
 
@@ -13,13 +15,20 @@ const validate = new ValidateEntry();
 * Faltan los errores y Excepcion si no encuentra al artista
 */
 
+
+
 router.route('/artists/:artistId').get((req,res) => {
-    const unqfy = validate.getUNQfy();
-   
-    const artistId = parseInt(req.params.artistId);
-    const artist = unqfy.getArtistById(artistId);
-    res.status(200);
-    res.json(artist);
+    try{
+        
+        const unqfy = validate.getUNQfy();
+        const artistId = parseInt(req.params.artistId);
+        const artist = unqfy.getArtistById(artistId);
+        res.status(200);
+        res.json(artist);
+    }catch(e){
+
+    }
+    
 });
 
 /*
@@ -28,15 +37,29 @@ router.route('/artists/:artistId').get((req,res) => {
 */
 
 router.route('/artists').post((req,res) =>{
-    const unqfy = validate.getUNQfy();
+    
+    try{
 
-    let name = req.body.name;
-    let country = req.body.country;
-    unqfy.addArtist({'name' : name, 'country' : country});
+        const unqfy = validate.getUNQfy();
+        validateBody(req.body);
 
-    let artist = unqfy.getArtistByName(name);
-    res.status(201);
-    res.send(JSON.stringify(artist));
+        let name = req.body.name;
+        let country = req.body.country;
+        unqfy.addArtist({'name' : name, 'country' : country});
+    
+        let artist = unqfy.getArtistByName(name);
+        res.status(201);
+        res.send(JSON.stringify(artist));
+
+    }catch(e){
+        if(e instanceof BadRequest){
+            res.status(badRequest.status)
+            res.json({
+                status : badRequest.status,
+                errorCode : badRequest.errorCode
+            })
+        }
+    }
 
 })
 
@@ -92,6 +115,11 @@ router.route('/artists').get((req,res) =>{
 
 })
 
+function validateBody(body){
+    if(!(body.name && body.country)){
+        throw badRequest
+    }
+}
 
 
 app.use('/api', router);
