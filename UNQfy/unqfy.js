@@ -150,7 +150,42 @@ class UNQfy {
     }
   }
 
-  
+  //Toma una lista de tracks y retorna la duracion total resultante de la suma de todos los tracks. 
+  getDurationFromListOfTracks(listOfTracks){
+     if(listOfTracks.length===0){
+       return 0;
+    };
+    var cant = listOfTracks.reduce(function(sum, current) {
+      return sum + current.duration;
+     
+    },0);
+    return cant;
+
+}
+
+  //Toma una lista de TrackId y retorna una lista de los tracks perteneciente a esos id.
+  getTracksFromListOfIdTracks(list){
+    if(list.length===0){
+      return [];
+    }
+    let rta = list.map(elem => this.getTrackById(elem))
+    return rta;
+  }
+
+  //Toma una lista de tracks y retorna los generos sin repetidos.
+  getGenresFromListOfTracks(list){
+    if(data.length===0){
+      return [];
+    }
+    var rta= list.flatMap(elem=> elem.genres );
+    var result = rta.filter((item,index)=>{
+      return rta.indexOf(item) === index;
+    })
+    return result;
+  }
+
+
+
 
   // genres: array de generos(strings)
   // retorna: los tracks que contenga alguno de los generos en el parametro genres
@@ -368,12 +403,16 @@ class UNQfy {
     this.save('data.json');
   }
 
+  //retorna los albums del artista pasado por parametro.
   getAlbumsForArtist(artistName){
-
       const artist = this.getArtistByName(artistName);
-
       const allAlbumsForArtist = artist.albums.map(album => album.name);
-
+      if(allAlbumsForArtist.length===0){
+        console.log('El artista no tiene albums actualmente.')
+      }
+      if(allAlbumsForArtist.length>0){
+        console.log('Albums del artista: '+allAlbumsForArtist);
+      }
       return allAlbumsForArtist;
   }
 

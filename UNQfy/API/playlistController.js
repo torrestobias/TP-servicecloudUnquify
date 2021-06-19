@@ -60,12 +60,40 @@ app.get(root, function (req, res) {
 
 // POST : Crea una playlist con máxima duración y tracks pertenecientes a alguno de los géneros.
 
+// app.post(root, function (req, res) {
+//     try{
+//         let unqfy = validate.getUNQfy();
+//         let maxDuration = req.body.maxDuration;
+//         let name = req.body.name;
+//         let genres = req.body.genres;
+//         unqfy.createPlaylist(name, genres, maxDuration);
+//         let playlist = unqfy.searchPlaylistByName(name).filter(elem => elem.name.toLowerCase()===name.toLowerCase());
+//         res.status(201);
+//         res.send(
+//             {
+//                 "id" : playlist[0].id,
+//                 "name" : playlist[0].name,
+//                 "duration" : playlist[0].actualDuration, //o maxDuration?
+//                 "tracks" : playlist[0].tracks
+//             }
+//         );
+//     }
+//     catch{
+//             //Levantar error
+//         }
+//   });
+
+
+// POST : Crear una playlist a partir de una lista de IDs de tracks.
+
 app.post(root, function (req, res) {
     try{
         let unqfy = validate.getUNQfy();
-        let maxDuration = req.body.maxDuration;
         let name = req.body.name;
-        let genres = req.body.genres;
+        let temas= req.body.tracks
+        let tracks = unqfy.getTracksFromListOfIdTracks(temas)
+        let maxDuration = unqfy.getDurationFromListOfTracks(tracks);
+        let genres = unqfy.getGenresFromListOfTracks(tracks);
         unqfy.createPlaylist(name, genres, maxDuration);
         let playlist = unqfy.searchPlaylistByName(name).filter(elem => elem.name.toLowerCase()===name.toLowerCase());
         res.status(201);
@@ -73,7 +101,7 @@ app.post(root, function (req, res) {
             {
                 "id" : playlist[0].id,
                 "name" : playlist[0].name,
-                "duration" : playlist[0].maxDuration,
+                "duration" : playlist[0].actualDuration, //o maxDuration?
                 "tracks" : playlist[0].tracks
             }
         );
@@ -82,7 +110,6 @@ app.post(root, function (req, res) {
             //Levantar error
         }
   });
-
 
 
 // DELETE : Borrar una Playlist.
