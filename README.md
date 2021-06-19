@@ -25,3 +25,24 @@
      
   ```
 
+- Comandos para Playlists:
+
+  ``` 
+    - addPlaylist name 'playlistName' genres 'genero1, genero2...'  duration numero -> Agrega la playlist a unqfy con los generos y duracion maxima dados
+    
+    - deletePlaylist name 'playlistName' -> Borrara la playlist de Unqfy
+  ```
+  
+  - Visado 2:
+
+Comandos agregados por consola
+
+ ``` 
+    - getAlbumsForArtist name "artistName" -> devuelve una lista con los titulos de los albums del artista
+    
+    - populateAlbumsForArtist name "artistName" -> agrega los albums que pertenecen al artista especificado (limitado a 5 a modo de prueba)
+  ```
+Aclaracion: para poder utilizar "populateAlbumsForArtist" se requiere que previamente se ejecute el siguiente comando desde la carpeta raiz del proyecto:
+  node generateSpotifyCredentials.js
+Una vez ejecutado se genera un link que el usuario deberá abrir, dicho link abre una pagina que solicita usuario y contraseña de spotify, una vez ingresados e iniciado sesion ya puede utilizar 
+el método.
