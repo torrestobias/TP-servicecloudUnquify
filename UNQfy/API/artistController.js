@@ -2,6 +2,11 @@ const express = require('express');
 const ValidateEntry = require("../validate-entry");
 const validate = new ValidateEntry();
 const artists = express();
+const errors = require("./apiErrors");
+const BadRequest = errors.BadRequest
+const badRequest = new errors.BadRequest();
+const duplicateRequest = new errors.DuplicateEntitie();
+const resourceNotFound = new errors.ResourceNotFound()
 
 /*
 * GET : devuelve el artista con id dado.
