@@ -7,7 +7,8 @@ router.use(express.json());
 const errors = require("./apiErrors");
 const BadRequest = errors.BadRequest
 const badRequest = new errors.BadRequest();
-
+const duplicateRequest = new errors.DuplicateEntitie();
+const resourceNotFound = new errors.ResourceNotFound()
 const validate = new ValidateEntry();
 
 /*
@@ -26,7 +27,11 @@ router.route('/artists/:artistId').get((req,res) => {
         res.status(200);
         res.json(artist);
     }catch(e){
-
+        res.status(resourceNotFound.status);
+        res.json({
+            status : resourceNotFound.status,
+            errorCode : resourceNotFound.errorCode
+        })
     }
     
 });
@@ -37,7 +42,6 @@ router.route('/artists/:artistId').get((req,res) => {
 */
 
 router.route('/artists').post((req,res) =>{
-    
     try{
 
         const unqfy = validate.getUNQfy();
@@ -57,6 +61,12 @@ router.route('/artists').post((req,res) =>{
             res.json({
                 status : badRequest.status,
                 errorCode : badRequest.errorCode
+            })
+        }else{
+            res.status(duplicateRequest.status)
+            res.json({
+                status : duplicateRequest.status,
+                errorCode : duplicateRequest.errorCode
             })
         }
     }

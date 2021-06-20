@@ -19,6 +19,19 @@ class BadRequest extends RequestError{
     }
 }
 
+class DuplicateEntitie extends RequestError{
+    constructor(){
+        super('Error duplicate Entitie',409,"RESOURCE_ALREADY_EXISTS")
+    }
+}
+
+class ResourceNotFound extends RequestError{
+    constructor(){
+        super('RelatedResourceNotFound',404, "RESOURCE_NOT_FOUND")
+    }
+}
 module.exports = {
-    BadRequest
+    BadRequest,
+    DuplicateEntitie,
+    ResourceNotFound
 }
