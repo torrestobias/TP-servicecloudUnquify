@@ -2,6 +2,7 @@
 const artists = require('./artistController')
 const albums = require('./albumsController')
 const playlists = require('./playlistController')
+const tracks = require('./tracksController')
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -14,7 +15,7 @@ router.get('/', function (req, res) {
     res.json({ message: 'ruta incorrecta' })
 });
 
-app.use('/api', artists.artists, albums.albums, playlists.playlists);
+app.use('/api', artists.artists, albums.albums, playlists.playlists, tracks.tracks);
 app.listen(8000, () => {
     console.log("El servidor está inicializado en el puerto 8000");
 })

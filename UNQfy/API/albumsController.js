@@ -44,11 +44,14 @@ albums.post(root, function (req, res) {
     try {
         let unqfy = validate.getUNQfy();
         validateBody(req.body);
+        console.log('entre')
         let artistId = req.body.artistId;
         let name = req.body.name;
         let year = req.body.year;
+        console.log(req.body)
         unqfy.addAlbum(artistId, { name: name, year: year });
         let artist = unqfy.getArtistById(artistId);
+        console.log(artist)
         let album = artist.getAlbumByName(name);
         res.status(201);
         res.json(album);
@@ -127,7 +130,7 @@ albums.delete(root + '/:albumId', function (req, res) {
 });
 
 function validateBody(body) {
-    if (!(body.name && body.year && body.artistId)) {
+    if (!(body.name && body.year && body.artistId !== undefined)) {
         throw badRequest
     }
 }
