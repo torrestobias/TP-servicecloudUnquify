@@ -7,6 +7,7 @@ const PlayList = require('./playlist');
 const User = require('./user');
 const ExistingObjectException = require('./exceptions/existing-object');
 const NonExistentObjectException = require('./exceptions/non-existent-object');
+const Apimusicxmatch = require("./apimusicxmatch/apimusicmatch");
 const configJson = require('./spotifyCreds.json');
 const { RSA_PKCS1_OAEP_PADDING } = require('constants');
 
@@ -77,6 +78,27 @@ class UNQfy {
         */
     return nuevoTrack;
   };
+
+
+  async getLyrics(id) {
+    let track = this.getTrackById(id);
+    await this.getTrackLyrics(track);
+    if (!track.hasLyrics) {
+      await this.getTrackLyrics(track);
+    }
+    return track.getLyrics();
+  }
+
+  getTrackLyrics(track) {
+    if (track.hasLyrics()) {
+      console.log('****  cargando datos desde el filesystem  ***');
+      console.log(track.getLyrics())
+    } else {
+      console.log('****  obteniendo datos de la red  ***')
+      var musicxmatch = new Apimusicxmatch()
+      musicxmatch.getLyricByTitle(track, this)
+    }
+  }
 
   checkExistentObject(objects, newObject) {
     if (objects.some(object => object.name.toLowerCase() == newObject.name.toLowerCase())) {

@@ -32,6 +32,7 @@ class Apimusicxmatch {
     };
 
     getLyricByTitle(track, unqfy) {
+        console.log('enmuscimatch')
         let title = track.getName()
         rp.get(
             this.setSearchOptions('/track.search', title)
