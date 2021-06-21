@@ -5,9 +5,9 @@ const playlists = express();
 const root = '/playlists';
 
 // GET : Obtener una playlist por id.
-playlists.get(root + '/:id', function (req, res) {
+playlists.get(root + '/:id', function (req, res, next) {
+    const unqfy = validate.getUNQfy();
     try {
-        const unqfy = validate.getUNQfy();
         const playlistId = parseInt(req.params.id);
         const playlist = unqfy.getPlaylistById(playlistId);
         res.status(200)
@@ -24,9 +24,9 @@ playlists.get(root + '/:id', function (req, res) {
 });
 
 // GET : Obtener una playlist por nombre.
-playlists.get(root, function (req, res) {
+playlists.get(root, function (req, res, next) {
+    const unqfy = validate.getUNQfy();
     try {
-        const unqfy = validate.getUNQfy();
         const name = req.query.name;
         const playlist = unqfy.searchByName(name);
         res.status(200)
@@ -38,7 +38,7 @@ playlists.get(root, function (req, res) {
 });
 /*
 // POST : Crea una playlist con máxima duración y tracks pertenecientes a alguno de los géneros.
-playlists.post(root, function (req, res) {
+playlists.post(root, function (req, res, next) {
     try {
         let unqfy = validate.getUNQfy();
         let maxDuration = req.body.maxDuration;
@@ -62,12 +62,11 @@ playlists.post(root, function (req, res) {
 });*/
 
 
-playlists.post(root, function (req, res) {
+playlists.post(root, function (req, res, next) {
+    const unqfy = validate.getUNQfy();
     try {
-        let unqfy = validate.getUNQfy();
         if (req.body.genres !== undefined && req.body.maxDuration !== undefined && req.body.name !== undefined) {
             console.log("entrepormaxduration")
-            let unqfy = validate.getUNQfy();
             let maxDuration = req.body.maxDuration;
             let name = req.body.name;
             let genres = req.body.genres;
@@ -113,9 +112,9 @@ playlists.post(root, function (req, res) {
 });
 
 // DELETE : Borrar una Playlist.
-playlists.delete(root + '/:id', function (req, res) {
+playlists.delete(root + '/:id', function (req, res, next) {
+    const unqfy = validate.getUNQfy();
     try {
-        let unqfy = validate.getUNQfy();
         let idPlaylistToDelete = parseInt(req.params.id);
         let playlist = unqfy.getPlaylistById(idPlaylistToDelete);
         unqfy.deletePlaylist({ "name": playlist.name });

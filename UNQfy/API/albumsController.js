@@ -1,40 +1,31 @@
 const express = require('express');
 const ValidateEntry = require("../validate-entry");
-const ExistingObjectException = require('../exceptions/existing-object');
 const NonExistentObjectException = require('../exceptions/non-existent-object');
 const validate = new ValidateEntry();
 const albums = express();
 const errors = require("./apiErrors");
-const BadRequest = errors.BadRequest
 const badRequest = new errors.BadRequest();
-const duplicateRequest = new errors.DuplicateEntitie();
-const resourceNotFound = new errors.ResourceNotFound()
 const relatedResourceNotFound = new errors.RelatedResourceNotFound()
 const root = '/albums';
 
 // GET : Obtiene el album correspondiente al id del parametro.
-albums.get(root + '/:albumId', function (req, res) {
+albums.get(root + '/:albumId', function (req, res, next) {
+    const unqfy = validate.getUNQfy();
+    var album = {};
     try {
-        const unqfy = validate.getUNQfy();
-        const albumId = parseInt(req.params.albumId);
-        const album = unqfy.getAlbumById(albumId);
-        res.status(200)
-        res.json(album);
+        const albumId = validate.parseIntEntry(req.params.albumId);
+        album = unqfy.getAlbumById(albumId);
     } catch (e) {
-        if (e instanceof NonExistentObjectException) { //si el artista no existe
-            res.status(resourceNotFound.status);
-            res.json({
-                status: resourceNotFound.status,
-                errorCode: resourceNotFound.errorCode
-            })
-        }
+        next(e);
     }
+    res.status(200)
+    res.json(album);
 });
 
 // GET : Obtiene los albums correspondientes al nombre pasado por query param.
-albums.get(root, function (req, res) {
+albums.get(root, function (req, res, next) {
     const unqfy = validate.getUNQfy();
-    var rta = ''
+    var rta = '';
     if (req.query.name === undefined) {
         rta = unqfy.searchAlbumsByName('');
     } else {
@@ -46,93 +37,67 @@ albums.get(root, function (req, res) {
 });
 
 // POST : Agregar un album a un artista.
-albums.post(root, function (req, res) {
+albums.post(root, function (req, res, next) {
+    const unqfy = validate.getUNQfy();
+    var album = {};
     try {
-        let unqfy = validate.getUNQfy();
         validateBody(req.body);
-        console.log('entre')
-        let artistId = req.body.artistId;
+        let artistId = validate.parseIntEntry(req.body.artistId);
         let name = req.body.name;
         let year = req.body.year;
-        console.log(req.body)
         unqfy.addAlbum(artistId, { name: name, year: year });
         let artist = unqfy.getArtistById(artistId);
-        console.log(artist)
-        let album = artist.getAlbumByName(name);
-        res.status(201);
-        res.json(album);
-
+        album = artist.getAlbumByName(name);
     } catch (e) {
-        if (e instanceof BadRequest) {
-            res.status(badRequest.status)
-            res.json({
-                status: badRequest.status,
-                errorCode: badRequest.errorCode
-            })
-        } else if (e instanceof NonExistentObjectException) { //si el artista no existe
+        console.log(e instanceof NonExistentObjectException)
+        if (e instanceof NonExistentObjectException) { //si el artista no existe
             res.status(relatedResourceNotFound.status)
             res.json({
                 status: relatedResourceNotFound.status,
                 errorCode: relatedResourceNotFound.errorCode
             })
-        } else if (e instanceof ExistingObjectException) { //si el album existe
-            res.status(duplicateRequest.status)
-            res.json({
-                status: duplicateRequest.status,
-                errorCode: duplicateRequest.errorCode
-            })
+        } else {
+            next(e);
         }
     }
+    res.status(201);
+    res.json(album);
 });
 
 // PATCH : Actualizar el año de un album.
-albums.patch(root + '/:albumId', function (req, res) {
+albums.patch(root + '/:albumId', function (req, res, next) {
+    const unqfy = validate.getUNQfy();
+    var albumRta = {};
     try {
-        let unqfy = validate.getUNQfy();
-        let albumId = parseInt(req.params.albumId);
+        let albumId = validate.parseIntEntry(req.params.albumId);
         validatePatchBody(req.body);
         let year = req.body.year;
         let album = unqfy.getAlbumById(albumId);
         unqfy.updateYearOfAlbum(album, year);
-        let albumRta = unqfy.getAlbumById(albumId);
-        res.status(200);
-        res.json(albumRta);
+        albumRta = unqfy.getAlbumById(albumId);
     } catch (e) {
-        if (e instanceof BadRequest) {
-            res.status(badRequest.status)
-            res.json({
-                status: badRequest.status,
-                errorCode: badRequest.errorCode
-            })
-        } else if (e instanceof NonExistentObjectException) { //si el album no existe
-            res.status(resourceNotFound.status)
-            res.json({
-                status: resourceNotFound.status,
-                errorCode: resourceNotFound.errorCode
-            })
-        }
+        next(e);
     }
+    res.status(200);
+    res.json(albumRta);
 });
 
 // DELETE : Borra el album correspondiente al id pasado por parametro.
-albums.delete(root + '/:albumId', function (req, res) {
+albums.delete(root + '/:albumId', function (req, res, next) {
+    const unqfy = validate.getUNQfy();
     try {
-        let unqfy = validate.getUNQfy();
-        let albumId = parseInt(req.params.albumId);
+        let albumId = validate.parseIntEntry(req.params.albumId);
         let album = unqfy.getAlbumById(albumId);
+        console.log(album)
         let artist = unqfy.searchArtistByAlbumId(albumId);
         unqfy.deleteAlbum({ 'artistName': artist.name, 'name': album.name });
         res.status(204);
         res.json();
     } catch (e) {
-        if (e instanceof NonExistentObjectException) { //si el album no existe
-            res.status(resourceNotFound.status)
-            res.json({
-                status: resourceNotFound.status,
-                errorCode: resourceNotFound.errorCode
-            })
-        }
+        next(e);
     }
+/*     res.status(204);rariiiiisimoo
+    res.json(); */
 });
 
 function validateBody(body) {

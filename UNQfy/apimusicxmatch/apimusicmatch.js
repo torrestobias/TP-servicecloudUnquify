@@ -32,7 +32,6 @@ class Apimusicxmatch {
     };
 
     getLyricByTitle(track, unqfy) {
-        console.log('enmuscimatch')
         let title = track.getName()
         rp.get(
             this.setSearchOptions('/track.search', title)
@@ -49,7 +48,6 @@ class Apimusicxmatch {
 
             Promise.resolve(body.track_list[0].track.track_id)
                 .then((result) => {
-                    //console.log(result);
                     rp.get(
                         this.setLyricOptions('/track.lyrics.get', result)
                     ).then((response) => {
@@ -59,7 +57,6 @@ class Apimusicxmatch {
                             throw new Error('status code != 200');
                         }
                         track.setLyrics(body.lyrics.lyrics_body);
-                        console.log(track.getLyrics())
                         unqfy.save('data.json')
                     })
                 })

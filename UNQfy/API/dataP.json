@@ -1,0 +1,128 @@
+{
+  "rootObjects": [
+    {
+      "id": "__00001__",
+      "name": null
+    }
+  ],
+  "objects": {
+    "__00001__": {
+      "artists": "__00002__",
+      "playlist": "__00003__",
+      "users": "__00004__",
+      "idArtist": 2,
+      "idAlbum": 2,
+      "idTrack": 4,
+      "idUser": 0,  
+      "idPlaylist": 0
+    },
+    "__00002__": {
+      "0": "__00005__",
+      "1": "__00006__"
+    },
+    "__00003__": {},
+    "__00004__": {},
+    "__00005__": {
+      "id": 0,
+      "name": "Alanis Morissette",
+      "country": "Canada",
+      "albums": "__00007__"
+    },
+    "__00006__": {
+      "id": 1,
+      "name": "Guns and Roses",
+      "country": "United States",
+      "albums": "__00008__"
+    },
+    "__00007__": {
+      "0": "__00009__",
+      "1": "__00010__"
+    },
+    "__00008__": {},
+    "__00009__": {
+      "id": 0,
+      "name": "SFIJ",
+      "year": 1998,
+      "tracks": "__00011__"
+    },
+    "__00010__": {
+      "id": 2,
+      "name": "Use Your Illusion 1",
+      "year": 1992,
+      "tracks": "__00012__"
+    },
+    "__00011__": {
+      "0": "__00013__",
+      "1": "__00014__",
+      "2": "__00015__",
+      "3": "__00016__"
+    },
+    "__00012__": {},
+    "__00013__": {
+      "id": 0,
+      "name": "One",
+      "genres": "__00017__",
+      "duration": 320,
+      "lyrics": "One, two, three\nTurn it up\n\nBig wheels keep on turnin'\nCarry me home to see my kin\nSingin' songs about the south-land\nI miss Alabama once again and I think it's a sin, yes\n\nWell, I heard Mister Young sing about her\nWell, I heard ol' Neil put her down\nWell, I hope Neil Young will remember\nA southern man don't need him around anyhow\n\nSweet home Alabama\nWhere the skies are so blue\nSweet home Alabama\nLord, I'm comin' home to you\n\n...\n\n******* This Lyrics is NOT for Commercial use *******\n(1409621935823)"
+    },
+    "__00014__": {
+      "id": 1,
+      "name": "You Learn",
+      "genres": "__00018__",
+      "duration": 320,
+      "lyrics": "Yeah, yeah, have you heard the news today?\nPeople right across the world\nAre pledging they will play the game.\nVictims of the modern world,\nCircumstance has brought us here,\nArmageddon's come too near,\nToo, too near now.\nForesight is the only key,\nTo save our children's destiny,\nThe consequences are so grave,\nSo, so grave now.\nThe hypocrites we are their slaves,\nSo my friends to stop the end,\nOn each other we depend,\nOh, we depend.\n\nMountain high and river deep,\nStop it goin' on.\nWe gotta wake this world up from its sleep,\nOh, people.\nStop it goin' on.\n...\n\n******* This Lyrics is NOT for Commercial use *******\n(1409621935823)"
+    },
+    "__00015__": {
+      "id": 2,
+      "name": "Ironic",
+      "genres": "__00019__",
+      "duration": 320,
+      "lyrics": "An old man turned 98\nHe won the lottery and died the next day\nIt's a black fly in your Chardonnay\nIt's a death row pardon two minutes too late\nAnd isn't it ironic, don't you think?\n\nIt's like rain on your wedding day\nIt's a free ride when you've already paid\nIt's the good advice that you just didn't take\nAnd who would've thought, it figures\n\nMr. Play It Safe was afraid to fly\nHe packed his suitcase and kissed his kids goodbye\nHe waited his whole damn life to take that flight\nAnd as the plane crashed down, he thought\n...\n\n******* This Lyrics is NOT for Commercial use *******\n(1409621935823)"
+    },
+    "__00016__": {
+      "id": 3,
+      "name": "Wake up",
+      "genres": "__00020__",
+      "duration": 320,
+      "lyrics": "Feeling my way through the darkness\nGuided by a beating heart\nI can't tell where the journey will end\nBut I know where to start\n\nThey tell me I'm too young to understand\nThey say I'm caught up in a dream\nWell life will pass me by if I don't open up my eyes\nWell, that's fine by me\n\nSo wake me up when it's all over\nWhen I'm wiser and I'm older\nAll this time, I was finding myself, and I\nDidn't know I was lost\n\n...\n\n******* This Lyrics is NOT for Commercial use *******\n(1409621935823)"
+    },
+    "__00017__": {
+      "0": "pop",
+      "1": "indian"
+    },
+    "__00018__": {
+      "0": "pop",
+      "1": "indian"
+    },
+    "__00019__": {
+      "0": "pop",
+      "1": "indian"
+    },
+    "__00020__": {
+      "0": "pop",
+      "1": "indian"
+    }
+  },
+  "types": {
+    "__00001__": "UNQfy",
+    "__00002__": "Array",
+    "__00003__": "Array",
+    "__00004__": "Array",
+    "__00005__": "Artist",
+    "__00006__": "Artist",
+    "__00007__": "Array",
+    "__00008__": "Array",
+    "__00009__": "Album",
+    "__00010__": "Album",
+    "__00011__": "Array",
+    "__00012__": "Array",
+    "__00013__": "Track",
+    "__00014__": "Track",
+    "__00015__": "Track",
+    "__00016__": "Track",
+    "__00017__": "Array",
+    "__00018__": "Array",
+    "__00019__": "Array",
+    "__00020__": "Array"
+  }
+}

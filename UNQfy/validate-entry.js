@@ -31,7 +31,7 @@ class ValidateEntry {
         if (entry === undefined) {
             throw new WrongArgumentsException(`'${entry}'`);
         }
-        let parse = entry.split('').map(e => parseInt(e));
+        let parse = entry.toString().split('').map(e => parseInt(e));
         if (parse.some(isNaN)) {
             throw new NotANumberException(entry);
         }
@@ -72,9 +72,7 @@ class ValidateEntry {
 
     // Ejecuta el comando enviado desde MAIN() y captura todas las excepciones del flujo
     execute(input) {
-        console.log(input);
         let args = input;
-        console.log(args);
         const command = args.splice(0, 1);
         try {
             this.itsAValidCommand(command);

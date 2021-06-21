@@ -20,7 +20,6 @@ class Artist {
     }
 
     getAlbumById(id) {
-        console.log('entre')
         return this.albums.find(album => album.getId() == id);
     }
 

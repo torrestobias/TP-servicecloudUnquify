@@ -1,143 +1,101 @@
 const express = require('express');
-const ExistingObjectException = require('../exceptions/existing-object');
-const NonExistentObjectException = require('../exceptions/non-existent-object');
 const ValidateEntry = require("../validate-entry");
 const validate = new ValidateEntry();
 const artists = express();
 const errors = require("./apiErrors");
-const BadRequest = errors.BadRequest
 const badRequest = new errors.BadRequest();
-const duplicateRequest = new errors.DuplicateEntitie();
-const resourceNotFound = new errors.ResourceNotFound()
 
 /*
 * GET : devuelve el artista con id dado.
 * Faltan los errores y Excepcion si no encuentra al artista
 */
-artists.route('/artists/:artistId').get((req, res) => {
+artists.route('/artists/:artistId').get((req, res, next) => {
+    const unqfy = validate.getUNQfy();
+    var artist = {};
     try {
-        const unqfy = validate.getUNQfy();
-        const artistId = parseInt(req.params.artistId);
-        const artist = unqfy.getArtistById(artistId);
-        res.status(200);
-        res.json(artist);
+        const artistId = validate.parseIntEntry(req.params.artistId);
+        artist = unqfy.getArtistById(artistId);
     } catch (e) {
-        if (e instanceof NonExistentObjectException) { //si el artista no existe
-            res.status(resourceNotFound.status);
-            res.json({
-                status: resourceNotFound.status,
-                errorCode: resourceNotFound.errorCode
-            })
-        }
+        next(e);
     }
+    res.status(200);
+    res.json(artist);
 });
 
 /*
 * POST : agrega un artista con un nombre y un pais.
 * Faltan los errores y Excepcion si no encuentra al artista
 */
-artists.route('/artists').post((req, res) => {
+artists.route('/artists').post((req, res, next) => {
+    const unqfy = validate.getUNQfy();
+    var artist = {};
     try {
-        const unqfy = validate.getUNQfy();
-        console.log(req)
         validateBody(req.body);
         let name = req.body.name;
         let country = req.body.country;
         unqfy.addArtist({ 'name': name, 'country': country });
-        let artist = unqfy.getArtistByName(name);
-        res.status(201);
-        res.send(JSON.stringify(artist));
-
+        artist = unqfy.getArtistByName(name);
     } catch (e) {
-        if (e instanceof BadRequest) {
-            res.status(badRequest.status)
-            res.json({
-                status: badRequest.status,
-                errorCode: badRequest.errorCode
-            });
-        } else if (e instanceof ExistingObjectException) { //si el artista existe
-            res.status(duplicateRequest.status)
-            res.json({
-                status: duplicateRequest.status,
-                errorCode: duplicateRequest.errorCode
-            });
-        }
+        next(e);
     }
+    res.status(201);
+    res.send(JSON.stringify(artist));
 })
 
 /*
 * PATCH : actualiza un artista con un nombre y un pais.
 * Faltan los errores y Excepcion si no encuentra al artista
 */
-artists.route('/artists/:artistId').patch((req, res) => {
+artists.route('/artists/:artistId').patch((req, res, next) => {
+    const unqfy = validate.getUNQfy();
+    var updatedArtist = {};
     try {
-        const unqfy = validate.getUNQfy();
-        let artistId = parseInt(req.params.artistId);
+        let artistId = validate.parseIntEntry(req.params.artistId);
         validateBody(req.body);
-        let name = req.body.name;
-        let country = req.body.country;
         let artist = unqfy.getArtistById(artistId);
-        unqfy.updateArtistWithNewData(artist, name, country);
-        let updatedArtist = unqfy.getArtistById(artistId);
-        res.status(200);
-        res.send(JSON.stringify(updatedArtist));
+        unqfy.updateArtistWithNewData(artist, req.body.name, req.body.country);
+        updatedArtist = unqfy.getArtistById(artistId);
     } catch (e) {
-        if (e instanceof BadRequest) {
-            res.status(badRequest.status)
-            res.json({
-                status: badRequest.status,
-                errorCode: badRequest.errorCode
-            })
-        } else if (e instanceof NonExistentObjectException) { //si el album no existe
-            res.status(resourceNotFound.status)
-            res.json({
-                status: resourceNotFound.status,
-                errorCode: resourceNotFound.errorCode
-            })
-        }
+        next(e);
     }
+    res.status(200);
+    res.send(JSON.stringify(updatedArtist));
 });
 
 /*
 * DELETE : borrar un artista mediante un id.
 * Faltan los errores y Excepcion si no encuentra al artista
 */
-artists.route('/artists/:artistId').delete((req, res) => {
+artists.route('/artists/:artistId').delete((req, res, next) => {
+    const unqfy = validate.getUNQfy();
     try {
-        const unqfy = validate.getUNQfy();
-        let artistId = parseInt(req.params.artistId);
+        let artistId = validate.parseIntEntry(req.params.artistId);
         let artist = unqfy.getArtistById(artistId);
         unqfy.deleteArtist({ 'artistName': artist.name });
-        res.status(204);
-        res.json({});
     } catch (e) {
-        if (e instanceof NonExistentObjectException) { //si el artista no existe
-            res.status(resourceNotFound.status)
-            res.json({
-                status: resourceNotFound.status,
-                errorCode: resourceNotFound.errorCode
-            })
-        }
+        next(e);
     }
+    res.status(204);
+    res.json({});
 });
 
 /*
 * SEARCH : devuelve un artista.
 * Faltan los errores y Excepcion si no encuentra al artista
 */
-artists.route('/artists').get((req, res) => {
+artists.route('/artists').get((req, res, next) => {
     const unqfy = validate.getUNQfy();
     var rta = ''
-    if (req.query.name === undefined) {
-        rta = unqfy.searchArtistByName('');
-    } else {
+    if (req.query.name) {
         const name = req.query.name;
         rta = unqfy.searchArtistByName(name)
+
+    } else {
+        rta = unqfy.searchArtistByName('');
     }
     res.status(200);
     res.json(rta);
 });
-
 
 function validateBody(body) {
     if (!(body.name && body.country)) {
