@@ -15,23 +15,38 @@ class RequestError extends Error {
 
 class BadRequest extends RequestError{
     constructor(){
-        super('BadRequestError',400,"BAD_REQUEST")
+        super('Bad Request Error',400,"BAD_REQUEST")
     }
 }
 
 class DuplicateEntitie extends RequestError{
     constructor(){
-        super('Error duplicate Entitie',409,"RESOURCE_ALREADY_EXISTS")
+        super('Duplicate Entitie Error',409,"RESOURCE_ALREADY_EXISTS")
+    }
+}
+
+class RelatedResourceNotFound extends RequestError{
+    constructor(){
+        super('Related Resource Not Found Error',404, "RELATED_RESOURCE_NOT_FOUND")
     }
 }
 
 class ResourceNotFound extends RequestError{
     constructor(){
-        super('RelatedResourceNotFound',404, "RESOURCE_NOT_FOUND")
+        super('Resource Not Found Error',404, "RESOURCE_NOT_FOUND")
     }
 }
+
+class Unexpected extends RequestError{
+    constructor(){
+        super('Unexpected Error',500, "INTERNAL_SERVER_ERROR")
+    }
+}
+
 module.exports = {
     BadRequest,
     DuplicateEntitie,
+    RelatedResourceNotFound,
+    Unexpected,
     ResourceNotFound
 }
