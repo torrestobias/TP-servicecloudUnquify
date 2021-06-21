@@ -70,7 +70,6 @@ router.route('/artists').post((req,res) =>{
             })
         }
     }
-
 })
 
 /*
@@ -79,18 +78,27 @@ router.route('/artists').post((req,res) =>{
 */
 
 router.route('/artists/:artistId').patch((req,res) => {
-    const unqfy = validate.getUNQfy();
+    try{
+        
+        const unqfy = validate.getUNQfy();
+        validateBody(req.body);
 
-    let artistId = parseInt(req.params.artistId);
-    let name = req.body.name;
-    let country = req.body.country;
-    let artist = unqfy.getArtistById(artistId);
+        let artistId = parseInt(req.params.artistId);
+        let name = req.body.name;
+        let country = req.body.country;
+        let artist = unqfy.getArtistById(artistId);
 
-    unqfy.updateArtistWithNewData(artist,name,country);
-    let updatedArtist = unqfy.getArtistById(artistId);
-    res.status(200);
-    res.send(JSON.stringify(updatedArtist));
-
+        unqfy.updateArtistWithNewData(artist,name,country);
+        let updatedArtist = unqfy.getArtistById(artistId);
+        res.status(200);
+        res.send(JSON.stringify(updatedArtist));
+    }catch(e){
+        res.status(resourceNotFound.status);
+        res.json({
+            status : resourceNotFound.status,
+            errorCode : resourceNotFound.errorCode
+        })
+    }
 });
 
 /*
@@ -99,14 +107,22 @@ router.route('/artists/:artistId').patch((req,res) => {
 */
 
 router.route('/artists/:artistId').delete((req,res)=>{
-    const unqfy = validate.getUNQfy();
+    try{
+        const unqfy = validate.getUNQfy();
 
-    let artistId = parseInt(req.params.artistId);
-    let artist = unqfy.getArtistById(artistId);
-    unqfy.deleteArtist({'artistName': artist.name});
-    res.status(204);
-    res.json( { status : 204,
-        response : "la frase que quieras"});
+        let artistId = parseInt(req.params.artistId);
+        let artist = unqfy.getArtistById(artistId);
+        unqfy.deleteArtist({'artistName': artist.name});
+        res.status(204);
+        res.json( { status : 204,
+            response : "la frase que quieras"});
+    }catch(e){
+        res.status(resourceNotFound.status);
+        res.json({
+            status : resourceNotFound.status,
+            errorCode : resourceNotFound.errorCode
+        })
+    }
 })
 
 /*
