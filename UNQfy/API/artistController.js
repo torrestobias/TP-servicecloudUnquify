@@ -39,6 +39,7 @@ artists.route('/artists/:artistId').get((req, res) => {
 artists.route('/artists').post((req, res) => {
     try {
         const unqfy = validate.getUNQfy();
+        console.log(req)
         validateBody(req.body);
         let name = req.body.name;
         let country = req.body.country;
@@ -53,13 +54,13 @@ artists.route('/artists').post((req, res) => {
             res.json({
                 status: badRequest.status,
                 errorCode: badRequest.errorCode
-            })
+            });
         } else if (e instanceof ExistingObjectException) { //si el artista existe
             res.status(duplicateRequest.status)
             res.json({
                 status: duplicateRequest.status,
                 errorCode: duplicateRequest.errorCode
-            })
+            });
         }
     }
 })
@@ -70,31 +71,31 @@ artists.route('/artists').post((req, res) => {
 */
 artists.route('/artists/:artistId').patch((req, res) => {
     try {
-    const unqfy = validate.getUNQfy();
-    let artistId = parseInt(req.params.artistId);
-    validateBody(req.body);
-    let name = req.body.name;
-    let country = req.body.country;
-    let artist = unqfy.getArtistById(artistId);
-    unqfy.updateArtistWithNewData(artist, name, country);
-    let updatedArtist = unqfy.getArtistById(artistId);
-    res.status(200);
-    res.send(JSON.stringify(updatedArtist));
-} catch (e) {
-    if (e instanceof BadRequest) {
-        res.status(badRequest.status)
-        res.json({
-            status: badRequest.status,
-            errorCode: badRequest.errorCode
-        })
-    } else if (e instanceof NonExistentObjectException) { //si el album no existe
-        res.status(resourceNotFound.status)
-        res.json({
-            status: resourceNotFound.status,
-            errorCode: resourceNotFound.errorCode
-        })
+        const unqfy = validate.getUNQfy();
+        let artistId = parseInt(req.params.artistId);
+        validateBody(req.body);
+        let name = req.body.name;
+        let country = req.body.country;
+        let artist = unqfy.getArtistById(artistId);
+        unqfy.updateArtistWithNewData(artist, name, country);
+        let updatedArtist = unqfy.getArtistById(artistId);
+        res.status(200);
+        res.send(JSON.stringify(updatedArtist));
+    } catch (e) {
+        if (e instanceof BadRequest) {
+            res.status(badRequest.status)
+            res.json({
+                status: badRequest.status,
+                errorCode: badRequest.errorCode
+            })
+        } else if (e instanceof NonExistentObjectException) { //si el album no existe
+            res.status(resourceNotFound.status)
+            res.json({
+                status: resourceNotFound.status,
+                errorCode: resourceNotFound.errorCode
+            })
+        }
     }
-}
 });
 
 /*
@@ -126,10 +127,15 @@ artists.route('/artists/:artistId').delete((req, res) => {
 */
 artists.route('/artists').get((req, res) => {
     const unqfy = validate.getUNQfy();
-    let artistName = req.query.name
-    let artist = unqfy.searchArtistByName(artistName);
+    var rta = ''
+    if (req.query.name === undefined) {
+        rta = unqfy.searchArtistByName('');
+    } else {
+        const name = req.query.name;
+        rta = unqfy.searchArtistByName(name)
+    }
     res.status(200);
-    res.json(artist);
+    res.json(rta);
 });
 
 

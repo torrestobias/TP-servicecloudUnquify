@@ -9,6 +9,7 @@ const BadRequest = errors.BadRequest
 const badRequest = new errors.BadRequest();
 const duplicateRequest = new errors.DuplicateEntitie();
 const resourceNotFound = new errors.ResourceNotFound()
+const relatedResourceNotFound = new errors.RelatedResourceNotFound()
 const root = '/albums';
 
 // GET : Obtiene el album correspondiente al id del parametro.
@@ -33,10 +34,15 @@ albums.get(root + '/:albumId', function (req, res) {
 // GET : Obtiene los albums correspondientes al nombre pasado por query param.
 albums.get(root, function (req, res) {
     const unqfy = validate.getUNQfy();
-    const name = req.query.name;
-    const rta = unqfy.searchAlbumsByName(name)
+    var rta = ''
+    if (req.query.name === undefined) {
+        rta = unqfy.searchAlbumsByName('');
+    } else {
+        const name = req.query.name;
+        rta = unqfy.searchAlbumsByName(name)
+    }
     res.status(200)
-    res.json(rta.albums);
+    res.json(rta);
 });
 
 // POST : Agregar un album a un artista.
@@ -64,10 +70,10 @@ albums.post(root, function (req, res) {
                 errorCode: badRequest.errorCode
             })
         } else if (e instanceof NonExistentObjectException) { //si el artista no existe
-            res.status(resourceNotFound.status)
+            res.status(relatedResourceNotFound.status)
             res.json({
-                status: resourceNotFound.status,
-                errorCode: resourceNotFound.errorCode
+                status: relatedResourceNotFound.status,
+                errorCode: relatedResourceNotFound.errorCode
             })
         } else if (e instanceof ExistingObjectException) { //si el album existe
             res.status(duplicateRequest.status)

@@ -14,11 +14,9 @@ const root = '/tracks';
 tracks.get(root + '/:trackId' + '/lyrics', function (req, res) {
 
     const unqfy = validate.getUNQfy();
-    var trackId = 0
-    var trackName = ''
     try {
-        trackId = validate.parseIntEntry(req.params.trackId);
-        trackName = unqfy.getTrackById(trackId).name;
+        var trackId = validate.parseIntEntry(req.params.trackId);
+        var trackName = unqfy.getTrackById(trackId).name;
     } catch (e) {
         if (e instanceof WrongArgumentsException ||
             e instanceof NotANumberException) {
@@ -35,7 +33,7 @@ tracks.get(root + '/:trackId' + '/lyrics', function (req, res) {
             })
         }
     }
-    
+
     unqfy.getLyrics(trackId)
         .then(lyrics => {
             res.status(200)
