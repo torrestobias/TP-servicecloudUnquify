@@ -72,7 +72,9 @@ class ValidateEntry {
 
     // Ejecuta el comando enviado desde MAIN() y captura todas las excepciones del flujo
     execute(input) {
+        console.log(input);
         let args = input;
+        console.log(args);
         const command = args.splice(0, 1);
         try {
             this.itsAValidCommand(command);
@@ -119,14 +121,6 @@ class ValidateEntry {
         return fx(this.parseIntEntry(objId.id));
     };
 
-    /*     getTracksMatchingGenresHandler(unqfy, genres) {
-            return unqfy.getTracksMatchingGenres(genres);
-        };
-    
-        getTracksMatchingArtistHandler(unqfy, artistName) {
-            return unqfy.getTracksMatchingArtist(artistName);
-        }; */
-
     createPlaylistHandler(unqfy, playlistData) {//name, genresToInclude, maxDuration) {
         console.log(playlistData)
         return unqfy.createPlaylist(playlistData.name, this.validArgumentsCheck(["name", "genres", "maxDuration"], this.parseObjectData({ genres: 'Array' }, playlistData)).genres, this.parseIntEntry(playlistData.maxDuration));//name, gen, maxDuration);
@@ -166,8 +160,6 @@ class ValidateEntry {
         getAlbumById: (unqfy, objs) => this.getByIdHandler((id) => unqfy.getAlbumById(id), objs),
         getTrackById: (unqfy, objs) => this.getByIdHandler((id) => unqfy.getTrackById(id), objs),
         getPlaylistById: (unqfy, objs) => this.getByIdHandler((id) => unqfy.getPlaylistById(id), objs),
-        /*         getTracksMatchingGenres: (unqfy, genres) => this.getTracksMatchingGenresHandler(unqfy, genres),
-                getTracksMatchingArtist: (unqfy, artistName) => this.getTracksMatchingArtistHandler(unqfy, artistName), */
         createPlaylist: (unqfy, playlistData) => this.createPlaylistHandler(unqfy, playlistData),//name, genresToInclude, maxDuration),
         deleteTrack: (unqfy, trackData) => this.deleteTrackHandler(unqfy, trackData),
         deleteArtist: (unqfy, artistData) => this.deleteArtistHandler(unqfy, artistData),
