@@ -65,16 +65,16 @@ class UNQfy {
   async getLyrics(id) {
     let track = this.getTrackById(id);
     await this.getTrackLyrics(track);
-    if (!track.hasLyrics) {
+    if (!track.hasLyrics()) {
       await this.getTrackLyrics(track);
     }
+    console.log(track.getLyrics())
     return track.getLyrics();
   }
 
   getTrackLyrics(track) {
     if (track.hasLyrics()) {
       console.log('****  cargando datos desde el filesystem  ***');
-      console.log(track.getLyrics())
     } else {
       console.log('****  obteniendo datos de la red  ***')
       var musicxmatch = new Apimusicxmatch()
