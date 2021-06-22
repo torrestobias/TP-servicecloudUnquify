@@ -60,6 +60,25 @@ artists.route('/artists/:artistId').patch((req, res, next) => {
 });
 
 /*
+* PUT : actualiza un artista con un nombre y un pais.
+*/
+artists.route('/artists/:artistId').put((req, res, next) => {
+    const unqfy = validate.getUNQfy();
+    var updatedArtist = {};
+    try {
+        let artistId = validate.parseIntEntry(req.params.artistId);
+        validateBody(req.body);
+        let artist = unqfy.getArtistById(artistId);
+        unqfy.updateArtistWithNewData(artist, req.body.name, req.body.country);
+        updatedArtist = unqfy.getArtistById(artistId);
+    } catch (e) {
+        next(e);
+    }
+    res.status(200);
+    res.send(JSON.stringify(updatedArtist));
+});
+
+/*
 * DELETE : borrar un artista mediante un id.
 */
 artists.route('/artists/:artistId').delete((req, res, next) => {
