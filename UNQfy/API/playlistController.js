@@ -2,131 +2,118 @@ const express = require('express');
 const ValidateEntry = require("../validate-entry");
 const validate = new ValidateEntry();
 const playlists = express();
+const errors = require("./apiErrors");
+const badRequest = new errors.BadRequest();
 const root = '/playlists';
 
 // GET : Obtener una playlist por id.
 playlists.get(root + '/:id', function (req, res, next) {
     const unqfy = validate.getUNQfy();
+    var playlist = {}
     try {
-        const playlistId = parseInt(req.params.id);
-        const playlist = unqfy.getPlaylistById(playlistId);
-        res.status(200)
-        res.json({
-            "id": playlist.id,
-            "name": playlist.name,
-            "duration": playlist.maxDuration,
-            "tracks": playlist.tracks
-        });
+        playlistId = validate.parseIntEntry(req.params.id);
+        playlist = unqfy.getPlaylistById(playlistId);
+    } catch (e) {
+        next(e);
     }
-    catch {
-        //Levantar error
-    }
+    res.status(200)
+    res.json({
+        "id": playlist.id,
+        "name": playlist.name,
+        "duration": playlist.actualDuration,
+        "tracks": playlist.tracks
+    });
 });
 
 // GET : Obtener una playlist por nombre.
 playlists.get(root, function (req, res, next) {
     const unqfy = validate.getUNQfy();
+    var rta = '';
     try {
+        validateQueryParams(req.query);
+    } catch (e) {
+        next(e);
+    }
+    if (req.query.name === undefined) {
+        rta = unqfy.searchPlaylistByName('');
+    } else {
         const name = req.query.name;
-        const playlist = unqfy.searchByName(name);
-        res.status(200)
-        res.json(playlist.playlists);
+        rta = unqfy.searchPlaylistByName(name);
     }
-    catch {
-        //Levantar error
+    if (req.query.durationLT !== undefined) {
+        rta = rta.filter(playlist => playlist.actualDuration < req.query.durationLT);
     }
+    if (req.query.durationGT !== undefined) {
+        rta = rta.filter(playlist => playlist.actualDuration > req.query.durationGT);
+    }
+
+    res.status(200)
+    res.json(rta);
 });
-/*
+
 // POST : Crea una playlist con máxima duración y tracks pertenecientes a alguno de los géneros.
 playlists.post(root, function (req, res, next) {
-    try {
-        let unqfy = validate.getUNQfy();
+    const unqfy = validate.getUNQfy();
+    var playlist = {};
+    if (req.body.genres !== undefined && req.body.maxDuration !== undefined && req.body.name !== undefined) {
+        console.log("entrepormaxduration")
         let maxDuration = req.body.maxDuration;
         let name = req.body.name;
         let genres = req.body.genres;
-        unqfy.createPlaylist(name, genres, maxDuration);
-        let playlist = unqfy.searchPlaylistByName(name).filter(elem => elem.name.toLowerCase() === name.toLowerCase());
-        res.status(201);
-        res.send(
+        try {
+            unqfy.createPlaylist(name, genres, maxDuration);
+            playlist = unqfy.searchPlaylistByName(name).filter(elem => elem.name.toLowerCase() === name.toLowerCase());
+        } catch (e) {
+            next(e);
+        }
+    } else if (req.body.tracks !== undefined && req.body.name !== undefined) {
+        console.log("entreportracks")
+        let name = req.body.name;
+        let temas = req.body.tracks
+        try {
+            unqfy.createPlaylistFromTracksId(name, temas);
+            playlist = unqfy.searchPlaylistByName(name).filter(elem => elem.name.toLowerCase() === name.toLowerCase());
+        } catch (e) {
+            next(e);
+        }
+    } else {
+        res.status(400)
+        res.json(
             {
-                "id": playlist[0].id,
-                "name": playlist[0].name,
-                "duration": playlist[0].maxDuration,
-                "tracks": playlist[0].tracks
+                status: 400,
+                errorCode: "BAD_REQUEST"
             }
         );
     }
-    catch {
-        //Levantar error
-    }
-});*/
-
-
-playlists.post(root, function (req, res, next) {
-    const unqfy = validate.getUNQfy();
-    try {
-        if (req.body.genres !== undefined && req.body.maxDuration !== undefined && req.body.name !== undefined) {
-            console.log("entrepormaxduration")
-            let maxDuration = req.body.maxDuration;
-            let name = req.body.name;
-            let genres = req.body.genres;
-            unqfy.createPlaylist(name, genres, maxDuration);
-            let playlist = unqfy.searchPlaylistByName(name).filter(elem => elem.name.toLowerCase() === name.toLowerCase());
-            res.status(201);
-            res.send(
-                {
-                    "id": playlist[0].id,
-                    "name": playlist[0].name,
-                    "duration": playlist[0].actualDuration, //o maxDuration?
-                    "tracks": playlist[0].tracks
-                }
-            );
+    res.status(201);
+    res.json(
+        {
+            "id": playlist[0].id,
+            "name": playlist[0].name,
+            "duration": playlist[0].actualDuration, //o maxDuration?
+            "tracks": playlist[0].tracks
         }
-        else if (req.body.tracks !== undefined && req.body.name !== undefined) {
-            console.log("entreportracks")
-            let name = req.body.name;
-            let temas = req.body.tracks
-            let tracks = unqfy.getTracksFromListOfIdTracks(temas)
-            let maxDuration = unqfy.getDurationFromListOfTracks(tracks);
-            let genres = unqfy.getGenresFromListOfTracks(tracks);
-            unqfy.createPlaylist(name, genres, maxDuration);
-            let playlist = unqfy.searchPlaylistByName(name).filter(elem => elem.name.toLowerCase() === name.toLowerCase());
-            res.status(201);
-            res.send(
-                {
-                    "id": playlist[0].id,
-                    "name": playlist[0].name,
-                    "duration": playlist[0].actualDuration, //o maxDuration?
-                    "tracks": playlist[0].tracks
-                }
-            );
-        }
-        else {
-            res.status(404)
-            res.send("los datos ingresados son insuficientes");
-        }
-    }
-    catch {
-        res.json(error.name)
-    }
+    );
 });
 
 // DELETE : Borrar una Playlist.
 playlists.delete(root + '/:id', function (req, res, next) {
     const unqfy = validate.getUNQfy();
     try {
-        let idPlaylistToDelete = parseInt(req.params.id);
+        let idPlaylistToDelete = validate.parseIntEntry(req.params.id);
         let playlist = unqfy.getPlaylistById(idPlaylistToDelete);
         unqfy.deletePlaylist({ "name": playlist.name });
-        res.json({
-            status: 204,
-            response: "ok"
-        });
-
+    } catch (e) {
+        next(e);
     }
-    catch {
-        //Levantar error
-    }
+    res.status(204);
+    res.json({});
 });
+
+function validateQueryParams(query) {
+    if (!(query.name || query.durationLT || query.durationGT)) {
+        throw badRequest
+    }
+}
 
 module.exports = { playlists };

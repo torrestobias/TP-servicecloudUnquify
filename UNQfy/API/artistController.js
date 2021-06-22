@@ -7,7 +7,6 @@ const badRequest = new errors.BadRequest();
 
 /*
 * GET : devuelve el artista con id dado.
-* Faltan los errores y Excepcion si no encuentra al artista
 */
 artists.route('/artists/:artistId').get((req, res, next) => {
     const unqfy = validate.getUNQfy();
@@ -24,7 +23,6 @@ artists.route('/artists/:artistId').get((req, res, next) => {
 
 /*
 * POST : agrega un artista con un nombre y un pais.
-* Faltan los errores y Excepcion si no encuentra al artista
 */
 artists.route('/artists').post((req, res, next) => {
     const unqfy = validate.getUNQfy();
@@ -44,7 +42,6 @@ artists.route('/artists').post((req, res, next) => {
 
 /*
 * PATCH : actualiza un artista con un nombre y un pais.
-* Faltan los errores y Excepcion si no encuentra al artista
 */
 artists.route('/artists/:artistId').patch((req, res, next) => {
     const unqfy = validate.getUNQfy();
@@ -64,7 +61,6 @@ artists.route('/artists/:artistId').patch((req, res, next) => {
 
 /*
 * DELETE : borrar un artista mediante un id.
-* Faltan los errores y Excepcion si no encuentra al artista
 */
 artists.route('/artists/:artistId').delete((req, res, next) => {
     const unqfy = validate.getUNQfy();
@@ -81,7 +77,6 @@ artists.route('/artists/:artistId').delete((req, res, next) => {
 
 /*
 * SEARCH : devuelve un artista.
-* Faltan los errores y Excepcion si no encuentra al artista
 */
 artists.route('/artists').get((req, res, next) => {
     const unqfy = validate.getUNQfy();

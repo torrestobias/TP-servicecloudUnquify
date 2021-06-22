@@ -13,7 +13,7 @@ albums.get(root + '/:albumId', function (req, res, next) {
     const unqfy = validate.getUNQfy();
     var album = {};
     try {
-        const albumId = validate.parseIntEntry(req.params.albumId);
+        albumId = validate.parseIntEntry(req.params.albumId);
         album = unqfy.getAlbumById(albumId);
     } catch (e) {
         next(e);
@@ -88,11 +88,10 @@ albums.delete(root + '/:albumId', function (req, res, next) {
     try {
         let albumId = validate.parseIntEntry(req.params.albumId);
         let album = unqfy.getAlbumById(albumId);
-        console.log(album)
         let artist = unqfy.searchArtistByAlbumId(albumId);
         unqfy.deleteAlbum({ 'artistName': artist.name, 'name': album.name });
         res.status(204);
-        res.json();
+        res.json({});
     } catch (e) {
         next(e);
     }
