@@ -232,7 +232,7 @@ class UNQfy {
     if (artist !== undefined && album !== undefined && track !== undefined) {
       album.delTrack(track.getId());
       this.playlist.forEach(playlist => playlist.removeTracks([track]))
-      this.idTrack -= 1;
+      /*       this.idTrack -= 1; */
       this.save('data.json')
       console.log("Se ha eliminado el track " + track.name + " del album " + album.name + " del artista " + artist.name + " correctamente")
     } else {
@@ -246,7 +246,7 @@ class UNQfy {
       let tracksArtist = this.getTracksMatchingArtist(artistName.artistName)
       this.artists = this.artists.filter(art => art.name !== artist.name)
       this.playlist.forEach(playlist => playlist.removeTracks(tracksArtist))
-      this.idArtist -= 1;
+      /*       this.idArtist -= 1; */
       this.save('data.json')
       console.log("Se ha eliminado el artista " + artist.name + " correctamente")
     } else {
@@ -261,7 +261,7 @@ class UNQfy {
       let tracksAlbum = album.getTracks();
       artist.delAlbumByName(albumData.name);
       this.playlist.forEach(playlist => playlist.removeTracks(tracksAlbum))
-      this.idAlbum -= 1;
+      /*       this.idAlbum -= 1; */
       this.save('data.json')
       console.log("Se ha eliminado el album " + album.name + " del artista " + artist.name + " correctamente")
     } else {
@@ -273,11 +273,11 @@ class UNQfy {
     let playlist = this.playlist.find(playlist => playlist.getName().toLowerCase() === playlistData.name.toLowerCase());
     if (playlist !== undefined) {
       this.playlist = this.playlist.filter(pl => pl.getName().toLowerCase() !== playlistData.name.toLowerCase())
-      this.idPlaylist -= 1;
+      /*       this.idPlaylist -= 1; */
       this.save('data.json')
       console.log("Se ha eliminado la playlist " + playlist.name + " correctamente")
-      // } else {
-      //   throw Error("No se pudo eliminar a playlist " + playlistData.name + " ya que no existe")
+    } else {
+      throw new NonExistentObjectException("Playlist", playlistData.name);
     }
   };
 
@@ -330,18 +330,14 @@ class UNQfy {
     let tracks = this.getAllTracks();
     let tracksToPlaylist = tracks.filter(track => track.trackInclude(genresToInclude))
     let nuevoPlaylist = new PlayList(this.idPlaylist, name, genresToInclude, maxDuration);
-    if (this.playlist.some(playli => playli.name.toLowerCase() == name.toLowerCase())) {
-      throw new ExistingPlaylistException(nuevoPlaylist);
-    }
-    else {
-      //cargo los tracks en la playlist
-      nuevoPlaylist.addTracksToPlaylist(tracksToPlaylist);
-      this.playlist.push(nuevoPlaylist);
-      this.idPlaylist += 1;
-      this.save('data.json');
-      console.log("Creación con éxito, Playlist: " + name);
-      return nuevoPlaylist;
-    }
+    this.checkExistentObject(this.playlist, nuevoPlaylist)
+    //cargo los tracks en la playlist
+    nuevoPlaylist.addTracksToPlaylist(tracksToPlaylist);
+    this.playlist.push(nuevoPlaylist);
+    this.idPlaylist += 1;
+    this.save('data.json');
+    console.log("Creación con éxito, Playlist: " + name);
+    return nuevoPlaylist;
   }
 
   createPlaylistFromTracksId(name, tracksId) {
@@ -351,23 +347,17 @@ class UNQfy {
         * un metodo duration() que retorne la duración de la playlist.
         * un metodo hasTrack(aTrack) que retorna true si aTrack se encuentra en la playlist.
     */
-    let tracks = this.getAllTracks();
-    let tracksToPlaylist = tracks.filter(track => tracksId.includes(track.getId()))
+    let tracksToPlaylist = tracksId.map(trackId => this.getTrackById(trackId))
     let genresToInclude = tracksToPlaylist.reduce((a, b) => a.getGenres().concat(b.getGenres()), []);
-    console.log(genresToInclude)
-    let nuevoPlaylist = new PlayList(this.idPlaylist, name, genresToInclude, maxDuration);
-    if (this.playlist.some(playli => playli.name.toLowerCase() == name.toLowerCase())) {
-      throw new ExistingPlaylistException(nuevoPlaylist);
-    }
-    else {
-      //cargo los tracks en la playlist
-      nuevoPlaylist.addTracksToPlaylist(tracksToPlaylist);
-      this.playlist.push(nuevoPlaylist);
-      this.idPlaylist += 1;
-      this.save('data.json');
-      console.log("Creación con éxito, Playlist: " + name);
-      return nuevoPlaylist;
-    }
+    let nuevoPlaylist = new PlayList(this.idPlaylist, name, genresToInclude);
+    this.checkExistentObject(this.playlist, nuevoPlaylist)
+    //cargo los tracks en la playlist
+    nuevoPlaylist.addTracksToPlaylist(tracksToPlaylist);
+    this.playlist.push(nuevoPlaylist);
+    this.idPlaylist += 1;
+    this.save('data.json');
+    console.log("Creación con éxito, Playlist: " + name);
+    return nuevoPlaylist;
   }
 
   updateYearOfAlbum(album, year) {

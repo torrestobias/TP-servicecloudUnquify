@@ -49,7 +49,6 @@ albums.post(root, function (req, res, next) {
         let artist = unqfy.getArtistById(artistId);
         album = artist.getAlbumByName(name);
     } catch (e) {
-        console.log(e instanceof NonExistentObjectException)
         if (e instanceof NonExistentObjectException) { //si el artista no existe
             res.status(relatedResourceNotFound.status)
             res.json({

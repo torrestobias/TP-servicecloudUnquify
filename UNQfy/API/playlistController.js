@@ -1,9 +1,11 @@
 const express = require('express');
 const ValidateEntry = require("../validate-entry");
+const NonExistentObjectException = require('../exceptions/non-existent-object');
 const validate = new ValidateEntry();
 const playlists = express();
 const errors = require("./apiErrors");
 const badRequest = new errors.BadRequest();
+const relatedResourceNotFound = new errors.RelatedResourceNotFound()
 const root = '/playlists';
 
 // GET : Obtener una playlist por id.
@@ -74,7 +76,15 @@ playlists.post(root, function (req, res, next) {
             unqfy.createPlaylistFromTracksId(name, temas);
             playlist = unqfy.searchPlaylistByName(name).filter(elem => elem.name.toLowerCase() === name.toLowerCase());
         } catch (e) {
-            next(e);
+            if (e instanceof NonExistentObjectException) { //si el track no existe
+                res.status(relatedResourceNotFound.status)
+                res.json({
+                    status: relatedResourceNotFound.status,
+                    errorCode: relatedResourceNotFound.errorCode
+                })
+            } else {
+                next(e);
+            }
         }
     } else {
         res.status(400)
@@ -103,11 +113,13 @@ playlists.delete(root + '/:id', function (req, res, next) {
         let idPlaylistToDelete = validate.parseIntEntry(req.params.id);
         let playlist = unqfy.getPlaylistById(idPlaylistToDelete);
         unqfy.deletePlaylist({ "name": playlist.name });
+        res.status(204);
+        res.json({});
     } catch (e) {
         next(e);
     }
-    res.status(204);
-    res.json({});
+    /*     res.status(204);
+        res.json({}); */
 });
 
 function validateQueryParams(query) {
