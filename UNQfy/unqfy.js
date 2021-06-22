@@ -64,22 +64,20 @@ class UNQfy {
 
   async getLyrics(id) {
     let track = this.getTrackById(id);
-    await this.getTrackLyrics(track);
-    if (!track.hasLyrics()) {
-      await this.getTrackLyrics(track);
-    }
-    console.log(track.getLyrics())
-    return track.getLyrics();
+    const lyrics = await this.getTrackLyrics(track);
+    return lyrics;
   }
 
-  getTrackLyrics(track) {
+  async getTrackLyrics(track) {
     if (track.hasLyrics()) {
       console.log('****  cargando datos desde el filesystem  ***');
     } else {
       console.log('****  obteniendo datos de la red  ***')
-      var musicxmatch = new Apimusicxmatch()
-      musicxmatch.getLyricByTitle(track, this)
+      const musicxmatch = new Apimusicxmatch()
+      let lyrics = await musicxmatch.getLyricByTitle(track, this)
+      console.log("mostrando lyric:"+lyrics)
     }
+    return track.getLyrics()
   }
 
   checkExistentObject(objects, newObject) {

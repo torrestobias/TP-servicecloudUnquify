@@ -33,7 +33,7 @@ class Apimusicxmatch {
 
     getLyricByTitle(track, unqfy) {
         let title = track.getName()
-        rp.get(
+        return rp.get(
             this.setSearchOptions('/track.search', title)
         ).then((response) => {
             var header = response.message.header;
@@ -45,21 +45,19 @@ class Apimusicxmatch {
             if (body.track_list.length === 0) {
                 throw new Error('no existe ningun track con el nombre indicado');
             }
-
-            Promise.resolve(body.track_list[0].track.track_id)
-                .then((result) => {
-                    rp.get(
-                        this.setLyricOptions('/track.lyrics.get', result)
-                    ).then((response) => {
-                        var header = response.message.header;
-                        var body = response.message.body;
-                        if (header.status_code !== 200) {
-                            throw new Error('status code != 200');
-                        }
-                        track.setLyrics(JSON.stringify(body.lyrics.lyrics_body));
-                        unqfy.save('data.json')
-                    })
-                })
+            var trackId = body.track_list[0].track.track_id
+            return rp.get(
+                this.setLyricOptions('/track.lyrics.get', trackId)
+            ).then((response) => {
+                var header = response.message.header;
+                var body = response.message.body;
+                if (header.status_code !== 200) {
+                    throw new Error('status code != 200');
+                }
+                track.setLyrics(JSON.stringify(body.lyrics.lyrics_body));
+                unqfy.save('data.json')
+                return JSON.stringify(body.lyrics.lyrics_body)
+            })
         }).catch((error) => {
             console.log('algo salio mal', error);
         });

@@ -87,11 +87,11 @@ artists.route('/artists/:artistId').delete((req, res, next) => {
         let artistId = validate.parseIntEntry(req.params.artistId);
         let artist = unqfy.getArtistById(artistId);
         unqfy.deleteArtist({ 'artistName': artist.name });
+        res.status(204);
+        res.json({});
     } catch (e) {
-        next(e);
+        next(e);//throw
     }
-    res.status(204);
-    res.json({});
 });
 
 /*
