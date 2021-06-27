@@ -404,20 +404,6 @@ class UNQfy {
     this.save();
   }
 
-  // getAlbumsForArtisSpotify(artistIdSpotify, cred, request, artistName) {
-  //   const options = {
-  //     url: 'https://api.spotify.com/v1/artists/' + artistIdSpotify + '/albums?limit=5',  //////////////////Limite de 5 para no cargar tanta cantidad 
-  //     headers: { Authorization: 'Bearer ' + cred },
-  //     json: true,
-  //   };
-  //  rp.get(options).then((response) => {
-  //     let listaAlbums = response.items;
-  //     this.addListOfAlbumsToArtist(artistName, listaAlbums);
-  //     //this.save('data.json');
-  //   })
-  // }
-
-
   addListOfAlbumsToArtist(artistName, listAlbums){
     var artist = this.getArtistByName(artistName);
     try{
