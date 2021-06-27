@@ -179,7 +179,7 @@ class ValidateEntry {
     executeCommand(command, args) {
         const unqfy = this.getUNQfy(); 
         this.functionList[command](unqfy, this.makeDataObject(args)); 
-        //this.saveUNQfy(unqfy,'data.json'); 
+        this.saveUNQfy(this.getUNQfy(),'data.json'); 
     }
 }
 
