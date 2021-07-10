@@ -63,21 +63,23 @@ class UNQfy {
   };
 
   async getLyrics(id) {
-    let track = this.getTrackById(id);
+    const track = this.getTrackById(id);
     const lyrics = await this.getTrackLyrics(track);
+    console.log("mostrando lyric:"+JSON.stringify(JSON.parse(lyrics)));
     return lyrics;
   }
 
   async getTrackLyrics(track) {
+    let lyrics = null;
     if (track.hasLyrics()) {
       console.log('****  cargando datos desde el filesystem  ***');
+      lyrics = track.getLyrics();
     } else {
       console.log('****  obteniendo datos de la red  ***')
-      const musicxmatch = new Apimusicxmatch()
-      let lyrics = await musicxmatch.getLyricByTitle(track, this)
-      console.log("mostrando lyric:"+lyrics)
+      const musicxmatch = new Apimusicxmatch();
+      lyrics = await musicxmatch.getLyricByTitle(track, this);
     }
-    return track.getLyrics()
+    return lyrics;
   }
 
   checkExistentObject(objects, newObject) {
