@@ -13,7 +13,7 @@ const resourceNotFound = new errors.ResourceNotFound();
 const relatedResourceNotFound = new errors.RelatedResourceNotFound();
 const app = express();
 app.use(bodyParser.json());
-
+const NotificationSender = require('./gmail-tools/send-mail-example/sendMail')
 
 var temporaryMapFileServer = [];
 
@@ -57,6 +57,7 @@ app.post('/api/unsubscribe', async (req, res, next) => {
   try {
     subscribeValidateBody(req.body);
     const artist = await getArtist({ route: `/api/artists/${req.body.artistId}` });
+    //si no es necesario manejar artista inexistente se puede obviar la linea de arriba
     unsubscribeTo(artist.id, req.body.email);
   } catch (e) {
     next(e)
@@ -66,14 +67,11 @@ app.post('/api/unsubscribe', async (req, res, next) => {
 });
 
 //Envía vía mail, un mensaje a todos los interesados suscritos a este artista. Se utilizará el subject y cuerpo de email pasados en el body del request.  Este EP chequea usando la API de UNQfy que el artista exista.
-app.post('/api/notify', (req, res, next) => {
+app.post('/api/notify', async (req, res, next) => {
   try {
     notifyValidateBody(req.body);
-    const artistId = req.body.artistId;
-    const subject = req.body.subject;
-    const message = req.body.message;
-    const artist = getArtist({ route: `/api/artists/:${artistId}` });
-    notifySubscribers(artist, subject, message);
+    const artist = await getArtist({ route: `/api/artists/${req.body.artistId}` });
+    notifySubscribers(artist.id, req.body.subject, req.body.message);
   } catch (e) {
     next(e);
     /*TODO: 
@@ -95,7 +93,7 @@ app.get('/api/subscriptions', async (req, res, next) => {
     const artistId = req.query.artistId;
     const artist = await getArtist({ route: `/api/artists/${artistId}` })
     console.log('EpSubscripitons: ' + artist.id)
-    rta = getSubscribers(artist.id)
+    rta = subscribersArtistJsonResponse(artist.id)
     res.status(200)
     res.json(rta)
   } catch (e) {
@@ -199,30 +197,30 @@ function unsubscribeTo(id, email) {
   }
 }
 
-function notifySubscribers(artist, subject, message) {
-  const subscribers = temporaryMapFileServer.get(`${artist.artistId}`);
-  if (subscribers !== undefined) {
-    subscribers.forEach(subscriberEmail => sendMessage(subject, message, subscriberEmail))
-  }
+function notifySubscribers(artistId, subject, message) {
+  const subscribers = getSubscribers(artistId)
+  subscribers.forEach(subscriberEmail => sendMessage(subject, message, subscriberEmail))
 }
 
 function sendMessage(subject, message, subscriber) {
-  //TODO
+  new NotificationSender().send(subject, message, subscriber)
 }
 
 function getSubscribers(id) {
   const registroArtistSubscribers = temporaryMapFileServer.find((artistSubscribers) => artistSubscribers.artistId === id);
   if (registroArtistSubscribers !== undefined) {
-    return ({
-      "artistId": `${id}`,
-      "subscriptors": registroArtistSubscribers.subscribers
-    })
+    return registroArtistSubscribers.subscribers
   } else {
-    return ({
-      "artistId": `${id}`,
-      "subscriptors": []
-    })
+    return []
   }
+}
+
+function subscribersArtistJsonResponse(artistId) {
+  const subscriptors = getSubscribers(artistId)
+  return ({
+    "artistId": artistId,
+    "subscriptors": subscriptors
+  })
 }
 
 function deleteSubscribers(id) {
