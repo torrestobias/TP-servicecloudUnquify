@@ -344,7 +344,11 @@ class UNQfy {
     console.log("Creación con éxito, Playlist: " + name);
     return nuevoPlaylist;
   }
-
+  
+  updateArtistWithNewData(artist, name, country) {
+    artist.updateArtist(name, country);
+    this.save();
+  }
   createPlaylistFromTracksId(name, tracksId) {
     /*** Crea una playlist y la agrega a unqfy. ***
       El objeto playlist creado debe soportar (al menos):
@@ -386,7 +390,7 @@ class UNQfy {
       headers: { Authorization: 'Bearer ' + cred },
       json: true,
     };
-    rp.get(options).then((response) => {
+    return rp.get(options).then((response) => {
       let artistId = response.artists.items[0].id;
       return artistId;
     }).then((response) => {
@@ -399,19 +403,23 @@ class UNQfy {
     }).then((response) => {
       let listaAlbums = response.items;
       this.addListOfAlbumsToArtist(artistName, listaAlbums);
-      this.save();
     })
       .catch((ex) => {
         throw new NonExistentObjectException(ex, "Algo salio mal")
       })
   }
 
+<<<<<<< HEAD
   updateArtistWithNewData(artist, name, country) {
     artist.updateArtist(name, country);
     this.save();
   }
 
   addListOfAlbumsToArtist(artistName, listAlbums) {
+=======
+  
+  addListOfAlbumsToArtist(artistName, listAlbums){
+>>>>>>> cleanapi
     var artist = this.getArtistByName(artistName);
     try {
       listAlbums.map(elem => {
@@ -423,7 +431,7 @@ class UNQfy {
       throw error;
     }
   }
-
+  
   save(filename = 'data.json') {
     const serializedData = picklify.picklify(this);
     fs.writeFileSync(filename, JSON.stringify(serializedData, null, 2));

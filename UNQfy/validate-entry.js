@@ -91,56 +91,56 @@ class ValidateEntry {
     }
 
     // Handlers de cada comando -->
-    addArtistHandler(unqfy, artistData) {
+    async addArtistHandler(unqfy, artistData) {
         return unqfy.addArtist(this.validArgumentsCheck(["name", "country"], artistData));
     };
 
-    deleteArtistHandler(unqfy, artistData) {
+    async deleteArtistHandler(unqfy, artistData) {
         return unqfy.deleteArtist(this.validArgumentsCheck(["artistName"], artistData));
     }
 
-    addAlbumHandler(unqfy, albumData) {
+    async addAlbumHandler(unqfy, albumData) {
         return unqfy.addAlbum(this.parseIntEntry(albumData.artistId), this.validArgumentsCheck(["artistId", "name", "year"], this.parseObjectData({ year: 'Number' }, albumData)));
     };
 
-    deleteAlbumHandler(unqfy, albumData) {
-        return unqfy.deleteAlbum(this.validArgumentsCheck(["artistName", "name"], albumData));
+    async deleteAlbumHandler(unqfy, albumData) {
+    return unqfy.deleteAlbum(this.validArgumentsCheck(["artistName", "name"], albumData));
     }
 
-    addTrackHandler(unqfy, trackData) {
+    async addTrackHandler(unqfy, trackData) {
         return unqfy.addTrack(this.parseIntEntry(trackData.albumId), this.validArgumentsCheck(["albumId", "name", "duration", "genres"], this.parseObjectData({ duration: 'Number', genres: 'Array' }, trackData)));
     };
 
-    deleteTrackHandler(unqfy, trackData) {
+    async deleteTrackHandler(unqfy, trackData) {
         return unqfy.deleteTrack(this.validArgumentsCheck(["artistName", "name"], trackData));
     }
 
-    getByIdHandler(fx, objId) {
+    async getByIdHandler(fx, objId) {
         return fx(this.parseIntEntry(objId.id));
     };
 
-    createPlaylistHandler(unqfy, playlistData) {//name, genresToInclude, maxDuration) {
+    async createPlaylistHandler(unqfy, playlistData) {//name, genresToInclude, maxDuration) {
         console.log(playlistData)
         return unqfy.createPlaylist(playlistData.name, this.validArgumentsCheck(["name", "genres", "maxDuration"], this.parseObjectData({ genres: 'Array' }, playlistData)).genres, this.parseIntEntry(playlistData.maxDuration));//name, gen, maxDuration);
     };
 
-    deletePlaylistHandler(unqfy, playlistData) {
+    async deletePlaylistHandler(unqfy, playlistData) {
         return unqfy.deletePlaylist(this.validArgumentsCheck(["name"], playlistData));
     }
 
-    searchByNameHandler(unqfy, objs) {
+    async searchByNameHandler(unqfy, objs) {
         return unqfy.searchByName(this.validArgumentsCheck(["name"], objs).name);
     }
 
-    searchTracksByArtistHandler(unqfy, objs) {
+    async searchTracksByArtistHandler(unqfy, objs) {
         return unqfy.searchTracksByArtist(this.validArgumentsCheck(["name"], objs).name);
     }
 
-    searchTracksByGenreHandler(unqfy, objs) {
+    async searchTracksByGenreHandler(unqfy, objs) {
         return unqfy.searchTracksByGenre(this.validArgumentsCheck(["genre"], objs).genre);
     }
 
-    populateAlbumsForArtistsHandler(unqfy, objs){
+    async populateAlbumsForArtistsHandler(unqfy, objs){
         return unqfy.populateAlbumsForArtist(this.validArgumentsCheck(["name"], objs).name);
     }
 
@@ -178,8 +178,10 @@ class ValidateEntry {
     // Carga una instancia de UNQfy, llama la funcion con el dataObject y guarda la instancia de UNQfy.
     executeCommand(command, args) {
         const unqfy = this.getUNQfy(); 
-        this.functionList[command](unqfy, this.makeDataObject(args)); 
-        this.saveUNQfy(this.getUNQfy(),'data.json'); 
+        this.functionList[command](unqfy, this.makeDataObject(args))
+        .then(()=>{
+            this.saveUNQfy(unqfy,'data.json'); 
+        }); 
     }
 }
 
