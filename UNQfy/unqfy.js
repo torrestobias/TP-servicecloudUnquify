@@ -47,12 +47,12 @@ class UNQfy {
     return newUser;
   }
 
-  addAlbum(artistId, albumData) {
+  async addAlbum(artistId, albumData) {
     let nuevoAlbum = new Album(this.idAlbum, albumData.name, albumData.year);
     let artist = this.getArtistById(artistId);
     this.checkExistentObject(artist.getAlbums(), nuevoAlbum)
     this.incrementIdAlbum();
-    this.addNewObject(album => artist.addNewAlbum(album), nuevoAlbum)
+    this.addNewObject((album) => artist.addNewAlbum(album), nuevoAlbum)
 
     return nuevoAlbum;
   };
@@ -95,7 +95,7 @@ class UNQfy {
 
   addNewObject(fx, newObject) {
     fx(newObject);
-    console.log(`Se crea el ${newObject.constructor.name}: ${newObject.getName()}`);
+    console.log(`"✓ Se crea el ${newObject.constructor.name}: ${newObject.getName()}`);
   }
 
   incrementIdArtist() {

@@ -64,6 +64,7 @@ playlists.post(root, function (req, res, next) {
         let genres = req.body.genres;
         try {
             unqfy.createPlaylist(name, genres, maxDuration);
+            validate.saveUNQfy(unqfy, 'data.json');
             playlist = unqfy.searchPlaylistByName(name).filter(elem => elem.name.toLowerCase() === name.toLowerCase());
         } catch (e) {
             next(e);
@@ -74,6 +75,7 @@ playlists.post(root, function (req, res, next) {
         let temas = req.body.tracks
         try {
             unqfy.createPlaylistFromTracksId(name, temas);
+            validate.saveUNQfy(unqfy, 'data.json');
             playlist = unqfy.searchPlaylistByName(name).filter(elem => elem.name.toLowerCase() === name.toLowerCase());
         } catch (e) {
             if (e instanceof NonExistentObjectException) { //si el track no existe
@@ -113,6 +115,7 @@ playlists.delete(root + '/:id', function (req, res, next) {
         let idPlaylistToDelete = validate.parseIntEntry(req.params.id);
         let playlist = unqfy.getPlaylistById(idPlaylistToDelete);
         unqfy.deletePlaylist({ "name": playlist.name });
+        validate.saveUNQfy(unqfy, 'data.json');
         res.status(204);
         res.json({});
     } catch (e) {

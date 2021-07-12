@@ -30,12 +30,11 @@ class Artist extends Subject {
         return this.albums.find(album => album.getName() == name);
     }
 
-    addNewAlbum(album) {
+    async addNewAlbum(album) {
         if (this.albums.length < 1 ||
             !this.albums.some(alb => alb.name.toLowerCase() === album.name.toLowerCase())) {
             this.albums.push(album);
-            super.notify(this, album.name);
-            console.log("✓ Se crea el album " + album.name);
+            await super.notify(this, album.name);
         }
         else { console.log("X El album " + album.name + " ya está creado.") }
     }

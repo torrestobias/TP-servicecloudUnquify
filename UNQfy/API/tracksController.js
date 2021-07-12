@@ -37,6 +37,7 @@ tracks.post(root, function (req, res, next) {
         let albumId = validate.parseIntEntry(req.body.albumId);
         console.log(albumId)
         unqfy.addTrack(albumId, { 'name': name, 'genres': req.body.genres, 'duration': req.body.duration });
+        validate.saveUNQfy(unqfy, 'data.json');
         track = unqfy.searchTracksByName(name).filter(elem => elem.name.toLowerCase() === name.toLowerCase());
         res.status(201);
         res.send(JSON.stringify(track));
