@@ -10,6 +10,9 @@ const NonExistentObjectException = require('./exceptions/non-existent-object');
 const Apimusicxmatch = require("./apimusicxmatch/apimusicmatch");
 const configJson = require('./spotifyCreds.json');
 const { RSA_PKCS1_OAEP_PADDING } = require('constants');
+const { NotifyFailed } = require('./NEWSLETTER/apiErrors');
+const Notifyer = require('./observer');
+const Subject = require('./subject')
 
 class UNQfy {
 
@@ -22,14 +25,16 @@ class UNQfy {
     this.idTrack = 0;
     this.idUser = 0;
     this.idPlaylist = 0;
+    this.notifyer = new Notifyer();
   }
 
   addArtist(artistData) {
     let nuevoArtista = new Artist(artistData.name, artistData.country, this.idArtist);
     this.checkExistentObject(this.artists, nuevoArtista)
+    nuevoArtista.subscribe(this.notifyer);
     this.incrementIdArtist();
     this.addNewObject(artist => this.artists.push(artist), nuevoArtista)
-    
+
     return nuevoArtista;
   };
 
@@ -38,7 +43,7 @@ class UNQfy {
     this.checkExistentObject(this.users, newUser)
     this.incrementIdUser();
     this.addNewObject(user => this.users.push(user), newUser)
-    
+
     return newUser;
   }
 
@@ -48,7 +53,7 @@ class UNQfy {
     this.checkExistentObject(artist.getAlbums(), nuevoAlbum)
     this.incrementIdAlbum();
     this.addNewObject(album => artist.addNewAlbum(album), nuevoAlbum)
-    
+
     return nuevoAlbum;
   };
 
@@ -58,14 +63,14 @@ class UNQfy {
     this.checkExistentObject(album.getTracks(), nuevoTrack)
     this.incrementIdTrack();
     this.addNewObject(track => album.addNewTrack(track), nuevoTrack)
-    
+
     return nuevoTrack;
   };
 
   async getLyrics(id) {
     const track = this.getTrackById(id);
     const lyrics = await this.getTrackLyrics(track);
-    console.log("mostrando lyric:"+JSON.stringify(JSON.parse(lyrics)));
+    console.log("mostrando lyric:" + JSON.stringify(JSON.parse(lyrics)));
     return lyrics;
   }
 
@@ -233,7 +238,7 @@ class UNQfy {
       album.delTrack(track.getId());
       this.playlist.forEach(playlist => playlist.removeTracks([track]))
       /*       this.idTrack -= 1; */
-     
+
       console.log("Se ha eliminado el track " + track.name + " del album " + album.name + " del artista " + artist.name + " correctamente")
     } else {
       throw new NonExistentObjectException("Track", trackData.name);
@@ -247,7 +252,7 @@ class UNQfy {
       this.artists = this.artists.filter(art => art.name !== artist.name)
       this.playlist.forEach(playlist => playlist.removeTracks(tracksArtist))
       /*       this.idArtist -= 1; */
-      
+
       console.log("Se ha eliminado el artista " + artist.name + " correctamente")
     } else {
       throw new NonExistentObjectException("Artist", artistName.artistName);
@@ -262,7 +267,7 @@ class UNQfy {
       artist.delAlbumByName(albumData.name);
       this.playlist.forEach(playlist => playlist.removeTracks(tracksAlbum))
       /*       this.idAlbum -= 1; */
-      
+
       console.log("Se ha eliminado el album " + album.name + " del artista " + artist.name + " correctamente")
     } else {
       throw new NonExistentObjectException("Album", albumData.name);
@@ -274,7 +279,7 @@ class UNQfy {
     if (playlist !== undefined) {
       this.playlist = this.playlist.filter(pl => pl.getName().toLowerCase() !== playlistData.name.toLowerCase())
       /*       this.idPlaylist -= 1; */
-      
+
       console.log("Se ha eliminado la playlist " + playlist.name + " correctamente")
     } else {
       throw new NonExistentObjectException("Playlist", playlistData.name);
@@ -335,7 +340,7 @@ class UNQfy {
     nuevoPlaylist.addTracksToPlaylist(tracksToPlaylist);
     this.playlist.push(nuevoPlaylist);
     this.idPlaylist += 1;
-    
+
     console.log("Creación con éxito, Playlist: " + name);
     return nuevoPlaylist;
   }
@@ -355,7 +360,7 @@ class UNQfy {
     nuevoPlaylist.addTracksToPlaylist(tracksToPlaylist);
     this.playlist.push(nuevoPlaylist);
     this.idPlaylist += 1;
-    
+
     console.log("Creación con éxito, Playlist: " + name);
     return nuevoPlaylist;
   }
@@ -384,19 +389,19 @@ class UNQfy {
     rp.get(options).then((response) => {
       let artistId = response.artists.items[0].id;
       return artistId;
-    }).then((response)=>{
+    }).then((response) => {
       const options = {
         url: 'https://api.spotify.com/v1/artists/' + response + '/albums?limit=5',  //////////////////Limite de 5 para no cargar tanta cantidad 
         headers: { Authorization: 'Bearer ' + cred },
         json: true,
       };
-     return rp.get(options);
+      return rp.get(options);
     }).then((response) => {
       let listaAlbums = response.items;
       this.addListOfAlbumsToArtist(artistName, listaAlbums);
       this.save();
     })
-    .catch((ex) => {
+      .catch((ex) => {
         throw new NonExistentObjectException(ex, "Algo salio mal")
       })
   }
@@ -406,15 +411,15 @@ class UNQfy {
     this.save();
   }
 
-  addListOfAlbumsToArtist(artistName, listAlbums){
+  addListOfAlbumsToArtist(artistName, listAlbums) {
     var artist = this.getArtistByName(artistName);
-    try{
+    try {
       listAlbums.map(elem => {
         artist.addNewAlbum(new Album(this.idAlbum, elem.name, elem.release_date.slice(0, 4)));
         this.incrementIdAlbum();
       })
     }
-    catch(error){
+    catch (error) {
       throw error;
     }
   }
@@ -427,7 +432,7 @@ class UNQfy {
   static load(filename) {
     const serializedData = fs.readFileSync(filename, { encoding: 'utf-8' });
     //COMPLETAR POR EL ALUMNO: Agregar a la lista todas las clases que necesitan ser instanciadas
-    const classes = [UNQfy, Artist, Album, Track, PlayList];
+    const classes = [UNQfy, Artist, Album, Track, PlayList, Notifyer, Subject];
     return picklify.unpicklify(JSON.parse(serializedData), classes);
   }
 }
@@ -438,5 +443,5 @@ module.exports = {
   Artist: Artist,
   Album: Album,
   Track: Track,
-  PlayList: PlayList,
+  PlayList: PlayList
 };

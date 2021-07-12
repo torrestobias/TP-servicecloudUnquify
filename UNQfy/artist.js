@@ -1,6 +1,9 @@
-class Artist {
+const Subject = require('./subject')
+
+class Artist extends Subject {
 
     constructor(name, country, id) {
+        super();
         this.id = id;
         this.name = name;
         this.country = country;
@@ -28,18 +31,13 @@ class Artist {
     }
 
     addNewAlbum(album) {
-        if(this.albums.length<1){
-           this.albums.push(album);
-           console.log("✓ Se crea el album "+album.name)
+        if (this.albums.length < 1 ||
+            !this.albums.some(alb => alb.name.toLowerCase() === album.name.toLowerCase())) {
+            this.albums.push(album);
+            super.notify(this, album.name);
+            console.log("✓ Se crea el album " + album.name);
         }
-        else{
-            if(!this.albums.some(alb => alb.name.toLowerCase() === album.name.toLowerCase())) {
-                this.albums.push(album);
-                console.log("✓ Se crea el album "+album.name);
-            }
-            else{console.log("X El album "+album.name+" ya está creado.")}
-        }
-
+        else { console.log("X El album " + album.name + " ya está creado.") }
     }
 
     delAlbum(id) {
@@ -54,7 +52,7 @@ class Artist {
         //TODO
     }
 
-    updateArtist(name, country){
+    updateArtist(name, country) {
         this.name = name;
         this.country = country;
     }
@@ -63,14 +61,11 @@ class Artist {
         const tracks = this.albums.flatMap(album => album.tracks);
         return tracks;
     }
-    
-    thisAlbumIsCreated(album){
-        let rta = (this.albums.some(alb => alb.name === album.name ))
+
+    thisAlbumIsCreated(album) {
+        let rta = (this.albums.some(alb => alb.name === album.name))
         return rta;
-      }
-
-
-
+    }
 }
 
 module.exports = Artist;
