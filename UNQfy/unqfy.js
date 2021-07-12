@@ -409,17 +409,7 @@ class UNQfy {
       })
   }
 
-<<<<<<< HEAD
-  updateArtistWithNewData(artist, name, country) {
-    artist.updateArtist(name, country);
-    this.save();
-  }
-
-  addListOfAlbumsToArtist(artistName, listAlbums) {
-=======
-  
   addListOfAlbumsToArtist(artistName, listAlbums){
->>>>>>> cleanapi
     var artist = this.getArtistByName(artistName);
     try {
       listAlbums.map(elem => {
