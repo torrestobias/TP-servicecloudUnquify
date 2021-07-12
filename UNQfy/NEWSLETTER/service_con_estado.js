@@ -1,8 +1,8 @@
 const express = require('express'); // Express web server framework
 const bodyParser = require('body-parser');
-const fs = require('fs');
 const { errorHandlerF } = require('./errorHandler')
 const ArtistNewsletter = require('./ArtistNewsletter')
+const fs = require('fs');
 const DATA_FILE = 'app_data/data.json';
 const PORT = 5000;
 const errors = require("./apiErrors");
@@ -14,8 +14,6 @@ const relatedResourceNotFound = new errors.RelatedResourceNotFound();
 const app = express();
 app.use(bodyParser.json());
 const NotificationSender = require('./gmail-tools/send-mail-example/sendMail')
-
-var temporaryMapFileServer = [];
 
 const apiServer = "http://localhost:8000"/*"https://sietelotos.herokuapp.com"*/
 
@@ -44,7 +42,7 @@ app.post('/api/subscribe', async (req, res, next) => {
   try {
     subscribeValidateBody(req.body);
     const artist = await getArtist({ route: `/api/artists/${req.body.artistId}` });
-    subscribeTo(artist.id, req.body.email);
+    await subscribeTo(artist.id, req.body.email);
     res.status(200);
     res.json({});
   } catch (e) {
@@ -58,7 +56,7 @@ app.post('/api/unsubscribe', async (req, res, next) => {
     subscribeValidateBody(req.body);
     const artist = await getArtist({ route: `/api/artists/${req.body.artistId}` });
     //si no es necesario manejar artista inexistente se puede obviar la linea de arriba
-    unsubscribeTo(artist.id, req.body.email);
+    await unsubscribeTo(artist.id, req.body.email);
   } catch (e) {
     next(e)
   }
@@ -71,7 +69,7 @@ app.post('/api/notify', async (req, res, next) => {
   try {
     notifyValidateBody(req.body);
     const artist = await getArtist({ route: `/api/artists/${req.body.artistId}` });
-    notifySubscribers(artist.id, req.body.subject, req.body.message);
+    await notifySubscribers(artist.id, req.body.subject, req.body.message);
   } catch (e) {
     next(e);
     /*TODO: 
@@ -93,7 +91,7 @@ app.get('/api/subscriptions', async (req, res, next) => {
     const artistId = req.query.artistId;
     const artist = await getArtist({ route: `/api/artists/${artistId}` })
     console.log('EpSubscripitons: ' + artist.id)
-    rta = subscribersArtistJsonResponse(artist.id)
+    rta = await subscribersArtistJsonResponse(artist.id)
     res.status(200)
     res.json(rta)
   } catch (e) {
@@ -107,7 +105,7 @@ app.delete('/api/subscriptions', async (req, res, next) => {
   try {
     artistValidateBody(req.body);
     const artist = await getArtist({ route: `/api/artists/${req.body.artistId}` });
-    deleteSubscribers(artist.id);
+    await deleteSubscribers(artist.id);
     res.status(200);
     res.json({});
   } catch (e) {
@@ -117,8 +115,6 @@ app.delete('/api/subscriptions', async (req, res, next) => {
     JSON inválido.
     */
   }
-  /*     res.status(204);rariiiiisimoo
-    res.json(); */
 });
 
 app.use(errorHandlerF);
@@ -129,34 +125,27 @@ app.all('*', function (req, res, next) {
     errorCode: resourceNotFound.errorCode
   })
 });
-/*
-app.get('/api/ping', (req, res) => {
-  console.log('ping arrived!');
-  fs.readFile(DATA_FILE, (err, data) => {
-    if (err) { // El archivo no existe
-      data = { count: 0 };
-    } else {
-      data = JSON.parse(data);
+ 
+function readData() {
+  console.log('accesing fs!');
+  try {
+    return fs.readFileSync(DATA_FILE, { encoding: 'utf-8' });
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      console.log('enError' + err.code)
+      writeData({ "fs": [] })
+      return fs.readFileSync(DATA_FILE, { encoding: 'utf-8' });
     }
+  }
+}
 
-    data.count = data.count + 1;
-    fs.writeFile(DATA_FILE, JSON.stringify(data, null, 2), (err) => {
-      console.log('Cantidad de pings: ' + data.count);
-      res.json({message: 'pong'});
-    });
+function writeData(data) {
+  console.log(data);
+  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), (err) => {
+    console.log('saving onto fs!');
   });
-}).get('/api/echo', (req, res) => {
-  var message = req.query.message || req.body.message || 'no message provided'
-  console.log('echoing ' + message);
-  res.json({message: message});
-});
-
-// manage 404 not found
-app.use((req, res) => {
-  res.status(404);
-  res.json({status: 404, errorCode: 'RESOURCE_NOT_FOUND'});
-});*/
-
+}
+ 
 function artistValidateBody(body) {
   if (body.artistId === undefined) {
     throw incompleteJSON
@@ -175,62 +164,79 @@ function notifyValidateBody(body) {
   }
 }
 
-function subscribeTo(id, email) {
-  const registroArtistSubscribers = temporaryMapFileServer.find((artistSubscribers) => artistSubscribers.artistId === id);
+async function subscribeTo(id, email) {
+  let temporaryFs = JSON.parse(readData()).fs
+  console.log(temporaryFs)
+  const registroArtistSubscribers = temporaryFs.find((artistSubscribers) => artistSubscribers.artistId === id);
   if (registroArtistSubscribers !== undefined) {
-    temporaryMapFileServer.map((registro) => {
-      if (registro.artistId === id) { registro.addSubscriber(email) }
+    temporaryFs.map((registro) => {
+      if (registro.artistId === id) { new ArtistNewsletter(id, registro.subscribers).addSubscriber(email) }
     })
   } else {
-    temporaryMapFileServer.push(new ArtistNewsletter(id, [email]))
+    temporaryFs.push(new ArtistNewsletter(id, [email]))
   }
+  writeData({ "fs": temporaryFs })
 }
 
-function unsubscribeTo(id, email) {
-  const registroArtistSubscribers = temporaryMapFileServer.find((artistSubscribers) => artistSubscribers.artistId === id);
+async function unsubscribeTo(id, email) {
+  var temporaryFs = JSON.parse(readData()).fs
+  const registroArtistSubscribers = temporaryFs.find((artistSubscribers) => artistSubscribers.artistId === id);
   if (registroArtistSubscribers !== undefined) {
-    temporaryMapFileServer.map((registro) => {
+    temporaryFs = temporaryFs.map((registro) => {
       if (registro.artistId === id) {
-        registro.deleteSubscriber(email)
-      }
+        newRegister = new ArtistNewsletter(id, registro.subscribers)
+        newRegister.deleteSubscriber(email)
+        return newRegister
+      } else { return registro }
     })
+    console.log(temporaryFs)
+    writeData({ "fs": temporaryFs })
   }
 }
 
-function notifySubscribers(artistId, subject, message) {
-  const subscribers = getSubscribers(artistId)
+async function notifySubscribers(artistId, subject, message) {
+  const subscribers = await getSubscribers(artistId)
   subscribers.forEach(subscriberEmail => sendMessage(subject, message, subscriberEmail))
 }
 
-function sendMessage(subject, message, subscriber) {
-  new NotificationSender().send(subject, message, subscriber)
+async function sendMessage(subject, message, subscriber) {
+  await new NotificationSender().send(subject, message, subscriber)
 }
 
-function getSubscribers(id) {
-  const registroArtistSubscribers = temporaryMapFileServer.find((artistSubscribers) => artistSubscribers.artistId === id);
+async function getSubscribers(id) {
+  let temporaryFs = JSON.parse(readData()).fs
+  const registroArtistSubscribers = temporaryFs.find((artistSubscribers) => artistSubscribers.artistId === id);
   if (registroArtistSubscribers !== undefined) {
+    console.log(registroArtistSubscribers)
     return registroArtistSubscribers.subscribers
   } else {
     return []
   }
 }
 
-function subscribersArtistJsonResponse(artistId) {
-  const subscriptors = getSubscribers(artistId)
+async function subscribersArtistJsonResponse(artistId) {
+  const subscriptors = await getSubscribers(artistId)
   return ({
     "artistId": artistId,
     "subscriptors": subscriptors
   })
 }
 
-function deleteSubscribers(id) {
-  const registroArtistSubscribers = temporaryMapFileServer.find((artistSubscribers) => artistSubscribers.artistId === id);
+async function deleteSubscribers(id) {
+  var temporaryFs = JSON.parse(readData()).fs
+  const registroArtistSubscribers = temporaryFs.find((artistSubscribers) => artistSubscribers.artistId === id);
   if (registroArtistSubscribers !== undefined) {
-    temporaryMapFileServer.map((registro) => {
+    temporaryFs = temporaryFs.map((registro) => {
       if (registro.artistId === id) {
-        registro.deleteSubscribers();
-      }
+        newRegister = new ArtistNewsletter(id, registro.subscribers)
+        console.log(newRegister)
+        newRegister.deleteSubscribers();
+        console.log(newRegister)
+        return newRegister
+      } else { return registro }
     })
+    console.log(temporaryFs)
+    writeData({ "fs": temporaryFs })
   }
 }
 
