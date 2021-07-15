@@ -13,6 +13,11 @@ app.use(bodyParser.json());
 const router = express.Router();
 router.use(express.json());
 
+//const UNQFY_API_HOST = process.env["UNQFY_API_HOST"];
+const NEWSLETTER_API_HOST = process.env["NEWSLETTER_API_HOST"];
+const LOGGING_API_HOST = process.env["LOGGING_API_HOST"];
+const MONITOR_API_HOST = process.env["MONITOR_API_HOST"];
+
 app.use('/api', artists.artists, albums.albums, playlists.playlists, tracks.tracks);
 app.use(errorHandlerF);
 app.all('*', function (req, res, next) {
@@ -23,6 +28,6 @@ app.all('*', function (req, res, next) {
     })
 });
 
-app.listen(8000, () => {
-    console.log("El servidor está inicializado en el puerto 8000");
+app.listen(5000, () => {
+    console.log("El servidor está inicializado en el puerto 5000");
 })

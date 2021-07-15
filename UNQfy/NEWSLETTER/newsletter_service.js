@@ -4,7 +4,7 @@ const { errorHandlerF } = require('./errorHandler')
 const ArtistNewsletter = require('./ArtistNewsletter')
 const fs = require('fs');
 const DATA_FILE = 'app_data/data.json';
-const PORT = 5000;
+const PORT = 5001;
 const errors = require("./apiErrors");
 const { get } = require('request');
 const rp = require('request-promise');
@@ -15,12 +15,17 @@ const app = express();
 app.use(bodyParser.json());
 const NotificationSender = require('./gmail-tools/send-mail-example/sendMail')
 
-const apiServer = "http://localhost:8000"/*"https://sietelotos.herokuapp.com"*/
+const UNQFY_API_HOST = process.env["UNQFY_API_HOST"];
+//const NEWSLETTER_API_HOST = process.env["NEWSLETTER_API_HOST"];
+const LOGGING_API_HOST = process.env["LOGGING_API_HOST"];
+const MONITOR_API_HOST = process.env["MONITOR_API_HOST"];
+
+//const apiServer = "http://localhost:8000"/*"https://sietelotos.herokuapp.com"*/
 
 async function getArtist(props) {
   const route = props.route
   return rp.get({
-    uri: apiServer + route,
+    uri: UNQFY_API_HOST + route,
     json: true // Automatically parses the JSON string in the response
   })
     .then((res) => {
@@ -125,7 +130,7 @@ app.all('*', function (req, res, next) {
     errorCode: resourceNotFound.errorCode
   })
 });
- 
+
 function readData() {
   console.log('accesing fs!');
   try {
@@ -145,7 +150,7 @@ function writeData(data) {
     console.log('saving onto fs!');
   });
 }
- 
+
 function artistValidateBody(body) {
   if (body.artistId === undefined) {
     throw incompleteJSON

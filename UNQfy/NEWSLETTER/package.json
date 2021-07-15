@@ -2,9 +2,9 @@
   "name": "newsletter",
   "version": "1.0.0",
   "description": "newsletter microservice",
-  "main": "service_con_estado.js",
+  "main": "newsletter_service.js",
   "scripts": {
-    "start": "service_con_estado.js",
+    "start": "newsletter_service.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

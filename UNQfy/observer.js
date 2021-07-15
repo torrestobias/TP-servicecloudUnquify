@@ -1,5 +1,7 @@
 const rp = require('request-promise');
-const UNQfyServer = 'http://localhost:5000';
+
+const NEWSLETTER_API_HOST = process.env["NEWSLETTER_API_HOST"];
+//const UNQfyServer = 'http://localhost:5000';
 
 class Observer {
     constructor() {
@@ -10,7 +12,7 @@ class Observer {
         console.log('notificacion observer' + subjectName, albumName);
         rp({
             method: 'POST',
-            uri: UNQfyServer + '/api/notify',
+            uri: NEWSLETTER_API_HOST + '/api/notify',
             body: {
                 artistId: subject.getId(),
                 subject: `Nuevo Album para artista ${subjectName}`,
