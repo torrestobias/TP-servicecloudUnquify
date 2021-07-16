@@ -1,4 +1,4 @@
 NEWSLETTER
 MONITOR
 node_modules
-package*.json
+#package*.json

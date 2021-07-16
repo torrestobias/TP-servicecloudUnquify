@@ -1,4 +1,4 @@
-NEWSLETTER/package*.json
+#NEWSLETTER/package*.json
 NEWSLETTER/gmail-tools/get-token/node_modules
 NEWSLETTER/gmail-tools/get-token/package*.json
 NEWSLETTER/node_modules

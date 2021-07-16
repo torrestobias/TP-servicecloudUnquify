@@ -10,7 +10,6 @@ const NonExistentObjectException = require('./exceptions/non-existent-object');
 const Apimusicxmatch = require("./apimusicxmatch/apimusicmatch");
 const configJson = require('./spotifyCreds.json');
 const { RSA_PKCS1_OAEP_PADDING } = require('constants');
-const { NotifyFailed } = require('./NEWSLETTER/apiErrors');
 const NewsletterObserver = require('./newsletterObserver');
 const Subject = require('./subject')
 
