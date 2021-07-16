@@ -13,10 +13,9 @@ app.use(bodyParser.json());
 const router = express.Router();
 router.use(express.json());
 
-//const UNQFY_API_HOST = process.env["UNQFY_API_HOST"];
-const NEWSLETTER_API_HOST = process.env["NEWSLETTER_API_HOST"];
-const LOGGING_API_HOST = process.env["LOGGING_API_HOST"];
-const MONITOR_API_HOST = process.env["MONITOR_API_HOST"];
+const NEWSLETTER_API_HOST = process.env["NEWSLETTER_API_HOST"] || 'http://localhost:5001';
+const LOGGING_API_HOST = process.env["LOGGING_API_HOST"] || 'http://localhost:5002';
+const MONITOR_API_HOST = process.env["MONITOR_API_HOST"] || 'http://localhost:5003';
 
 app.use('/api', artists.artists, albums.albums, playlists.playlists, tracks.tracks);
 app.use(errorHandlerF);

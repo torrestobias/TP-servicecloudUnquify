@@ -15,12 +15,9 @@ const app = express();
 app.use(bodyParser.json());
 const NotificationSender = require('./gmail-tools/send-mail-example/sendMail')
 
-const UNQFY_API_HOST = process.env["UNQFY_API_HOST"];
-//const NEWSLETTER_API_HOST = process.env["NEWSLETTER_API_HOST"];
-const LOGGING_API_HOST = process.env["LOGGING_API_HOST"];
-const MONITOR_API_HOST = process.env["MONITOR_API_HOST"];
-
-//const apiServer = "http://localhost:8000"/*"https://sietelotos.herokuapp.com"*/
+const UNQFY_API_HOST = process.env["UNQFY_API_HOST"] || 'http://localhost:5000';
+const LOGGING_API_HOST = process.env["LOGGING_API_HOST"] || 'http://localhost:5002';
+const MONITOR_API_HOST = process.env["MONITOR_API_HOST"] || 'http://localhost:5003';
 
 async function getArtist(props) {
   const route = props.route

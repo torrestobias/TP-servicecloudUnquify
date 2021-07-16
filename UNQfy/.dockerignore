@@ -1,3 +1,4 @@
-NEWSLETTER/package*.json
-NEWSLETTER/gmail-tools/get-token/node_modules
-NEWSLETTER/gmail-tools/get-token/package*.json
+NEWSLETTER
+MONITOR
+node_modules
+package*.json

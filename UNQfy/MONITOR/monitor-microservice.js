@@ -1,10 +1,8 @@
 const express = require('express'); // Express web server framework
 const bodyParser = require('body-parser');
-const PORT = 7000;
+const PORT = 5003;
 const app = express();
 app.use(bodyParser.json());
-
-//const UNQfyServer = "http://localhost:8000"/*"https://sietelotos.herokuapp.com"*/
 
 async function discordPost() {
 
@@ -18,11 +16,42 @@ async function discordPost() {
       'Accept: application/json'
     ],
   })
-  
-  console.log(data)  
+
+  console.log(data)
 }
 
 discordPost();
+
+async function getUNQfyState(){}
+
+async function getUNQfyState(){}
+
+async function getLoggingState(){}
+
+function jsonResponse(){}
+
+//Debe permitir saber si el estado de los servicios. Es decir, se le envía un request al servicio de monitoreo y este debe responder si los servicios se encuentra activos o no.
+
+app.get('/api/services', async (req, res, next) => {
+  try {
+    const stateUNQfy = await getUNQfyState();
+    const stateNewsletter = await getNewsletterState();
+    const stateLogging = await getLoggingState();
+    const rta = jsonResponse(stateUNQfy, stateNewsletter, stateLogging)
+    res.status(200)
+    res.json(rta)
+  } catch (e) {
+    console.log("entre al catch" + e)
+    next(e);
+  }
+});
+/*
+Debe monitorear periódicamente el estado de los servicios y notificar a discord en caso de falla de alguno de los mismos.
+
+Debe poder desactivarse/activarse el monitoreo periódico.
+
+*/
+
 /*
 //Subscribe un email a un artista. Si el email ya está suscrito no hace nada.  Este EP chequea usando la API de UNQfy que el artista exista.
 app.post('/api/subscribe', async (req, res, next) => {

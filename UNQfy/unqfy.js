@@ -11,12 +11,13 @@ const Apimusicxmatch = require("./apimusicxmatch/apimusicmatch");
 const configJson = require('./spotifyCreds.json');
 const { RSA_PKCS1_OAEP_PADDING } = require('constants');
 const { NotifyFailed } = require('./NEWSLETTER/apiErrors');
-const Notifyer = require('./observer');
+const NewsletterObserver = require('./newsletterObserver');
 const Subject = require('./subject')
 
-class UNQfy {
+class UNQfy extends Subject{
 
   constructor() {
+    super();
     this.artists = [];
     this.playlist = [];
     this.users = [];
@@ -25,7 +26,7 @@ class UNQfy {
     this.idTrack = 0;
     this.idUser = 0;
     this.idPlaylist = 0;
-    this.notifyer = new Notifyer();
+    this.notifyer = new NewsletterObserver();
   }
 
   addArtist(artistData) {
@@ -430,7 +431,7 @@ class UNQfy {
   static load(filename) {
     const serializedData = fs.readFileSync(filename, { encoding: 'utf-8' });
     //COMPLETAR POR EL ALUMNO: Agregar a la lista todas las clases que necesitan ser instanciadas
-    const classes = [UNQfy, Artist, Album, Track, PlayList, Notifyer, Subject];
+    const classes = [UNQfy, Artist, Album, Track, PlayList, NewsletterObserver, Subject];
     return picklify.unpicklify(JSON.parse(serializedData), classes);
   }
 }
