@@ -10,7 +10,7 @@ async function discordPost() {
 
   const { curly } = require('node-libcurl')
   const { data } = await curly.post(url, {
-    postFields: JSON.stringify({ content: 'value' }),
+    postFields: JSON.stringify({ content: 'probando ando' }),
     httpHeader: [
       'Content-Type: application/json',
       'Accept: application/json'
