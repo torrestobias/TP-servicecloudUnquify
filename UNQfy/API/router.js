@@ -18,6 +18,10 @@ const LOGGING_API_HOST = process.env["LOGGING_API_HOST"] || 'http://localhost:50
 const MONITOR_API_HOST = process.env["MONITOR_API_HOST"] || 'http://localhost:5003';
 
 app.use('/api', artists.artists, albums.albums, playlists.playlists, tracks.tracks);
+app.get('/ping', (req, res) => {
+    console.log('ping arrived!');
+    res.json({ message: "pong" });
+});
 app.use(errorHandlerF);
 app.all('*', function (req, res, next) {
     res.status(resourceNotFound.status)
