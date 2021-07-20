@@ -1,41 +1,47 @@
 # cloud-grupo 5
 
-CONFIGURACION DE CONTAINERS
+## CONFIGURACION DE CONTAINERS
 
-```	
-PARA CREAR LA RED
+### Para crear la red
 
-docker network create --subnet=172.20.0.0/16 unqfynet	
+```docker network create --subnet=172.20.0.0/16 unqfynet```
 	
-LAS IMAGENES SE CONSTRUYEN CADA UNA EN EL DIRECTORIO DEL SERVICIO CORRESPONDIENTE	
+### Cada imagen se construye situandose en el directorio correspondiente	
 
-/UNQfy
-docker build -t unqfy_image .
+#### /UNQfy
 
-/NEWSLETTER
-docker build -t newsletter_image .
+```docker build -t unqfy_image .```
 
-/LOGGING
-docker build -t logging_image .
+#### /NEWSLETTER
 
-/MONITOR
-docker build -t monitor_image .
+```docker build -t newsletter_image .```
 
-PARA CORRER LOS SERVICIOS EN CADA CONTEINER, UNA SOLA VEZ, DESPUES SE LO INICIA CON "DOCKER START <SERVICE_APP_NAME>" Y SE LOS PARA CON "DOCKER STOP ..." 	
+#### /LOGGING
 
-UNQfy
-docker run  --net unqfynet --ip 172.20.0.21 -p 5000:5000 -e NEWSLETTER_API_HOST=http://172.20.0.22:5001 -e LOGGING_API_HOST=http://172.20.0.23:5002 -e MONITOR_API_HOST=http://172.20.0.24:5003 --name unqfy_app --user node unqfy_image
+```docker build -t logging_image .```
 
-NEWSLETTER
-docker run  --net unqfynet --ip 172.20.0.22 -p 5001:5001 -e UNQFY_API_HOST=http://172.20.0.21:5000 -e LOGGING_API_HOST=http://172.20.0.23:5002 -e MONITOR_API_HOST=http://172.20.0.24:5003 --name newsletter_app --user node newsletter_image
+#### /MONITOR
 
-LOGGING
-docker run  --net unqfynet --ip 172.20.0.23 -p 5002:5002 -e NEWSLETTER_API_HOST=http://172.20.0.22:5001 -e UNQFY_API_HOST=http://172.20.0.21:5000 -e MONITOR_API_HOST=http://172.20.0.24:5003 --name logging_app --user node logging_image
+```docker build -t monitor_image .```
 
-MONITOR
-docker run  --net unqfynet --ip 172.20.0.24 -p 5003:5003 -e NEWSLETTER_API_HOST=http://172.20.0.22:5001 -e UNQFY_API_HOST=http://172.20.0.21:5000 -e LOGGING_API_HOST=http://172.20.0.23:5002 --name monitor_app --user node monitor_image
-```
-### Guia de comandos para usar por consola:
+### Cada servicio se instancia en el container quedando operativo. 	
+
+#### UNQfy
+```docker run  --net unqfynet --ip 172.20.0.21 -p 5000:5000 -e NEWSLETTER_API_HOST=http://172.20.0.22:5001 -e LOGGING_API_HOST=http://172.20.0.23:5002 -e MONITOR_API_HOST=http://172.20.0.24:5003 --name unqfy_app --user node unqfy_image```
+
+#### NEWSLETTER
+```docker run  --net unqfynet --ip 172.20.0.22 -p 5001:5001 -e UNQFY_API_HOST=http://172.20.0.21:5000 -e LOGGING_API_HOST=http://172.20.0.23:5002 -e MONITOR_API_HOST=http://172.20.0.24:5003 --name newsletter_app --user node newsletter_image```
+
+#### LOGGING
+```docker run  --net unqfynet --ip 172.20.0.23 -p 5002:5002 -e NEWSLETTER_API_HOST=http://172.20.0.22:5001 -e UNQFY_API_HOST=http://172.20.0.21:5000 -e MONITOR_API_HOST=http://172.20.0.24:5003 --name logging_app --user node logging_image```
+
+#### MONITOR
+```docker run  --net unqfynet --ip 172.20.0.24 -p 5003:5003 -e NEWSLETTER_API_HOST=http://172.20.0.22:5001 -e UNQFY_API_HOST=http://172.20.0.21:5000 -e LOGGING_API_HOST=http://172.20.0.23:5002 --name monitor_app --user node monitor_image```
+
+#### (esto solo se realiza por unica vez luego si se quisiera iniciar un servicio utilizariamos "DOCKER START <SERVICE_APP_NAME>" Y para detenerlo "DOCKER STOP  <SERVICE_APP_NAME>")
+
+
+# Guia de comandos para usar por consola:
 
 ## Comandos para Artistas:
 
