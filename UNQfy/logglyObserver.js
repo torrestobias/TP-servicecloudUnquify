@@ -1,7 +1,7 @@
 const Observer = require('./observer')
 const rp = require('request-promise');
 
-const LOGGLY_API_HOST = process.env["LOGGLY_API_HOST"] || 'http://localhost:5002';
+const LOGGLY_API_HOST = process.env["LOGGING_API_HOST"] || 'http://localhost:5002';
 
 class LogglyObserver extends Observer {
     constructor(){
