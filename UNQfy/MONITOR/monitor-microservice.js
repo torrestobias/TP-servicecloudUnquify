@@ -12,9 +12,9 @@ app.use(bodyParser.json());
 app.listen(PORT, () => { console.log(`Listening on ${PORT}`); });
 
 const services = [
-  { name: 'unqfy', uri: process.env.UNQFY_API_HOST || 'http://localhost:5000', state: 'offline', lastState: null, time: new Date().getTime() },
-  { name: 'loggin', uri: process.env.LOGGIN_API_HOST || 'http://localhost:5002', state: 'offline', lastState: null, time: new Date().getTime() },
-  { name: 'newsletter', uri: process.env.NEWSLETTER_API_HOST || 'http://localhost:5001', state: 'offline', lastState: null, time: new Date().getTime() }
+  { name: 'unqfy', uri: process.env["UNQFY_API_HOST"] || 'http://localhost:5000', state: 'offline', lastState: null, time: new Date().getTime() },
+  { name: 'loggin', uri: process.env["LOGGING_API_HOST"] || 'http://localhost:5002', state: 'offline', lastState: null, time: new Date().getTime() },
+  { name: 'newsletter', uri: process.env["NEWSLETTER_API_HOST"] || 'http://localhost:5001', state: 'offline', lastState: null, time: new Date().getTime() }
 ]
 
 console.log('Monitor Activado');
