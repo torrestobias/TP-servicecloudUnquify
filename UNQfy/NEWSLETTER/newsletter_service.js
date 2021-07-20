@@ -119,6 +119,11 @@ app.delete('/api/subscriptions', async (req, res, next) => {
   }
 });
 
+app.get('/ping', (req, res) => {
+  console.log('ping arrived!');
+  res.json({ message: "pong" });
+});
+
 app.use(errorHandlerF);
 app.all('*', function (req, res, next) {
   res.status(resourceNotFound.status)
