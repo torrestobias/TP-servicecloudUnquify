@@ -2,9 +2,9 @@ const express = require('express'); // Express web server framework
 const bodyParser = require('body-parser');
 const PORT = 5003;
 const app = express();
-const ClientAPI = require('../MONITOR/cliente/ClientAPI');
+const ClientAPI = require('./cliente/ClientAPI');
 const ClientAPIInstance = new ClientAPI.ClientAPI();
-const ClientDiscord = require('../MONITOR/cliente/ClientDiscord');
+const ClientDiscord = require('./cliente/ClientDiscord');
 const ClientDiscordInstance = new ClientDiscord.ClientDiscord();
 
 app.use(bodyParser.urlencoded({ extended: true }));

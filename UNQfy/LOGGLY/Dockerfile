@@ -7,22 +7,22 @@ ENV NODE_ENV=development
 ENV DEBUG=true
 
 # Crea un directorio y nos movemos ahí
-WORKDIR /home/node/my_node_app
+WORKDIR /home/node/loggly_app
 
-# Copia el package.json package-lock.json en /home/node/my_node_app
+# Copia el package.json package-lock.json en /home/node/newsletter
 COPY package.json .
 COPY package-lock.json .
 
 # Ejecuta npm install. Esto produce que se instalen todas las dependencias necearias para correr la aplicación
 RUN ["npm", "install"]
 
-# Expone el puerto 5000 donde corre la aplicación
-EXPOSE 5000
+# Expone el puerto 5002 donde corre la aplicación
+EXPOSE 5002
 
 # Copia los fuentes dentro del container
-COPY service.js /home/node/my_node_app/
+COPY . . 
 
-# Le da permisos al usuario node para escribir en /home/node/my_node_app
+# Le da permisos al usuario node para escribir en /home/node/newsletter
 # Como comentario, notar que el comando RUN nos permite ejecutar culquier comando bash valido.
 RUN chown -R node:users /home/node/
 
@@ -31,7 +31,7 @@ USER node
 
 # Comando por defecto sino se provee uno al hacer docker run
 # El comando corre el servicio
-CMD [ "node", "service" ]
+CMD [ "node", "loggly" ]
 
 # LISTO!
 
