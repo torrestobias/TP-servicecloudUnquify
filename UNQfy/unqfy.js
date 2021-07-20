@@ -252,7 +252,7 @@ class UNQfy extends Subject{
       let tracksArtist = this.getTracksMatchingArtist(artistName.artistName)
       this.artists = this.artists.filter(art => art.name !== artist.name)
       this.playlist.forEach(playlist => playlist.removeTracks(tracksArtist))
-      this.notify('info', {item : artistName, function : 'deleteArtist'});
+      this.notify('info', {item : artist.getName(), function : 'deleteArtist'});
       console.log("Se ha eliminado el artista " + artist.name + " correctamente")
     } else {
       throw new NonExistentObjectException("Artist", artistName.artistName);
@@ -429,7 +429,7 @@ class UNQfy extends Subject{
   static load(filename) {
     const serializedData = fs.readFileSync(filename, { encoding: 'utf-8' });
     //COMPLETAR POR EL ALUMNO: Agregar a la lista todas las clases que necesitan ser instanciadas
-    const classes = [UNQfy, Artist, Album, Track, PlayList, NewsletterObserver, Subject];
+    const classes = [UNQfy, Artist, Album, Track, PlayList, NewsletterObserver, Subject, LogglyObserver];
     return picklify.unpicklify(JSON.parse(serializedData), classes);
   }
 }

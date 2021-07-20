@@ -13,7 +13,7 @@ class LogglyObserver extends Observer {
         let mensaje = checkFunction(elementoAgregado , funcion);
         rp({
             method: 'POST',
-            uri: 'http://localhost:5002/api/log',
+            uri: LOGGLY_API_HOST+'/api/log',
             body: {
                 message: mensaje ,
                 level : level
