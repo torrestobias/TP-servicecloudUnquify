@@ -78,7 +78,7 @@ app.get('/ping', (req, res) => {
 function guardarLocal(message, level) {
     let fechaActual = dateTime.create().format('H:M d-m-Y ');
     let mensaje = `[${fechaActual}] [${message}] [${level}]. \n`
-    fs.appendFileSync('./LOGGLY/logLocal.txt', mensaje)
+    fs.appendFileSync('./logLocal.txt', mensaje)
 }
 
 
