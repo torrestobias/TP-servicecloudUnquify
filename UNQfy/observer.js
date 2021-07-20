@@ -1,7 +1,7 @@
 class Observer {
     constructor() {
     }
-   // update()
+   async notify(elem , objectName){}
 }
 
 module.exports = Observer;

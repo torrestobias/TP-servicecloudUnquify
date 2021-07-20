@@ -12,6 +12,7 @@ const configJson = require('./spotifyCreds.json');
 const { RSA_PKCS1_OAEP_PADDING } = require('constants');
 const NewsletterObserver = require('./newsletterObserver');
 const Subject = require('./subject')
+const LogglyObserver = require('./logglyObserver')
 
 class UNQfy extends Subject{
 
@@ -26,6 +27,7 @@ class UNQfy extends Subject{
     this.idUser = 0;
     this.idPlaylist = 0;
     this.notifyer = new NewsletterObserver();
+    this.subscribe(new LogglyObserver());
   }
 
   addArtist(artistData) {
@@ -34,7 +36,7 @@ class UNQfy extends Subject{
     nuevoArtista.subscribe(this.notifyer);
     this.incrementIdArtist();
     this.addNewObject(artist => this.artists.push(artist), nuevoArtista)
-
+    this.notify('info', {item : nuevoArtista.getName(), function : 'addArtist'});
     return nuevoArtista;
   };
 
@@ -53,7 +55,7 @@ class UNQfy extends Subject{
     this.checkExistentObject(artist.getAlbums(), nuevoAlbum)
     this.incrementIdAlbum();
     this.addNewObject((album) => artist.addNewAlbum(album), nuevoAlbum)
-
+    this.notify('info', {item : nuevoAlbum.getName(), function : 'addAlbum'});
     return nuevoAlbum;
   };
 
@@ -63,7 +65,7 @@ class UNQfy extends Subject{
     this.checkExistentObject(album.getTracks(), nuevoTrack)
     this.incrementIdTrack();
     this.addNewObject(track => album.addNewTrack(track), nuevoTrack)
-
+    this.notify('info', {item : nuevoTrack.getName(), function : 'addTrack'});
     return nuevoTrack;
   };
 
@@ -237,8 +239,7 @@ class UNQfy extends Subject{
     if (artist !== undefined && album !== undefined && track !== undefined) {
       album.delTrack(track.getId());
       this.playlist.forEach(playlist => playlist.removeTracks([track]))
-      /*       this.idTrack -= 1; */
-
+      this.notify('info', {item : track.getName(), function : 'deleteTrack'});
       console.log("Se ha eliminado el track " + track.name + " del album " + album.name + " del artista " + artist.name + " correctamente")
     } else {
       throw new NonExistentObjectException("Track", trackData.name);
@@ -251,8 +252,7 @@ class UNQfy extends Subject{
       let tracksArtist = this.getTracksMatchingArtist(artistName.artistName)
       this.artists = this.artists.filter(art => art.name !== artist.name)
       this.playlist.forEach(playlist => playlist.removeTracks(tracksArtist))
-      /*       this.idArtist -= 1; */
-
+      this.notify('info', {item : artistName, function : 'deleteArtist'});
       console.log("Se ha eliminado el artista " + artist.name + " correctamente")
     } else {
       throw new NonExistentObjectException("Artist", artistName.artistName);
@@ -266,8 +266,7 @@ class UNQfy extends Subject{
       let tracksAlbum = album.getTracks();
       artist.delAlbumByName(albumData.name);
       this.playlist.forEach(playlist => playlist.removeTracks(tracksAlbum))
-      /*       this.idAlbum -= 1; */
-
+      this.notify('info', {item : album.getName(), function : 'deleteAlbum'});
       console.log("Se ha eliminado el album " + album.name + " del artista " + artist.name + " correctamente")
     } else {
       throw new NonExistentObjectException("Album", albumData.name);
