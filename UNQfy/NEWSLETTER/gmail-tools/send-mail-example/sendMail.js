@@ -1,5 +1,7 @@
 const GMailAPIClient = require('./GMailAPIClient');
 const gmailClient = new GMailAPIClient();
+const errors = require("../../apiErrors");
+const notifyFailed = new errors.NotifyFailed();
 
 class NotificationSender {
 
@@ -27,6 +29,7 @@ class NotificationSender {
     }).catch((error) => {
       console.error("Algo salió mal");
       console.error(error);
+      throw notifyFailed;
     })
   }
 }

@@ -28,6 +28,7 @@ function errorHandlerF(err, req, res, next) {
             errorCode: new InvalidJson.errorCode
         })
     } else {
+        console.log(err);
         next(err);
     }
 }
