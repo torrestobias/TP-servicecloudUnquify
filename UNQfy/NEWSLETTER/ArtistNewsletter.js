@@ -15,7 +15,9 @@ class ArtistNewsletter {
     }
 
     addSubscriber(newSubscriber) {
-        this.subscribers.push(newSubscriber);
+        if (!this.subscribers.includes(newSubscriber)) {
+            this.subscribers.push(newSubscriber);
+        }
     }
 
     deleteSubscriber(delSubscriber) {
