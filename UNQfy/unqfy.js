@@ -1,5 +1,6 @@
 const picklify = require('picklify'); // para cargar/guarfar unqfy
 const fs = require('fs'); // para cargar/guarfar unqfy
+const DATA_FILE = 'app_data/data.json';
 const Artist = require('./artist');
 const Album = require('./album');
 const Track = require('./track');
@@ -370,7 +371,7 @@ class UNQfy extends Subject{
 
   updateYearOfAlbum(album, year) {
     album.updateYear(year);
-    this.save('data.json');
+    this.save(DATA_FILE);
   }
 
   getAlbumsForArtist(artistName) {
@@ -421,7 +422,7 @@ class UNQfy extends Subject{
     }
   }
   
-  save(filename = 'data.json') {
+  save(filename = DATA_FILE) {
     const serializedData = picklify.picklify(this);
     fs.writeFileSync(filename, JSON.stringify(serializedData, null, 2));
   }

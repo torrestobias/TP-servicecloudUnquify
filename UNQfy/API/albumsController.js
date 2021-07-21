@@ -46,7 +46,7 @@ albums.post(root, async function (req, res, next) {
         let name = req.body.name;
         let year = req.body.year;
         await unqfy.addAlbum(artistId, { name: name, year: year });
-        validate.saveUNQfy(unqfy, 'data.json');
+        validate.saveUNQfy(unqfy);
         let artist = unqfy.getArtistById(artistId);
         album = artist.getAlbumByName(name);
     } catch (e) {
@@ -74,7 +74,7 @@ albums.patch(root + '/:albumId', function (req, res, next) {
         let year = req.body.year;
         let album = unqfy.getAlbumById(albumId);
         unqfy.updateYearOfAlbum(album, year);
-        validate.saveUNQfy(unqfy, 'data.json');
+        validate.saveUNQfy(unqfy);
         albumRta = unqfy.getAlbumById(albumId);
     } catch (e) {
         next(e);
@@ -91,7 +91,7 @@ albums.delete(root + '/:albumId', function (req, res, next) {
         let album = unqfy.getAlbumById(albumId);
         let artist = unqfy.searchArtistByAlbumId(albumId);
         unqfy.deleteAlbum({ 'artistName': artist.name, 'name': album.name });
-        validate.saveUNQfy(unqfy, 'data.json');
+        validate.saveUNQfy(unqfy);
         res.status(204);
         res.json({});
     } catch (e) {

@@ -1,5 +1,6 @@
 const fs = require('fs'); // necesitado para guardar/cargar unqfy
 const unqmod = require('./unqfy'); // importamos el modulo unqfy
+const DATA_FILE = 'app_data/data.json';
 //const { Artist } = require('./unqfy');
 const NotANumberException = require('./exceptions/not-a-number');
 const ExistingObjectException = require('./exceptions/existing-object');
@@ -13,16 +14,16 @@ class ValidateEntry {
     constructor() {
     };
 
-    getUNQfy(filename = 'data.json') {
+    getUNQfy(filename = DATA_FILE) {
         let unqfy = new unqmod.UNQfy();
         if (fs.existsSync(filename)) {
             unqfy = unqmod.UNQfy.load(filename);
         }
         return unqfy;
     }
-   
+
     // Guarda la instancia de UNQfy.
-    saveUNQfy(unqfy, filename = 'data.json') {
+    saveUNQfy(unqfy, filename = DATA_FILE) {
         unqfy.save(filename);
     }
 
@@ -104,7 +105,7 @@ class ValidateEntry {
     };
 
     async deleteAlbumHandler(unqfy, albumData) {
-    return unqfy.deleteAlbum(this.validArgumentsCheck(["artistName", "name"], albumData));
+        return unqfy.deleteAlbum(this.validArgumentsCheck(["artistName", "name"], albumData));
     }
 
     async addTrackHandler(unqfy, trackData) {
@@ -140,7 +141,7 @@ class ValidateEntry {
         return unqfy.searchTracksByGenre(this.validArgumentsCheck(["genre"], objs).genre);
     }
 
-    async populateAlbumsForArtistsHandler(unqfy, objs){
+    async populateAlbumsForArtistsHandler(unqfy, objs) {
         return unqfy.populateAlbumsForArtist(this.validArgumentsCheck(["name"], objs).name);
     }
 
@@ -162,7 +163,7 @@ class ValidateEntry {
         searchByName: (unqfy, objs) => this.searchByNameHandler(unqfy, objs),
         searchTracksByArtist: (unqfy, objs) => this.searchTracksByArtistHandler(unqfy, objs),
         searchTracksByGenre: (unqfy, objs) => this.searchTracksByGenreHandler(unqfy, objs),
-        populateAlbumsForArtist: (unqfy, artistName) => this.populateAlbumsForArtistsHandler(unqfy,artistName)
+        populateAlbumsForArtist: (unqfy, artistName) => this.populateAlbumsForArtistsHandler(unqfy, artistName)
     }
 
     // Arma el dataObject, 
@@ -177,13 +178,13 @@ class ValidateEntry {
 
     // Carga una instancia de UNQfy, llama la funcion con el dataObject y guarda la instancia de UNQfy.
     executeCommand(command, args) {
-        const unqfy = this.getUNQfy(); 
+        const unqfy = this.getUNQfy();
         this.functionList[command](unqfy, this.makeDataObject(args))
-        .then(()=>{
-            this.saveUNQfy(unqfy,'data.json'); 
-        }); 
+            .then(() => {
+                this.saveUNQfy(unqfy);
+            });
     }
 }
 
-module.exports = 
+module.exports =
     ValidateEntry;

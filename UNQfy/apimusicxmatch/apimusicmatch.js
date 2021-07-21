@@ -55,7 +55,7 @@ class Apimusicxmatch {
                     throw new Error('status code != 200');
                 }
                 track.setLyrics(JSON.stringify(body.lyrics.lyrics_body));
-                unqfy.save('data.json')
+                unqfy.save()
                 return JSON.stringify(body.lyrics.lyrics_body)
             })
         }).catch((error) => {

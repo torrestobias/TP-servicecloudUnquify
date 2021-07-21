@@ -33,9 +33,13 @@ COPY . .
 #WORKDIR /home/node/unqfy_app/API
 #COPY /API/albumsController.js /API/apiErrors.js /API/artistController.js /API/errorHandler.js /API/playlistController.js /API/router.js /API/tracksController.js ./
 
+# Crea un volumen donde se van a guardar datos de la aplicación
+# RUN mkdir -p /home/node/my_node_app/app_data
+VOLUME ["/home/node/unqfy_app/app_data"]
+
 # Le da permisos al usuario node para escribir en /home/node/unqfy_app
 # Como comentario, notar que el comando RUN nos permite ejecutar culquier comando bash valido.
-RUN chown -R node:users /home/node/
+RUN chown -R node:users /home/node/unqfy_app
 
 # Habilita el usuario node. Por defecto, los containers corren los comandos con el usuario root
 USER node

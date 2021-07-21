@@ -32,7 +32,7 @@ artists.route('/artists').post((req, res, next) => {
         let name = req.body.name;
         let country = req.body.country;
         unqfy.addArtist({ 'name': name, 'country': country });
-        validate.saveUNQfy(unqfy, 'data.json');
+        validate.saveUNQfy(unqfy);
         artist = unqfy.getArtistByName(name);
     } catch (e) {
         next(e);
@@ -52,7 +52,7 @@ artists.route('/artists/:artistId').patch((req, res, next) => {
         validateBody(req.body);
         let artist = unqfy.getArtistById(artistId);
         unqfy.updateArtistWithNewData(artist, req.body.name, req.body.country);
-        validate.saveUNQfy(unqfy, 'data.json');
+        validate.saveUNQfy(unqfy);
         updatedArtist = unqfy.getArtistById(artistId);
     } catch (e) {
         next(e);
@@ -72,7 +72,7 @@ artists.route('/artists/:artistId').put((req, res, next) => {
         validateBody(req.body);
         let artist = unqfy.getArtistById(artistId);
         unqfy.updateArtistWithNewData(artist, req.body.name, req.body.country);
-        validate.saveUNQfy(unqfy, 'data.json');
+        validate.saveUNQfy(unqfy);
         updatedArtist = unqfy.getArtistById(artistId);
     } catch (e) {
         next(e);
@@ -90,7 +90,7 @@ artists.route('/artists/:artistId').delete((req, res, next) => {
         let artistId = validate.parseIntEntry(req.params.artistId);
         let artist = unqfy.getArtistById(artistId);
         unqfy.deleteArtist({ 'artistName': artist.name });
-        validate.saveUNQfy(unqfy, 'data.json');
+        validate.saveUNQfy(unqfy);
         res.status(204);
         res.json({});
     } catch (e) {
